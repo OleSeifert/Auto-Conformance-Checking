@@ -1,0 +1,58 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0  # Use the ref you want to point at
+    hooks:
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-toml
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.5.25
+    hooks:
+      - id: uv-lock
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.3
+    hooks:
+      - id: ruff
+        args: [ --fix ]
+      - id: ruff-format
+
+  - repo: https://github.com/PyCQA/docformatter
+    rev: 06907d0
+    hooks:
+      - id: docformatter
+        additional_dependencies: [tomli]
+        args:
+          - --in-place
+          - --config
+          - ./pyproject.toml
+
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+        args:
+          - --ignore=D101,D104,D105,D203,D213,D401,D406,D407,D413
+          - --ignore-decorators
+
+  - repo: local
+    hooks:
+      - id: mypy
+        name: mypy
+        entry: mypy
+        language: python
+        types: [python]
+        exclude: ^(tests|data|docs)/
+        args:
+          - --no-strict-optional
+          - --ignore-missing-imports
+          - --no-incremental
+          - --disable-error-code=override
+
+      # - id: pytest
+      #   name: run tests
+      #   entry: ./.venv/bin/pytest tests
+      #   language: python
+      #   always_run: true
+      #   pass_filenames: false
