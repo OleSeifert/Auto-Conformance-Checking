@@ -41,8 +41,19 @@ It mostly complies with the rules enforced by [Ruff](https://docs.astral.sh/ruff
 We follow this [commit styleguide](https://github.com/iai-group/guidelines/blob/main/github/Git_commit.md).
 It ensures that all commit messages follow the same format and are descriptive and readable.
 
+#### Code Review Style
+
+We should follow this [code review styleguide](https://github.com/iai-group/guidelines/blob/main/github/Code_review.md).
+It ensures that the code review process runs as smoothly as possible.
+
 ## Contribution Workflow
 
 We use a classic *feature-branch* workflow, where a new branch is created for every feature or bug fix.
 Then a pull request is opened, which is then merged into the main branch of the project.
 In addition to that, the main branch is protected, so there cannot be any commits to it directly, which enforces the above-described workflow.
+
+## Architecture
+
+Below is an architecture suggestion, with which we can start out if all team members agree on it.
+
+![Image of architecture](./docs/source/_static/architecture.svg)
