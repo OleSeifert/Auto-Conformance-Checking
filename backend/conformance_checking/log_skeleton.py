@@ -51,17 +51,15 @@ class LogSkeleton:
 
     # **************** Compute log skeleton and conformance for traces ****************
 
-    def compute_skeleton(self, activity_col: str, noise_thr: float) -> None:
+    def compute_skeleton(self, noise_thr: float = 0.0) -> None:
         """Computes the log skeleton.
 
         Args:
-            activity_col: The name of the activity column.
             noise_thr: The noise threshold. Value between 0 and 1.
         """
         self._skeleton = lsk_discovery.apply(
             self.log,
             parameters={
-                lsk_discovery.Variants.CLASSIC.value.Parameters.ACTIVITY_KEY: activity_col,
                 lsk_discovery.Variants.CLASSIC.value.Parameters.NOISE_THRESHOLD: noise_thr,
             },
         )

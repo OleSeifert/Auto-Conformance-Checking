@@ -50,9 +50,9 @@ repos:
           - --no-incremental
           - --disable-error-code=override
 
-      # - id: pytest
-      #   name: run tests
-      #   entry: ./.venv/bin/pytest tests
-      #   language: python
-      #   always_run: true
-      #   pass_filenames: false
+      - id: pytest
+        name: run tests
+        entry: ./.venv/bin/pytest tests
+        language: python
+        always_run: true
+        pass_filenames: false
