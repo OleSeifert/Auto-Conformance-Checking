@@ -28,14 +28,6 @@ repos:
           - --config
           - ./pyproject.toml
 
-  - repo: https://github.com/pycqa/pydocstyle
-    rev: 6.1.1
-    hooks:
-      - id: pydocstyle
-        args:
-          - --ignore=D101,D104,D105,D203,D213,D401,D406,D407,D413
-          - --ignore-decorators
-
   - repo: local
     hooks:
       - id: mypy
