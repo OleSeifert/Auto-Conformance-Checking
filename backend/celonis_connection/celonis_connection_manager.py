@@ -7,7 +7,9 @@ library.
 """
 
 from collections.abc import MutableMapping
+from os import environ, path
 
+from dotenv import load_dotenv, set_key
 from pandas import DataFrame as DF
 from pycelonis import get_celonis
 from pycelonis.ems.data_integration.data_model_table_column import DataModelTableColumn
@@ -26,7 +28,11 @@ class CelonisConnectionManager:
     data_frame: DF
 
     def __init__(
-        self, base_url: str, api_token: str, data_pool_name: str, data_model_name: str
+        self,
+        base_url: str,
+        data_pool_name: str,
+        data_model_name: str,
+        api_token: str = "",
     ):
         """Initialize the CelonisConnection object.
 
@@ -36,11 +42,14 @@ class CelonisConnectionManager:
         :param data_model_name: Name of the data model to use.
         """
         self.base_url = base_url
-        self.api_token = api_token
         self.data_pool_name = data_pool_name
         self.data_model_name = data_model_name
         self.data_frame = DF()
-        self.celonis = get_celonis(base_url=base_url, api_token=api_token)
+        if api_token == "":
+            self.api_token = self.acquire_api_token()
+        else:
+            self.api_token = self.acquire_api_token(api_token)
+        self.celonis = get_celonis(base_url=base_url, api_token=self.api_token)
         self.data_pool = self.find_data_pool(data_pool_name)
         self.data_model = self.find_data_model(data_model_name)
 
@@ -247,3 +256,38 @@ class CelonisConnectionManager:
             print("Data model does not exist. Cannot get data model.")
             return None
         return self.data_model
+
+    def acquire_api_token(self, api_token: str = ""):
+        """Get the API token.
+
+        If the API token is not provided, it will be retrieved from the
+        environment variables.
+        :param api_token: API token to use. If not provided, it will be
+            retrieved from the environment variables.
+        :return: API token.
+        """
+        # Check if the .env file exists and create it if it does not
+        if not path.isfile(path.join(path.dirname(__file__), ".env")):
+            open(path.join(path.dirname(__file__), ".env"), "w").close()
+
+        # Load the environment variables from the .env file
+        load_dotenv()
+
+        # Check if the API token is provided
+        # If it is, set it in the environment variables
+        # If it is not, get it from the environment variables
+
+        if api_token == "":
+            token = environ.get("API_TOKEN")
+            if not token:
+                raise ValueError(
+                    "API token not found. Please provide the API Token when creating a Celonis connection for the first time."
+                )
+            return token
+        else:
+            set_key(
+                dotenv_path=path.join(path.dirname(__file__), ".env"),
+                key_to_set="API_TOKEN",
+                value_to_set=api_token,
+            )
+            return api_token

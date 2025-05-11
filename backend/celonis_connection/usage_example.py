@@ -5,6 +5,7 @@ dataframe to the data model, create a table, and get a dataframe from
 Celonis.
 """
 
+from celonis_connection_manager import CelonisConnectionManager
 from pandas import DataFrame as DF
 from pm4py.objects.conversion.log.variants import (  # type: ignore
     to_data_frame as log_to_df,
@@ -12,12 +13,7 @@ from pm4py.objects.conversion.log.variants import (  # type: ignore
 from pm4py.objects.log.importer.xes import importer as xes_importer  # type: ignore
 from pycelonis_core.utils.errors import PyCelonisNotFoundError
 
-from backend.celonis_connection.celonis_connection_manager import (
-    CelonisConnectionManager,
-)
-
 BASE_URL = "https://academic-rene-rockstedt-rwth-aachen-de.eu-2.celonis.cloud"
-APP_KEY = "ZmM5NmRjNTgtMWQwMC00MmE3LWJjYzktNGZkODM0ZjFiZTM1Ok9md2F5K2puTUZTUmdOSE1BQktuMjc2aFJlbXE5WG9DZVl3T1NDZjRScFdt"
 DATA_POOL = "Test Data Pool"
 DATA_MODEL = "Test Data Model"
 EVENT_LOG_LOC = "event_logs/all.xes"
@@ -28,7 +24,7 @@ result = log_to_df.apply(result)  # type: ignore
 
 # Create a Celonis connection
 # and add the event log to the data model
-my_celonis = CelonisConnectionManager(BASE_URL, APP_KEY, DATA_POOL, DATA_MODEL)
+my_celonis = CelonisConnectionManager(BASE_URL, DATA_POOL, DATA_MODEL)
 if isinstance(result, DF):
     my_celonis.add_dataframe(result)
     my_celonis.create_table()
