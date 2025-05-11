@@ -16,7 +16,7 @@ from pycelonis_core.utils.errors import PyCelonisNotFoundError
 from saolapy.types import SeriesLike
 
 
-class CelonisConnection:
+class CelonisConnectionManager:
     """Class to manage the connection to Celonis."""
 
     base_url: str
@@ -39,11 +39,12 @@ class CelonisConnection:
         self.api_token = api_token
         self.data_pool_name = data_pool_name
         self.data_model_name = data_model_name
+        self.data_frame = DF()
         self.celonis = get_celonis(base_url=base_url, api_token=api_token)
-        self.data_pool = self._find_data_pool(data_pool_name)
-        self.data_model = self._find_data_model(data_model_name)
+        self.data_pool = self.find_data_pool(data_pool_name)
+        self.data_model = self.find_data_model(data_model_name)
 
-    def _find_data_pool(self, data_pool_name: str):
+    def find_data_pool(self, data_pool_name: str):
         """Find a data pool by name.
 
         It will create a new one if it does not exist.
@@ -56,7 +57,7 @@ class CelonisConnection:
             print(f"Data pool '{data_pool_name}' not found. Creating a new one.")
             return self.celonis.data_integration.create_data_pool(self.data_pool_name)
 
-    def _find_data_model(self, data_model_name: str):
+    def find_data_model(self, data_model_name: str):
         """Find a data model by name.
 
         It will create a new one if it does not exist.
@@ -141,6 +142,7 @@ class CelonisConnection:
         when the data frame is created and used.
         :param df: DataFrame to add.
         """
+
         self.data_frame = df
 
     def get_basic_dataframe_from_celonis(self, table_name: str = "ACTIVITIES"):
