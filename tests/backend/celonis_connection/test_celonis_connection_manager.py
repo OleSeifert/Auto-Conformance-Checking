@@ -524,7 +524,9 @@ def test_acquire_api_token_without_parameter(
     :param mock_celonis_connection_manager: Mock
         CelonisConnectionManager object.
     """
-    with patch("os.environ.get") as mock_get_key:
+    with patch(
+        "backend.celonis_connection.celonis_connection_manager.environ.get"
+    ) as mock_get_key:
         mock_get_key.return_value = "mock-token"
         result = mock_celonis_connection_manager.acquire_api_token()
         assert result == "mock-token"
@@ -538,7 +540,9 @@ def test_acquire_api_token_with_parameter(
     :param mock_celonis_connection_manager: Mock
         CelonisConnectionManager object.
     """
-    with patch("dotenv.set_key") as mock_set_key:
+    with patch(
+        "backend.celonis_connection.celonis_connection_manager.set_key"
+    ) as mock_set_key:
         mock_set_key.return_value = "mock-token"
         result = mock_celonis_connection_manager.acquire_api_token("mock-token")
         assert result == "mock-token"

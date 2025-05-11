@@ -151,7 +151,6 @@ class CelonisConnectionManager:
         when the data frame is created and used.
         :param df: DataFrame to add.
         """
-
         self.data_frame = df
 
     def get_basic_dataframe_from_celonis(self, table_name: str = "ACTIVITIES"):
