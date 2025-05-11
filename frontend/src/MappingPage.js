@@ -17,7 +17,7 @@ const MappingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [headers, setHeaders] = useState([]); 
+  const [headers, setHeaders] = useState([]);
   const [caseIdCol, setCaseIdCol] = useState('');
   const [activityCol, setActivityCol] = useState('');
   const [timestampCol, setTimestampCol] = useState('');
