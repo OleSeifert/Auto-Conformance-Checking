@@ -60,29 +60,33 @@ class TemporalProfile:
     def discover_temporal_profile(self) -> None:
         """Discovers the temporal profile from the log.
 
+        The result is stored in _temporal_profile which is a dictionary
+        where each key is a tuple of two activity names (source, target),
+        and the value is a tuple containing:
+            1. The mean duration between the two activities
+            2. The standard deviation of those durations.
+
         Returns:
-            None. The result is stored in _temporal_profile which is a dictionary
-            where each key is a tuple of two activity names (source, target),
-            and the value is a tuple containing:
-                1. The mean duration between the two activities
-                2. The standard deviation of those durations.
+            None.
         """
         self._temporal_profile = tp_discovery.apply(self.log)
 
     def check_temporal_conformance(self, zeta: float = 0.5) -> None:
         """Checks conformance of the log against the temporal profile.
 
+        The result is stored in _temporal_conformance_result which is a list containing,
+        for each trace, all the deviations. Each deviation is a tuple containing:
+            1. The source activity of the recorded deviation.
+            2. The target activity of the recorded deviation.
+            3. The time passed between the occurrence of the source activity and the
+                target activity.
+            4. The value of (time passed - mean)/std for this occurrence (zeta).
+
         Args:
             zeta: Multiplier for the standard deviation.
 
         Returns:
-            None. The result is stored in _temporal_conformance_result which is a list containing,
-            for each trace, all the deviations. Each deviation is a tuple containing:
-                1. The source activity of the recorded deviation.
-                2. The target activity of the recorded deviation.
-                3. The time passed between the occurrence of the source activity and the
-                   target activity.
-                4. The value of (time passed - mean)/std for this occurrence (zeta).
+            None.
 
         Raises:
             ValueError: If the temporal profile has not been discovered yet.
@@ -140,6 +144,10 @@ class TemporalProfile:
         Returns:
             The zeta value used for temporal conformance checking.
         """
+        if self._zeta is None:
+            raise ValueError(
+                "Zeta value not set. Please run check_temporal_conformance() first."
+            )
         return self._zeta
 
     def get_conformance_diagnostics(self) -> pd.DataFrame:
@@ -166,7 +174,7 @@ class TemporalProfile:
         )
         return diagnostics_dataframe
 
-    def get_sorted_coloured_diagnostics(self) -> Styler:  # type: ignore
+    def get_sorted_coloured_diagnostics(self) -> Styler:
         """Returns the diagnostics DataFrame with sorting and styling.
 
         Sorts the diagnostics DataFrame in descending order of the number of standard deviations (num_st_devs)
