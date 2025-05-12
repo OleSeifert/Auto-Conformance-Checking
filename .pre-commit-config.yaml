@@ -44,7 +44,8 @@ repos:
 
       - id: pytest
         name: run tests
-        entry: ./.venv/bin/pytest tests
+        entry: pytest
+        args: ["tests"]
         language: python
         always_run: true
         pass_filenames: false

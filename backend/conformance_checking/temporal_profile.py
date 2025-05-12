@@ -8,6 +8,7 @@ on the discovered temporal profiles.
 from typing import Dict, List, Optional, Tuple, TypeAlias
 
 import pandas as pd
+from pandas.io.formats.style import Styler
 from pm4py.algo.conformance.temporal_profile import algorithm as tp_conformance  # type: ignore
 from pm4py.algo.discovery.temporal_profile import algorithm as tp_discovery  # type: ignore
 
@@ -165,7 +166,7 @@ class TemporalProfile:
         )
         return diagnostics_dataframe
 
-    def get_sorted_coloured_diagnostics(self) -> pd.DataFrame:
+    def get_sorted_coloured_diagnostics(self) -> Styler:  # type: ignore
         """Returns the diagnostics DataFrame with sorting and styling.
 
         Sorts the diagnostics DataFrame in descending order of the number of standard deviations (num_st_devs)
