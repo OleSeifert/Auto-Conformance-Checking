@@ -176,7 +176,7 @@ class TemporalProfile:
             - Red: If the value is greater than 1.0
 
         Returns:
-            pd.DataFrame: A styled DataFrame containing the sorted diagnostics with colour-coding.
+            pd.io.formats.style.Styler: A styled DataFrame containing the sorted diagnostics with colour-coding.
         """
         diagnostics_dataframe = self.get_conformance_diagnostics()
         sorted_diagnostics = diagnostics_dataframe.sort_values(  # type: ignore
