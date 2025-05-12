@@ -7,21 +7,23 @@ import {
   TextField,
   Typography,
   InputLabel,
+  FormHelperText,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const UploadPage = () => {
   const [apiUrl, setApiUrl] = useState('');
   const [token, setToken] = useState('');
-  const [poolName, setPoolName] = useState('');
-  const [logName, setLogName] = useState('');
+  const [dataPoolName, setDataPoolName] = useState('');
+  const [dataModelName, setDataModelName] = useState('');
+  const [dataTableName, setDataTableName] = useState(''); // optional
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
   const extractCSVHeaders = async (file) => {
     const text = await file.text();
     const firstLine = text.split(/\r?\n/)[0];
-    return firstLine.split(';').map((h) => h.trim()); //depends on the csv
+    return firstLine.split(';').map((h) => h.trim());
   };
 
   const extractXESAttributes = async (file) => {
@@ -32,17 +34,19 @@ const UploadPage = () => {
   };
 
   const handleUpload = async () => {
-    if (!apiUrl || !token || !poolName || !logName || !file) {
-      alert('All fields are required.');
+    if (!apiUrl || !token || !dataPoolName || !dataModelName || !file) {
+      alert('Please fill in all required fields.');
       return;
     }
 
     const fileExtension = file.name.split('.').pop().toLowerCase();
 
+    // Save to localStorage or pass via router state
     localStorage.setItem('apiUrl', apiUrl);
     localStorage.setItem('token', token);
-    localStorage.setItem('poolName', poolName);
-    localStorage.setItem('logName', logName);
+    localStorage.setItem('dataPoolName', dataPoolName);
+    localStorage.setItem('dataModelName', dataModelName);
+    localStorage.setItem('dataTableName', dataTableName || 'Activity Table'); // default fallback
     localStorage.setItem('filename', file.name);
 
     let headers = [];
@@ -79,17 +83,28 @@ const UploadPage = () => {
             onChange={(e) => setToken(e.target.value)}
           />
           <TextField
-            label="Pool Name"
+            label="Data Pool Name"
             fullWidth
-            value={poolName}
-            onChange={(e) => setPoolName(e.target.value)}
+            value={dataPoolName}
+            onChange={(e) => setDataPoolName(e.target.value)}
           />
           <TextField
-            label="Log/Table Name"
+            label="Data Model Name"
             fullWidth
-            value={logName}
-            onChange={(e) => setLogName(e.target.value)}
+            value={dataModelName}
+            onChange={(e) => setDataModelName(e.target.value)}
           />
+          <Box>
+            <TextField
+              label="Data Table Name (optional)"
+              fullWidth
+              value={dataTableName}
+              onChange={(e) => setDataTableName(e.target.value)}
+            />
+            <FormHelperText>
+              Leave blank to use the default name: <strong>ACTIVITIES</strong>
+            </FormHelperText>
+          </Box>
           <InputLabel>Upload .csv or .xes File</InputLabel>
           <input
             type="file"
