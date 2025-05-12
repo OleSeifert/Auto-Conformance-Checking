@@ -1,5 +1,4 @@
-"""The module provides a class to manage the connection to Celonis and perform
-operations on data models.
+"""The module provides a class to manage the connection to Celonis.
 
 It includes methods to create tables, add data frames, and retrieve data
 from Celonis via the help of PQL queries. It relies on the  PyCelonis
@@ -8,11 +7,15 @@ library.
 
 from collections.abc import MutableMapping
 from os import environ, path
+from typing import List
 
 from dotenv import load_dotenv, set_key
 from pandas import DataFrame as DF
 from pycelonis import get_celonis
+from pycelonis.ems.data_integration.data_model import DataModel
+from pycelonis.ems.data_integration.data_model_table import DataModelTable
 from pycelonis.ems.data_integration.data_model_table_column import DataModelTableColumn
+from pycelonis.ems.data_integration.data_pool import DataPool
 from pycelonis.pql.data_frame import DataFrame as pqlDataFrame
 from pycelonis_core.utils.errors import PyCelonisNotFoundError
 from saolapy.types import SeriesLike
@@ -33,13 +36,14 @@ class CelonisConnectionManager:
         data_pool_name: str,
         data_model_name: str,
         api_token: str = "",
-    ):
+    ) -> None:
         """Initialize the CelonisConnection object.
 
-        :param base_url: Base URL of the Celonis instance.
-        :param api_token: API token for the Celonis instance.
-        :param data_pool_name: Name of the data pool to use.
-        :param data_model_name: Name of the data model to use.
+        Args:
+            base_url: Base URL of the Celonis instance.
+            api_token: API token for the Celonis instance.
+            data_pool_name: Name of the data pool to use.
+            data_model_name: Name of the data model to use.
         """
         self.base_url = base_url
         self.data_pool_name = data_pool_name
@@ -53,12 +57,16 @@ class CelonisConnectionManager:
         self.data_pool = self.find_data_pool(data_pool_name)
         self.data_model = self.find_data_model(data_model_name)
 
-    def find_data_pool(self, data_pool_name: str):
+    def find_data_pool(self, data_pool_name: str) -> DataPool:
         """Find a data pool by name.
 
-        It will create a new one if it does not exist.
-        :param data_pool_name: Name of the data pool to find.
-        :return: Data pool object.
+        It will return the datapool if it is found or create a new one if it does not exist.
+
+        Args:
+            data_pool_name: Name of the data pool to find.
+
+        Returns:
+            Data pool object.
         """
         try:
             return self.celonis.data_integration.get_data_pools().find(data_pool_name)
@@ -66,12 +74,17 @@ class CelonisConnectionManager:
             print(f"Data pool '{data_pool_name}' not found. Creating a new one.")
             return self.celonis.data_integration.create_data_pool(self.data_pool_name)
 
-    def find_data_model(self, data_model_name: str):
+    def find_data_model(self, data_model_name: str) -> DataModel | None:
         """Find a data model by name.
 
-        It will create a new one if it does not exist.
-        :param data_model_name: Name of the data model to find.
-        :return: Data model object.
+        It will return the data model if it is found or create a new one if it does not exist.
+        If the data pool does not exist, it will return None.
+
+        Args:
+            data_model_name: Name of the data model to find.
+
+        Returns:
+            Data model object or None.
         """
         if not self.data_pool:
             print("Data pool does not exist. Cannot find data model.")
@@ -90,21 +103,24 @@ class CelonisConnectionManager:
         timestamp_column: str = "time:timestamp",
         drop_if_exists: bool = True,
         force: bool = True,
-    ):
+    ) -> None:
         """Add a table to the data pool.
 
-        :param table_name: Name of the table to add. Default is
-            "ACTIVITIES".
-        :param case_id_column: Name of the case ID column. Default is
-            "case:concept:name".
-        :param activity_column: Name of the activity column. Default is
-            "concept:name".
-        :param timestamp_column: Name of the timestamp column. Default
-            is "time:timestamp".
-        :param drop_if_exists: Whether to drop the table if it already
-            exists.
-        :param force: Whether to force the creation of the table.
-        :return: Table object if creation was successfull.
+        It will create a new table in the data pool and add it to the
+        data model. If the table already exists, it will delete it and
+        create a new one. The function then uses the specified columns
+        to create a process configuration in the data model and reload it.
+
+        Args:
+            table_name: Name of the table to create.
+            case_id_column: Name of the case ID column.
+            activity_column: Name of the activity column.
+            timestamp_column: Name of the timestamp column.
+            drop_if_exists: If True, drop the table if it already exists.
+            force: If True, force the creation of the table.
+
+        Returns:
+            None
         """
         if not self.data_pool or not self.data_model:
             print("Data pool or data model does not exist. Cannot create table.")
@@ -143,22 +159,36 @@ class CelonisConnectionManager:
         # Reload the data model to reflect the changes
         self.data_model.reload()
 
-    def add_dataframe(self, df: DF):
+    def add_dataframe(self, df: DF) -> None:
         """Add a DataFrame to the CelonisConnection object.
 
         Allows the data frame to be created outside of the class and
         then passed in. This is allows for more flexibility in how and
         when the data frame is created and used.
-        :param df: DataFrame to add.
+
+        Args:
+            df: DataFrame to add to the CelonisConnection object.
+
+        Returns:
+            None
         """
         self.data_frame = df
 
-    def get_basic_dataframe_from_celonis(self, table_name: str = "ACTIVITIES"):
+    def get_basic_dataframe_from_celonis(
+        self, table_name: str = "ACTIVITIES"
+    ) -> pqlDataFrame | None:
         """Get the dataframe from the data model in Celonis.
 
-        :param table_name: Name of the table to get. Default is
-            "ACTIVITIES".
-        :return: Table object.
+        It will create a new dataframe with the columns "Case_ID",
+        "Activity" and "Timestamp" from the table in the data model.
+        Returns None if the data model does not exist or the table is not
+        found.
+
+        Args:
+            table_name: Name of the table to get. Default is "ACTIVITIES".
+
+        Returns:
+            pqlDataFrame object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -185,11 +215,21 @@ class CelonisConnectionManager:
     def get_dataframe_from_celonis(
         self,
         pql_query: MutableMapping[str, SeriesLike | DataModelTableColumn],
-    ):
+    ) -> pqlDataFrame | None:
         """Get the dataframe from the data model in Celonis.
 
-        :param pql_query: PQL query used to filter the results.
-        :return: DataFrame object.
+        It will create a new dataframe with the columns from the PQL
+        query. The PQL query must be a dictionary with the column names
+        as keys and the column values as values. The column values can
+        be either a string or a DataModelTableColumn object. The
+        function will return None if the data model does not exist or
+        the PQL query is empty.
+
+        Args:
+            pql_query: PQL query used to define the dataframe.
+
+        Returns:
+            pqlDataFrame object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -203,12 +243,18 @@ class CelonisConnectionManager:
         )
         return df
 
-    def get_table(self, table_name: str = "ACTIVITIES"):
+    def get_table(self, table_name: str = "ACTIVITIES") -> DataModelTable | None:
         """Get the table from the data model in Celonis.
 
-        :param table_name: Name of the table to get. Default is
-            "ACTIVITIES".
-        :return: Table object.
+        It will return the table object if it is found or None if it
+        does not exist. The table name must be the same as the one used
+        in the data model.
+
+        Args:
+            table_name: Name of the table to get. Default is "ACTIVITIES".
+
+        Returns:
+            DataModelTable object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -219,12 +265,20 @@ class CelonisConnectionManager:
             print(f"Table {table_name} not found in data model.")
             return None
 
-    def get_table_columns(self, table_name: str = "ACTIVITIES"):
+    def get_table_columns(
+        self, table_name: str = "ACTIVITIES"
+    ) -> List[DataModelTableColumn] | None:
         """Get the columns of the table from the data model in Celonis.
 
-        :param table_name: Name of the table to get. Default is
-            "ACTIVITIES".
-        :return: Table object.
+        It will return the columns of the table object if it is found or
+        None if it does not exist. The table name must be the same as the
+        one used in the data model.
+
+        Args:
+            table_name: Name of the table to get. Default is "ACTIVITIES".
+
+        Returns:
+            List of DataModelTableColumn objects or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -236,34 +290,48 @@ class CelonisConnectionManager:
             print(f"Table {table_name} not found in data model.")
             return None
 
-    def get_data_pool(self):
+    def get_data_pool(self) -> DataPool | None:
         """Get the data pool object.
 
-        :return: Data pool object.
+        Returns:
+             Data pool object or None.
         """
         if not self.data_pool:
             print("Data pool does not exist. Cannot get data pool.")
             return None
         return self.data_pool
 
-    def get_data_model(self):
+    def get_data_model(self) -> DataModel | None:
         """Get the data model object.
 
-        :return: Data model object.
+        Returns:
+             Data model object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get data model.")
             return None
         return self.data_model
 
-    def acquire_api_token(self, api_token: str = ""):
+    def acquire_api_token(self, api_token: str = "") -> str:
         """Get the API token.
 
-        If the API token is not provided, it will be retrieved from the
-        environment variables.
-        :param api_token: API token to use. If not provided, it will be
-            retrieved from the environment variables.
-        :return: API token.
+        At first, it will check if the .env file exists and create it
+        if it does not. Then, it will load the environment variables
+        from the .env file. If the API token is provided, it will set
+        it in the environment variables. If the API token is not
+        provided, it will get it from the environment variables. If the
+        API token is not found in the environment variables, it will
+        raise a ValueError.
+
+        Args:
+            api_token: API token to set in the environment variables.
+
+        Returns:
+            API token as str.
+
+        Raises:
+            ValueError: If the API token is not found in the environment
+            variables.
         """
         # Check if the .env file exists and create it if it does not
         if not path.isfile(path.join(path.dirname(__file__), ".env")):
