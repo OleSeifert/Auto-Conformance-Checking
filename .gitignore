@@ -78,7 +78,7 @@ target/
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# IPython
+# IPythonarticles/dataset/Road_Traffic_Fine_Management_Process/12683249
 profile_default/
 ipython_config.py
 
@@ -172,3 +172,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+# Event logs as they are usually too big in size
+event_logs/*
