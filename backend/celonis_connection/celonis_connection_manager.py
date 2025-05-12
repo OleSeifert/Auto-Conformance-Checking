@@ -7,7 +7,6 @@ library.
 
 from collections.abc import MutableMapping
 from os import environ, path
-from typing import List
 
 from dotenv import load_dotenv, set_key
 from pandas import DataFrame as DF
@@ -17,6 +16,7 @@ from pycelonis.ems.data_integration.data_model_table import DataModelTable
 from pycelonis.ems.data_integration.data_model_table_column import DataModelTableColumn
 from pycelonis.ems.data_integration.data_pool import DataPool
 from pycelonis.pql.data_frame import DataFrame as pqlDataFrame
+from pycelonis_core.base.collection import CelonisCollection
 from pycelonis_core.utils.errors import PyCelonisNotFoundError
 from saolapy.types import SeriesLike
 
@@ -267,7 +267,7 @@ class CelonisConnectionManager:
 
     def get_table_columns(
         self, table_name: str = "ACTIVITIES"
-    ) -> List[DataModelTableColumn] | None:
+    ) -> CelonisCollection[DataModelTableColumn] | None:
         """Get the columns of the table from the data model in Celonis.
 
         It will return the columns of the table object if it is found or

@@ -36,7 +36,7 @@ if table_columns is not None:
     try:
         my_pql_query = {
             "Patient": table_columns.find("case:concept:name"),
-            "Blood Group": table_columns.find("org:group"),
+            "Blood Group": table_columns.find("org:resource"),
         }
     except PyCelonisNotFoundError:
         print("Table columns not found in data model.")
@@ -54,7 +54,7 @@ my_3_pql_query = {
 
 
 # Example for getting a dataframe from Celonis with a generated PQL query
-dataframe = my_celonis.get_dataframe_from_celonis(my_3_pql_query)  # type: ignore
+dataframe = my_celonis.get_dataframe_from_celonis(my_pql_query)  # type: ignore
 
 # Example for getting a dataframe from Celonis with a default PQL query
 # Resulting in a "classic" event log with the columns "Case_ID", "Activity", and "Timestamp"
