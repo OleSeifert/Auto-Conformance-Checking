@@ -3,5 +3,6 @@
 This module defines the FastAPI routes for managing logs, including
 retrieving logs, filtering logs by date, and deleting logs. It also
 includes utility functions for handling log data and formatting
-responses.
+responses. In case of and log upload, it also includes the necessary
+metadata to create a celonis connection.
 """
