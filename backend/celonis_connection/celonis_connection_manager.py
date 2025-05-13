@@ -179,8 +179,8 @@ class CelonisConnectionManager:
     ) -> pqlDataFrame | None:
         """Get the dataframe from the data model in Celonis.
 
-        It will create a new dataframe with the columns "Case_ID",
-        "Activity" and "Timestamp" from the table in the data model.
+        It will create a new dataframe with the columns "case:concept:name",
+        "concept:name" and "time:timestamp" from the table in the data model.
         Returns None if the data model does not exist or the table is not
         found.
 
@@ -203,9 +203,9 @@ class CelonisConnectionManager:
 
         df = pqlDataFrame(
             {
-                "Case_ID": activities_columns.find("case:concept:name"),
-                "Activity": activities_columns.find("concept:name"),
-                "Timestamp": activities_columns.find("time:timestamp"),
+                "case:concept:name": activities_columns.find("case:concept:name"),
+                "concept:name": activities_columns.find("concept:name"),
+                "time:timestamp": activities_columns.find("time:timestamp"),
             },
             data_model=self.data_model,
         )

@@ -5,7 +5,8 @@ dataframe to the data model, create a table, and get a dataframe from
 Celonis.
 """
 
-from celonis_connection_manager import CelonisConnectionManager
+from celonis_connection.celonis_connection_manager import CelonisConnectionManager
+from conformance_checking.log_skeleton import LogSkeleton
 from pandas import DataFrame as DF
 from pm4py.objects.conversion.log.variants import (  # type: ignore
     to_data_frame as log_to_df,
@@ -60,5 +61,10 @@ dataframe = my_celonis.get_dataframe_from_celonis(my_pql_query)  # type: ignore
 # Resulting in a "classic" event log with the columns "Case_ID", "Activity", and "Timestamp"
 # dataframe = my_celonis.get_basic_dataframe_from_celonis()
 
+dataframe = my_celonis.get_basic_dataframe_from_celonis()
 if dataframe is not None:
-    print(dataframe.head())
+    ls = LogSkeleton(
+        dataframe.to_pandas(),
+    )
+    ls.compute_skeleton()
+    print(ls.get_activity_frequencies())
