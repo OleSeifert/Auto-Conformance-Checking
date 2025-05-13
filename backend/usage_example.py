@@ -64,7 +64,7 @@ dataframe = my_celonis.get_dataframe_from_celonis(my_pql_query)  # type: ignore
 dataframe = my_celonis.get_basic_dataframe_from_celonis()
 if dataframe is not None:
     ls = LogSkeleton(
-        dataframe.to_pandas(),
+        dataframe,
     )
     ls.compute_skeleton()
     print(ls.get_activity_frequencies())

@@ -176,7 +176,7 @@ class CelonisConnectionManager:
 
     def get_basic_dataframe_from_celonis(
         self, table_name: str = "ACTIVITIES"
-    ) -> pqlDataFrame | None:
+    ) -> DF | None:
         """Get the dataframe from the data model in Celonis.
 
         It will create a new dataframe with the columns "case:concept:name",
@@ -188,7 +188,7 @@ class CelonisConnectionManager:
             table_name: Name of the table to get. Default is "ACTIVITIES".
 
         Returns:
-            pqlDataFrame object or None.
+            DataFrame object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -210,12 +210,12 @@ class CelonisConnectionManager:
             data_model=self.data_model,
         )
 
-        return df
+        return df.to_pandas()
 
     def get_dataframe_from_celonis(
         self,
         pql_query: MutableMapping[str, SeriesLike | DataModelTableColumn],
-    ) -> pqlDataFrame | None:
+    ) -> DF | None:
         """Get the dataframe from the data model in Celonis.
 
         It will create a new dataframe with the columns from the PQL
@@ -229,7 +229,7 @@ class CelonisConnectionManager:
             pql_query: PQL query used to define the dataframe.
 
         Returns:
-            pqlDataFrame object or None.
+            DataFrame object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -241,7 +241,7 @@ class CelonisConnectionManager:
             pql_query,
             data_model=self.data_model,
         )
-        return df
+        return df.to_pandas()
 
     def get_table(self, table_name: str = "ACTIVITIES") -> DataModelTable | None:
         """Get the table from the data model in Celonis.
