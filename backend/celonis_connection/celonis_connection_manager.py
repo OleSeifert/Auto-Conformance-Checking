@@ -334,6 +334,7 @@ class CelonisConnectionManager:
             variables.
         """
         # Check if the .env file exists and create it if it does not
+        # TODO: The .env file should be created in the root directory of the project and not in this subdirectory
         if not path.isfile(path.join(path.dirname(__file__), ".env")):
             open(path.join(path.dirname(__file__), ".env"), "w").close()
 

@@ -6,3 +6,64 @@ includes utility functions for handling log data and formatting
 responses. In case of and log upload, it also includes the necessary
 metadata to create a celonis connection.
 """
+
+import json
+from typing import Any, Dict
+
+import pandas as pd
+import pm4py  # type: ignore
+import pm4py.objects.conversion.log.variants as log_variants  # type: ignore
+from fastapi import APIRouter, Depends, Form, UploadFile
+
+from backend.api.celonis import get_celonis_connection
+from backend.celonis_connection.celonis_connection_manager import (
+    CelonisConnectionManager,
+)
+
+router = APIRouter(prefix="/api/logs", tags=["Logs"])
+
+
+@router.post("/upload-log")
+async def upload_log(
+    file: UploadFile,
+    metadata: str = Form(...),
+    celonis_conn: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> Dict[str, str]:
+    """Uploads an event log file to Celonis.
+
+    Args:
+        file: The event log to be uploaded. This should be a .csv of .xes file.
+        metadata (optional): The metadata required for the Celonis connection.
+          Defaults to Form(...).
+        celonis_conn (optional): The dependency injection for the celonis
+          connection. User does not need to provide this. Defaults to
+          Depends(get_celonis_connection).
+
+    Returns:
+        A dictionary containing a message indicating the success of the
+        operation.
+    """
+    # Parse metadata
+    meta: Dict[Any, Any] = json.loads(metadata)
+
+    # Get uploaded content
+    content = await file.read()
+
+    # Assume xes file
+    # TODO: Add a check for the file type + handle csv
+    result = pm4py.read_xes(content)  # type: ignore
+    result: pd.DataFrame = log_variants.to_data_frame.apply(result)  # type: ignore
+
+    # Access metadata
+    try:
+        data_table_name = meta["dataTableName"]
+    except KeyError:
+        data_table_name = None
+
+    # Upload to Celonis
+    celonis_conn.add_dataframe(result)
+    if data_table_name is not None:
+        celonis_conn.create_table(table_name=data_table_name)
+    else:
+        celonis_conn.create_table()
+    return {"Message": "Table created successfully"}
