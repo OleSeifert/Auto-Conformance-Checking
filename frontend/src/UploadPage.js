@@ -16,7 +16,7 @@ const UploadPage = () => {
   const [token, setToken] = useState('');
   const [dataPoolName, setDataPoolName] = useState('');
   const [dataModelName, setDataModelName] = useState('');
-  const [dataTableName, setDataTableName] = useState(''); // optional
+  const [dataTableName, setDataTableName] = useState('');
   const [file, setFile] = useState(null);
   const navigate = useNavigate();
 
@@ -39,23 +39,30 @@ const UploadPage = () => {
       return;
     }
 
-    const fileExtension = file.name.split('.').pop().toLowerCase();
-
-    // Save to localStorage or pass via router state
     localStorage.setItem('apiUrl', apiUrl);
     localStorage.setItem('token', token);
     localStorage.setItem('dataPoolName', dataPoolName);
     localStorage.setItem('dataModelName', dataModelName);
-    localStorage.setItem('dataTableName', dataTableName || 'Activity Table'); // default fallback
+    localStorage.setItem('dataTableName', dataTableName || 'ACTIVITIES');
     localStorage.setItem('filename', file.name);
+
+    const fileExtension = file.name.split('.').pop().toLowerCase();
 
     let headers = [];
     if (fileExtension === 'csv') {
       headers = await extractCSVHeaders(file);
-      navigate('/mapping', { state: { headers } });
+      navigate('/mapping', {
+        state: { headers, file } // pass file and headers
+      });
     } else if (fileExtension === 'xes') {
       headers = await extractXESAttributes(file);
-      navigate('/results', { state: { headers } });
+      navigate('/results', {
+        state: {
+          headers,
+          file,
+          analysis_type: 'xes'
+        }
+      });
     } else {
       alert('Unsupported file type. Please upload a .csv or .xes file.');
     }
@@ -102,7 +109,7 @@ const UploadPage = () => {
               onChange={(e) => setDataTableName(e.target.value)}
             />
             <FormHelperText>
-              Leave blank to use the default name: <strong>ACTIVITIES</strong>
+              Leave blank to use the default name: <strong>Activity Table</strong>
             </FormHelperText>
           </Box>
           <InputLabel>Upload .csv or .xes File</InputLabel>
