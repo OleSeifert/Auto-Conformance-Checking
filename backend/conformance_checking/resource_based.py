@@ -4,15 +4,28 @@ This module defines the ResourceBased class which uses PM4Py to discover
 resource-based conformance checking metrics from event logs.
 """
 
-from typing import Dict, Optional, Tuple, TypeAlias
+from typing import Any, Dict, Optional, Protocol, Tuple, TypeAlias
 
+import numpy as np
 import pandas as pd
 import pm4py  # type: ignore
 
 HandoverOfWorkType: TypeAlias = Dict[Tuple[str, str], float]
 SubcontractingType: TypeAlias = Dict[Tuple[str, str], float]
 WorkingTogetherType: TypeAlias = Dict[Tuple[str, str], float]
-SimilarActivitiesType: TypeAlias = Dict[Tuple[str, str], float]
+SimilarActivitiesType: TypeAlias = Dict[Tuple[str, str], np.float64]
+
+
+class SNAProtocol(Protocol):
+    """Protocol for Social Network Analysis (SNA) metrics.
+
+    This protocol defines the structure of SNA metrics used in the
+    ResourceBased class. It includes attributes for the connections and
+    whether the metric is directed.
+    """
+
+    connections: Dict[Tuple[str, str], Any]
+    is_directed: bool
 
 
 class ResourceBased:
@@ -52,10 +65,10 @@ class ResourceBased:
               to None.
         """
         self.log = log
-        self._handover_of_work: Optional[HandoverOfWorkType] = None
-        self._subcontracting: Optional[SubcontractingType] = None
-        self._working_together: Optional[WorkingTogetherType] = None
-        self._similar_activities: Optional[object] = None
+        self._handover_of_work: Optional[SNAProtocol] = None
+        self._subcontracting: Optional[SNAProtocol] = None
+        self._working_together: Optional[SNAProtocol] = None
+        self._similar_activities: Optional[SNAProtocol] = None
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
@@ -76,7 +89,7 @@ class ResourceBased:
         Returns:
             None.
         """
-        self._handover_of_work = pm4py.discover_handover_of_work_network(self.log)  # type: ignore
+        self._handover_of_work = pm4py.discover_handover_of_work_network(self.log)
 
     def get_handover_of_work_values(self) -> HandoverOfWorkType:
         """Returns the Handover of Work metric.
@@ -94,25 +107,7 @@ class ResourceBased:
                 "Handover of Work values have not been calculated yet. "
                 "Please call compute_handover_of_work() first."
             )
-        return self._handover_of_work.connections  # type: ignore
-
-    def get_handover_of_work_visualization(self) -> None:
-        """Visualizes the Handover of Work metric.
-
-        Renders a graph showing the connections between individuals.
-        The heavier the connection, the more times the first individual
-        is followed by the second individual in the execution of a business
-        process.
-
-        Returns:
-            None.
-        """
-        if self._handover_of_work is None:
-            raise ValueError(
-                "Handover of Work values have not been calculated yet. "
-                "Please call compute_handover_of_work() first."
-            )
-        pm4py.view_sna(self._handover_of_work)  # type: ignore
+        return self._handover_of_work.connections
 
     def is_handover_of_work_directed(self) -> bool:
         """Checks if the Handover of Work metric is directed.
@@ -125,7 +120,7 @@ class ResourceBased:
                 "Handover of Work values have not been calculated yet. "
                 "Please call compute_handover_of_work() first."
             )
-        return self._handover_of_work.is_directed  # type: ignore
+        return self._handover_of_work.is_directed
 
     def compute_subcontracting(self) -> None:
         """Calculates the Subcontracting metric.
@@ -140,7 +135,7 @@ class ResourceBased:
         Returns:
             None.
         """
-        self._subcontracting = pm4py.discover_subcontracting_network(self.log)  # type: ignore
+        self._subcontracting = pm4py.discover_subcontracting_network(self.log)
 
     def get_subcontracting_values(self) -> SubcontractingType:
         """Returns the Subcontracting metric.
@@ -158,25 +153,7 @@ class ResourceBased:
                 "Subcontracting values have not been calculated yet. "
                 "Please call compute_subcontracting() first."
             )
-        return self._subcontracting.connections  # type: ignore
-
-    def get_subcontracting_visualization(self) -> None:
-        """Visualizes the Subcontracting metric.
-
-        Renders a graph showing the connections between individuals.
-        The heavier the connection, the more times the first individual
-        is interleaved by the second individual in the execution of a business
-        process.
-
-        Returns:
-            None.
-        """
-        if self._subcontracting is None:
-            raise ValueError(
-                "Subcontracting values have not been calculated yet. "
-                "Please call compute_subcontracting() first."
-            )
-        pm4py.view_sna(self._subcontracting)  # type: ignore
+        return self._subcontracting.connections
 
     def is_subcontracting_directed(self) -> bool:
         """Checks if the Subcontracting metric is directed.
@@ -189,7 +166,7 @@ class ResourceBased:
                 "Subcontracting values have not been calculated yet. "
                 "Please call compute_subcontracting() first."
             )
-        return self._subcontracting.is_directed  # type: ignore
+        return self._subcontracting.is_directed
 
     def compute_working_together(self) -> None:
         """Calculates the Working Together metric.
@@ -203,7 +180,7 @@ class ResourceBased:
         Returns:
             None.
         """
-        self._working_together = pm4py.discover_working_together_network(self.log)  # type: ignore
+        self._working_together = pm4py.discover_working_together_network(self.log)
 
     def get_working_together_values(self) -> WorkingTogetherType:
         """Returns the Working Together metric.
@@ -220,24 +197,7 @@ class ResourceBased:
                 "Working Together values have not been calculated yet. "
                 "Please call compute_working_together() first."
             )
-        return self._working_together.connections  # type: ignore
-
-    def get_working_together_visualization(self) -> None:
-        """Visualizes the Working Together metric.
-
-        Renders a graph showing the connections between individuals.
-        The heavier the connection, the more times the two individuals
-        worked together to resolve a process instance.
-
-        Returns:
-            None.
-        """
-        if self._working_together is None:
-            raise ValueError(
-                "Working Together values have not been calculated yet. "
-                "Please call compute_working_together() first."
-            )
-        pm4py.view_sna(self._working_together)  # type: ignore
+        return self._working_together.connections
 
     def is_working_together_directed(self) -> bool:
         """Checks if the Working Together metric is directed.
@@ -250,7 +210,7 @@ class ResourceBased:
                 "Working Together values have not been calculated yet. "
                 "Please call compute_working_together() first."
             )
-        return self._working_together.is_directed  # type: ignore
+        return self._working_together.is_directed
 
     def compute_similar_activities(self) -> None:
         """Calculates the Similar Activities metric.
@@ -282,24 +242,7 @@ class ResourceBased:
                 "Similar Activities values have not been calculated yet. "
                 "Please call compute_similar_activities() first."
             )
-        return self._similar_activities.connections  # type: ignore
-
-    def get_similar_activities_visualization(self) -> None:
-        """Visualizes the Similar Activities metric.
-
-        Renders a graph showing the connections between individuals.
-        The heavier the connection, the more similar the work patterns
-        are between the two individuals.
-
-        Returns:
-            None.
-        """
-        if self._similar_activities is None:
-            raise ValueError(
-                "Similar Activities values have not been calculated yet. "
-                "Please call compute_similar_activities() first."
-            )
-        pm4py.view_sna(self._similar_activities)  # type: ignore
+        return self._similar_activities.connections
 
     def is_similar_activities_directed(self) -> bool:
         """Checks if the Similar Activities metric is directed.
@@ -312,7 +255,7 @@ class ResourceBased:
                 "Similar Activities values have not been calculated yet. "
                 "Please call compute_similar_activities() first."
             )
-        return self._similar_activities.is_directed  # type: ignore
+        return self._similar_activities.is_directed
 
     # **************** Role Discovery ****************
 
