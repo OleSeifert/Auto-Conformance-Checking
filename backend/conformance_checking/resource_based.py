@@ -1,69 +1,318 @@
-"""Contains the resource-based conformance checking part.
+"""Contains functionality for resource-based conformance checking.
 
-The implementation is based on PM4Py.
+This module defines the ResourceBased class which uses PM4Py to discover
+resource-based conformance checking metrics from event logs.
 """
 
-from typing import Optional
+from typing import Dict, Optional, Tuple, TypeAlias
 
 import pandas as pd
+import pm4py  # type: ignore
+
+HandoverOfWorkType: TypeAlias = Dict[Tuple[str, str], float]
+SubcontractingType: TypeAlias = Dict[Tuple[str, str], float]
+WorkingTogetherType: TypeAlias = Dict[Tuple[str, str], float]
+SimilarActivitiesType: TypeAlias = Dict[Tuple[str, str], float]
 
 
 class ResourceBased:
-    """The ResourceBased class.
-
-    It is used for resource-based conformance checking.
+    """Represents the resource-based conformance checking metrics of a log.
 
     Attributes:
-        log: The event log as a pandas DataFrame.
-        resource_col: The name of the resource column.
+        log: The event log.
+        case_id_col (optional): The name of the Case ID column. Only needed if
+            the log is read as a csv file.
+        activity_col (optional): The name of the Activity column. Only needed if
+            the log is read as a csv file.
+        timestamp_col (optional): The name of the Timestamp column. Only needed if
+            the log is read as a csv file.
+        resource_col (optional): The name of the Resource column. Only needed if
+            the log is read as a csv file.
     """
 
-    def __init__(self, log: pd.DataFrame, resource_col: Optional[str] = None) -> None:
-        """Initializes the ResourceBased class.
+    def __init__(
+        self,
+        log: pd.DataFrame,
+        case_id_col: Optional[str] = None,
+        activity_col: Optional[str] = None,
+        timestamp_col: Optional[str] = None,
+        resource_col: Optional[str] = None,
+    ) -> None:
+        """Initializes the ResourceBased class with an event log.
 
         Args:
-            log: The event log as a pandas DataFrame.
-            resource_col (optional): The name of the resource column. Defaults
+            log: The event log.
+            case_id_col (optional): The name of the Case ID column. Defaults
+              to None.
+            activity_col (optional): The name of the Activity column. Defaults
+              to None.
+            timestamp_col (optional): The name of the Timestamp column. Defaults
+              to None.
+            resource_col (optional): The name of the Resource column. Defaults
               to None.
         """
         self.log = log
-        self.resource_col = resource_col  # not sure if needed
+        self._handover_of_work: Optional[HandoverOfWorkType] = None
+        self._subcontracting: Optional[SubcontractingType] = None
+        self._working_together: Optional[WorkingTogetherType] = None
+        self._similar_activities: Optional[object] = None
+        self.case_id_col: Optional[str] = case_id_col
+        self.activity_col: Optional[str] = activity_col
+        self.timestamp_col: Optional[str] = timestamp_col
+        self.resource_col: Optional[str] = resource_col
 
     # **************** Social Network Analysis ****************
 
-    def get_handover_of_work(self):
-        """Calculates the handover of work.
+    def compute_handover_of_work(self) -> None:
+        """Calculates the Handover of Work metric.
 
         The Handover of Work metric measures how many times an
         individual is followed by another individual in the execution of
-        a business process.
+        a business process. It is stored in a dictionary where the keys are
+        tuples of two individuals and the values are the number of times
+        the first individual is followed by the second individual
+        in the execution of a business process.
+
+        Returns:
+            None.
         """
-        pass
+        self._handover_of_work = pm4py.discover_handover_of_work_network(self.log)  # type: ignore
 
-    def get_subcontracting(self):
-        """Calculates the subcontracting.
+    def get_handover_of_work_values(self) -> HandoverOfWorkType:
+        """Returns the Handover of Work metric.
 
-        The subcontracting metric calculates how many times the work of
+        The Handover of Work metric is a dictionary where the keys are
+        tuples of two individuals and the values are the number of times
+        the first individual is followed by the second individual
+        in the execution of a business process.
+
+        Returns:
+            HandoverOfWorkType: The Handover of Work metric.
+        """
+        if self._handover_of_work is None:
+            raise ValueError(
+                "Handover of Work values have not been calculated yet. "
+                "Please call compute_handover_of_work() first."
+            )
+        return self._handover_of_work.connections  # type: ignore
+
+    def get_handover_of_work_visualization(self) -> None:
+        """Visualizes the Handover of Work metric.
+
+        Renders a graph showing the connections between individuals.
+        The heavier the connection, the more times the first individual
+        is followed by the second individual in the execution of a business
+        process.
+
+        Returns:
+            None.
+        """
+        if self._handover_of_work is None:
+            raise ValueError(
+                "Handover of Work values have not been calculated yet. "
+                "Please call compute_handover_of_work() first."
+            )
+        pm4py.view_sna(self._handover_of_work)  # type: ignore
+
+    def is_handover_of_work_directed(self) -> bool:
+        """Checks if the Handover of Work metric is directed.
+
+        Returns:
+            bool: True if the Handover of Work metric is directed, False otherwise.
+        """
+        if self._handover_of_work is None:
+            raise ValueError(
+                "Handover of Work values have not been calculated yet. "
+                "Please call compute_handover_of_work() first."
+            )
+        return self._handover_of_work.is_directed  # type: ignore
+
+    def compute_subcontracting(self) -> None:
+        """Calculates the Subcontracting metric.
+
+        The Subcontracting metric calculates how many times the work of
         an individual is interleaved by the work of another individual,
-        only to eventually “return” to the original individual.
-        """
-        pass
+        only to eventually “return” to the original individual. It is stored
+        in a dictionary where the keys are tuples of two individuals and
+        the values are the number of times the first individual is  interleaved
+        by the second individual in the execution of a business process.
 
-    def get_working_together(self):
-        """Calculates the working together.
+        Returns:
+            None.
+        """
+        self._subcontracting = pm4py.discover_subcontracting_network(self.log)  # type: ignore
+
+    def get_subcontracting_values(self) -> SubcontractingType:
+        """Returns the Subcontracting metric.
+
+        The Subcontracting metric is a dictionary where the keys are
+        tuples of two individuals and the values are the number of times
+        the first individual is interleaved by the second individual
+        in the execution of a business process.
+
+        Returns:
+            SubcontractingType: The Subcontracting metric.
+        """
+        if self._subcontracting is None:
+            raise ValueError(
+                "Subcontracting values have not been calculated yet. "
+                "Please call compute_subcontracting() first."
+            )
+        return self._subcontracting.connections  # type: ignore
+
+    def get_subcontracting_visualization(self) -> None:
+        """Visualizes the Subcontracting metric.
+
+        Renders a graph showing the connections between individuals.
+        The heavier the connection, the more times the first individual
+        is interleaved by the second individual in the execution of a business
+        process.
+
+        Returns:
+            None.
+        """
+        if self._subcontracting is None:
+            raise ValueError(
+                "Subcontracting values have not been calculated yet. "
+                "Please call compute_subcontracting() first."
+            )
+        pm4py.view_sna(self._subcontracting)  # type: ignore
+
+    def is_subcontracting_directed(self) -> bool:
+        """Checks if the Subcontracting metric is directed.
+
+        Returns:
+            bool: True if the Subcontracting metric is directed, False otherwise.
+        """
+        if self._subcontracting is None:
+            raise ValueError(
+                "Subcontracting values have not been calculated yet. "
+                "Please call compute_subcontracting() first."
+            )
+        return self._subcontracting.is_directed  # type: ignore
+
+    def compute_working_together(self) -> None:
+        """Calculates the Working Together metric.
 
         The Working Together metric calculates how many times two
-        individuals work together to resolve a process instance.
-        """
-        pass
+        individuals work together to resolve a process instance. It is stored
+        in a dictionary where the keys are tuples of two individuals and
+        the values are the number of times the two individuals worked
+        together to resolve a process instance.
 
-    def get_similar_activities(self):
-        """Calculates the similar activities.
+        Returns:
+            None.
+        """
+        self._working_together = pm4py.discover_working_together_network(self.log)  # type: ignore
+
+    def get_working_together_values(self) -> WorkingTogetherType:
+        """Returns the Working Together metric.
+
+        The Working Together metric is a dictionary where the keys are
+        tuples of two individuals and the values are the number of times
+        the two individuals worked together to resolve a process instance.
+
+        Returns:
+            WorkingTogetherType: The Working Together metric.
+        """
+        if self._working_together is None:
+            raise ValueError(
+                "Working Together values have not been calculated yet. "
+                "Please call compute_working_together() first."
+            )
+        return self._working_together.connections  # type: ignore
+
+    def get_working_together_visualization(self) -> None:
+        """Visualizes the Working Together metric.
+
+        Renders a graph showing the connections between individuals.
+        The heavier the connection, the more times the two individuals
+        worked together to resolve a process instance.
+
+        Returns:
+            None.
+        """
+        if self._working_together is None:
+            raise ValueError(
+                "Working Together values have not been calculated yet. "
+                "Please call compute_working_together() first."
+            )
+        pm4py.view_sna(self._working_together)  # type: ignore
+
+    def is_working_together_directed(self) -> bool:
+        """Checks if the Working Together metric is directed.
+
+        Returns:
+            bool: True if the Working Together metric is directed, False otherwise.
+        """
+        if self._working_together is None:
+            raise ValueError(
+                "Working Together values have not been calculated yet. "
+                "Please call compute_working_together() first."
+            )
+        return self._working_together.is_directed  # type: ignore
+
+    def compute_similar_activities(self) -> None:
+        """Calculates the Similar Activities metric.
 
         The Similar Activities metric calculates how similar the work
-        patterns are between two individuals.
+        patterns are between two individuals. It is stored in a dictionary
+        where the keys are tuples of two individuals and the values are the
+        similarity score between the two individuals.
+
+        Returns:
+            None.
         """
-        pass
+        self._similar_activities = pm4py.discover_activity_based_resource_similarity(
+            self.log
+        )
+
+    def get_similar_activities_values(self) -> SimilarActivitiesType:
+        """Returns the Similar Activities metric.
+
+        The Similar Activities metric is a dictionary where the keys are
+        tuples of two individuals and the values are the similarity score
+        between the two individuals.
+
+        Returns:
+            SimilarActivitiesType: The Similar Activities metric.
+        """
+        if self._similar_activities is None:
+            raise ValueError(
+                "Similar Activities values have not been calculated yet. "
+                "Please call compute_similar_activities() first."
+            )
+        return self._similar_activities.connections  # type: ignore
+
+    def get_similar_activities_visualization(self) -> None:
+        """Visualizes the Similar Activities metric.
+
+        Renders a graph showing the connections between individuals.
+        The heavier the connection, the more similar the work patterns
+        are between the two individuals.
+
+        Returns:
+            None.
+        """
+        if self._similar_activities is None:
+            raise ValueError(
+                "Similar Activities values have not been calculated yet. "
+                "Please call compute_similar_activities() first."
+            )
+        pm4py.view_sna(self._similar_activities)  # type: ignore
+
+    def is_similar_activities_directed(self) -> bool:
+        """Checks if the Similar Activities metric is directed.
+
+        Returns:
+            bool: True if the Similar Activities metric is directed, False otherwise.
+        """
+        if self._similar_activities is None:
+            raise ValueError(
+                "Similar Activities values have not been calculated yet. "
+                "Please call compute_similar_activities() first."
+            )
+        return self._similar_activities.is_directed  # type: ignore
 
     # **************** Role Discovery ****************
 
