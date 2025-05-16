@@ -9,6 +9,9 @@ from typing import Any, Dict, List, Optional, Protocol, Tuple, TypeAlias
 import numpy as np
 import pandas as pd
 import pm4py  # type: ignore
+from pm4py.algo.organizational_mining.resource_profiles import (  # type: ignore
+    algorithm as rb_algorithm,  # type: ignore
+)
 
 HandoverOfWorkType: TypeAlias = Dict[Tuple[str, str], float]
 SubcontractingType: TypeAlias = Dict[Tuple[str, str], float]
@@ -344,98 +347,247 @@ class ResourceBased:
 
     # **************** Resource Profiles ****************
 
-    def get_number_of_distinct_activities(self):
+    def get_number_of_distinct_activities(
+        self, start_time: str, end_time: str, resource: str
+    ) -> int:
         """Calculates the number of distinct activities.
 
         Number of distinct activities done by a resource in a given time
         interval [t1, t2).
-        """
-        pass
 
-    def get_activity_frequency(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the number of
+                distinct activities.
+
+        Returns:
+            int: The number of distinct activities done by the resource in the
+                given time interval.
+        """
+        return rb_algorithm.distinct_activities(
+            self.log, start_time, end_time, resource
+        )
+
+    def get_activity_frequency(
+        self, start_time: str, end_time: str, resource: str, activity: str
+    ) -> float:
         """Calculates the activity frequency.
 
         Fraction of completions of a given activity a by a given
         resource r during a given time slot [t1, t2), with respect to
         the total number of activity completions by resource r during
         [t1, t2).
-        """
-        pass
 
-    def get_activity_completions(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the activity
+                frequency.
+            activity (str): The activity for which to calculate the frequency.
+
+        Returns:
+            float: The activity frequency of the given activity by the resource
+                in the given time interval.
+        """
+        return rb_algorithm.activity_frequency(
+            self.log, start_time, end_time, resource, activity
+        )
+
+    def get_activity_completions(
+        self, start_time: str, end_time: str, resource: str
+    ) -> int:
         """Calculates the activity completions.
 
         The number of activity instances completed by a given resource
         during a given time slot.
-        """
-        pass
 
-    def get_case_completions(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the activity
+                completions.
+
+        Returns:
+            int: The number of activity instances completed by the resource
+                in the given time interval.
+        """
+        return rb_algorithm.activity_completions(
+            self.log, start_time, end_time, resource
+        )
+
+    def get_case_completions(
+        self, start_time: str, end_time: str, resource: str
+    ) -> int:
         """Calculates the case completion.
 
         The number of cases completed during a given time slot in which
         a given resource was involved.
-        """
-        pass
 
-    def get_fraction_case_completion(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the case
+                completions.
+
+        Returns:
+            int: The number of cases completed by the resource in the
+                given time interval.
+        """
+        return rb_algorithm.case_completions(self.log, start_time, end_time, resource)
+
+    def get_fraction_case_completions(
+        self, start_time: str, end_time: str, resource: str
+    ) -> float:
         """Calculates the fraction case completion.
 
         The fraction of cases completed during a given time slot in
         which a given resource was involved with respect to the total
         number of cases completed during the time slot.
-        """
-        pass
 
-    def get_average_workload(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the
+                fraction case completions.
+
+        Returns:
+            float: The fraction of cases completed by the resource in the
+                given time interval.
+        """
+        return rb_algorithm.fraction_case_completions(
+            self.log, start_time, end_time, resource
+        )
+
+    def get_average_workload(
+        self, start_time: str, end_time: str, resource: str
+    ) -> float:
         """Calculates the average workload.
 
         The average number of activities started by a given resource but
         not completed at a moment in time.
-        """
-        pass
 
-    def get_multitasking(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the average
+                workload.
+
+        Returns:
+            float: The average workload of the given resource in the
+                given time interval.
+        """
+        return rb_algorithm.average_workload(self.log, start_time, end_time, resource)
+
+    def get_multitasking(self, start_time: str, end_time: str, resource: str) -> float:
         """Calculates the multitasking.
 
         The fraction of active time during which a given resource is
         involved in more than one activity with respect to the
         resource's active time.
-        """
-        pass
 
-    def get_average_activity_duration(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the
+                multitasking.
+
+        Returns:
+            float: The multitasking of the given resource in the
+                given time interval.
+        """
+        return rb_algorithm.multitasking(self.log, start_time, end_time, resource)
+
+    def get_average_activity_duration(
+        self, start_time: str, end_time: str, resource: str, activity: str
+    ) -> float:
         """Calculates the average activity duration.
 
         The average duration of instances of a given activity completed
         during a given time slot by a given resource.
-        """
-        pass
 
-    def get_average_case_duration(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the average
+                activity duration.
+            activity (str): The activity for which to calculate the average
+                duration.
+
+        Returns:
+            float: The average duration of the given activity by the resource
+                in the given time interval.
+        """
+        return rb_algorithm.average_duration_activity(
+            self.log, start_time, end_time, resource, activity
+        )
+
+    def get_average_case_duration(
+        self, start_time: str, end_time: str, resource: str
+    ) -> float:
         """Calculates the average case duration.
 
         The average duration of cases completed during a given time slot
         in which a given resource was involved.
-        """
-        pass
 
-    def get_interaction_two_resources(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the average
+                case duration.
+
+        Returns:
+            float: The average duration of cases completed by the resource
+                in the given time interval.
+        """
+        return rb_algorithm.average_case_duration(
+            self.log, start_time, end_time, resource
+        )
+
+    def get_interaction_two_resources(
+        self, start_time: str, end_time: str, resource1: str, resource2: str
+    ) -> float:
         """Calculates the interaction between two resources.
 
         The number of cases completed during a given time slot in which
         two given resources were involved.
-        """
-        pass
 
-    def get_social_position(self):
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource1 (str): The first resource for which to calculate the
+                interaction.
+            resource2 (str): The second resource for which to calculate the
+                interaction.
+
+        Returns:
+            float: The interaction between the two resources in the
+                given time interval.
+        """
+        return rb_algorithm.interaction_two_resources(
+            self.log, start_time, end_time, resource1, resource2
+        )
+
+    def get_social_position(
+        self, start_time: str, end_time: str, resource: str
+    ) -> float:
         """Calculates the social position.
 
         The fraction of resources involved in the same cases with a
         given resource during a given time slot with respect to the
         total number of resources active during the time slot.
+
+        Args:
+            start_time (str): The start time of the interval.
+            end_time (str): The end time of the interval.
+            resource (str): The resource for which to calculate the
+                social position.
+
+        Returns:
+            float: The social position of the given resource in the
+                given time interval.
         """
-        pass
+        return rb_algorithm.social_position(self.log, start_time, end_time, resource)
 
     # **************** Organizational Mining ****************
 
