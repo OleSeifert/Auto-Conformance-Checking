@@ -9,8 +9,11 @@ from typing import Any, Dict, List, Optional, Protocol, Tuple, TypeAlias
 import numpy as np
 import pandas as pd
 import pm4py  # type: ignore
+from pm4py.algo.organizational_mining.local_diagnostics import (  # type: ignore
+    algorithm as org_algorithm,  # type: ignore
+)
 from pm4py.algo.organizational_mining.resource_profiles import (  # type: ignore
-    algorithm as rb_algorithm,  # type: ignore
+    algorithm as rp_algorithm,  # type: ignore
 )
 
 HandoverOfWorkType: TypeAlias = Dict[Tuple[str, str], float]
@@ -73,6 +76,7 @@ class ResourceBased:
         self._working_together: Optional[SNAProtocol] = None
         self._similar_activities: Optional[SNAProtocol] = None
         self._organizational_roles: Optional[List[Any]] = None
+        self._organizational_diagnostics: Optional[Dict[str, Any]] = None
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
@@ -365,7 +369,7 @@ class ResourceBased:
             int: The number of distinct activities done by the resource in the
                 given time interval.
         """
-        return rb_algorithm.distinct_activities(
+        return rp_algorithm.distinct_activities(
             self.log, start_time, end_time, resource
         )
 
@@ -390,7 +394,7 @@ class ResourceBased:
             float: The activity frequency of the given activity by the resource
                 in the given time interval.
         """
-        return rb_algorithm.activity_frequency(
+        return rp_algorithm.activity_frequency(
             self.log, start_time, end_time, resource, activity
         )
 
@@ -412,7 +416,7 @@ class ResourceBased:
             int: The number of activity instances completed by the resource
                 in the given time interval.
         """
-        return rb_algorithm.activity_completions(
+        return rp_algorithm.activity_completions(
             self.log, start_time, end_time, resource
         )
 
@@ -434,7 +438,7 @@ class ResourceBased:
             int: The number of cases completed by the resource in the
                 given time interval.
         """
-        return rb_algorithm.case_completions(self.log, start_time, end_time, resource)
+        return rp_algorithm.case_completions(self.log, start_time, end_time, resource)
 
     def get_fraction_case_completions(
         self, start_time: str, end_time: str, resource: str
@@ -455,7 +459,7 @@ class ResourceBased:
             float: The fraction of cases completed by the resource in the
                 given time interval.
         """
-        return rb_algorithm.fraction_case_completions(
+        return rp_algorithm.fraction_case_completions(
             self.log, start_time, end_time, resource
         )
 
@@ -477,7 +481,7 @@ class ResourceBased:
             float: The average workload of the given resource in the
                 given time interval.
         """
-        return rb_algorithm.average_workload(self.log, start_time, end_time, resource)
+        return rp_algorithm.average_workload(self.log, start_time, end_time, resource)
 
     def get_multitasking(self, start_time: str, end_time: str, resource: str) -> float:
         """Calculates the multitasking.
@@ -496,7 +500,7 @@ class ResourceBased:
             float: The multitasking of the given resource in the
                 given time interval.
         """
-        return rb_algorithm.multitasking(self.log, start_time, end_time, resource)
+        return rp_algorithm.multitasking(self.log, start_time, end_time, resource)
 
     def get_average_activity_duration(
         self, start_time: str, end_time: str, resource: str, activity: str
@@ -518,7 +522,7 @@ class ResourceBased:
             float: The average duration of the given activity by the resource
                 in the given time interval.
         """
-        return rb_algorithm.average_duration_activity(
+        return rp_algorithm.average_duration_activity(
             self.log, start_time, end_time, resource, activity
         )
 
@@ -540,7 +544,7 @@ class ResourceBased:
             float: The average duration of cases completed by the resource
                 in the given time interval.
         """
-        return rb_algorithm.average_case_duration(
+        return rp_algorithm.average_case_duration(
             self.log, start_time, end_time, resource
         )
 
@@ -564,7 +568,7 @@ class ResourceBased:
             float: The interaction between the two resources in the
                 given time interval.
         """
-        return rb_algorithm.interaction_two_resources(
+        return rp_algorithm.interaction_two_resources(
             self.log, start_time, end_time, resource1, resource2
         )
 
@@ -587,8 +591,133 @@ class ResourceBased:
             float: The social position of the given resource in the
                 given time interval.
         """
-        return rb_algorithm.social_position(self.log, start_time, end_time, resource)
+        return rp_algorithm.social_position(self.log, start_time, end_time, resource)
 
     # **************** Organizational Mining ****************
 
-    # TODO: Figure out how to implement this and if this is suitable for our purposes
+    def compute_organizational_diagnostics(self) -> None:
+        """Calculates the organizational diagnostics.
+
+        Provides the local diagnostics for the organizational model
+        starting from a log object and considering the resource group
+        specified by the attribute. It is stored in a dictionary where the keys are
+        the names of the group-related metrics and the values are the
+        corresponding diagnostic values.
+
+        Returns:
+            None.
+
+        Raises:
+            ValueError: If the resource column name is not provided.
+        """
+        if self.resource_col is None:
+            raise ValueError(
+                "Resource column name is not provided. "
+                "Please provide a resource column name."
+            )
+
+        self._organizational_diagnostics = org_algorithm.apply_from_group_attribute(
+            self.log, parameters={org_algorithm.Parameters.GROUP_KEY: self.resource_col}
+        )
+
+    def get_group_relative_focus(self) -> Dict[str, Dict[str, float]]:
+        """Returns the Group Relative Focus metric.
+
+         The Group Relative Focus metric specifies for a given work how
+         much a resource group performed this type of work compared to
+         the overall workload of the group. It can be used to measure how
+         the workload of a resource group is distributed over different
+         types of work, i.e., work diversification of the group.
+
+        Returns:
+            Dict[str, Dict[str, float]]: A dictionary where the keys are
+            the names of the resources and the values are
+            dictionaries containing activity names and the Group Relative Focus
+            metric.
+
+        Raises:
+            ValueError: If the organizational diagnostics have not been
+            calculated yet.
+        """
+        if self._organizational_diagnostics is None:
+            raise ValueError(
+                "Organizational diagnostics have not been calculated yet. "
+                "Please call compute_organizational_diagnostics() first."
+            )
+        return self._organizational_diagnostics["group_relative_focus"]
+
+    def get_group_relative_stake(self) -> Dict[str, Dict[str, float]]:
+        """Returns the Group Relative Stake metric.
+
+        The Group Relative Stake metric specifies for a given work how much
+        this type of work was performed by a certain resource group among
+        all groups. It can be used to measure how the workload devoted to
+        a certain type of work is distributed over resource groups in an
+        organizational model, i.e., work participation by different groups.
+
+        Returns:
+            Dict[str, Dict[str, float]]: A dictionary where the keys are
+            the names of the resources and the values are
+            dictionaries containing activity names and the Group Relative Stake
+            metric.
+
+        Raises:
+            ValueError: If the organizational diagnostics have not been
+            calculated yet.
+        """
+        if self._organizational_diagnostics is None:
+            raise ValueError(
+                "Organizational diagnostics have not been calculated yet. "
+                "Please call compute_organizational_diagnostics() first."
+            )
+        return self._organizational_diagnostics["group_relative_stake"]
+
+    def get_group_coverage(self) -> Dict[str, Dict[str, float]]:
+        """Returns the Group Coverage metric.
+
+        The Group Coverage metric with respect to a given type of work,
+        specifies the proportion of members of a resource group that
+        performed this type of work.
+
+        Returns:
+            Dict[str, Dict[str, float]]: A dictionary where the keys are
+            the names of the resources and the values are
+            dictionaries containing resources and the Group Coverage
+            metric.
+
+        Raises:
+            ValueError: If the organizational diagnostics have not been
+            calculated yet.
+        """
+        if self._organizational_diagnostics is None:
+            raise ValueError(
+                "Organizational diagnostics have not been calculated yet. "
+                "Please call compute_organizational_diagnostics() first."
+            )
+        return self._organizational_diagnostics["group_coverage"]
+
+    def get_group_member_contribution(self) -> Dict[str, Dict[str, Dict[str, int]]]:
+        """Returns the Group Member Contribution metric.
+
+        The Group Member Contribution metric of a member of a resource group
+        with respect to a given type of work specifies how much of this type
+        of work by the group was performed by the member. It can be used to
+        measure how the workload of the entire group devoted to a certain
+        type of work is distributed over the group members.
+
+        Returns:
+            Dict[str, Dict[str, Dict[str, int]]]: A dictionary where the keys are
+            the names of the resources and the values are
+            dictionaries containing resources and the Group Member Contribution
+            metric.
+
+        Raises:
+            ValueError: If the organizational diagnostics have not been
+            calculated yet.
+        """
+        if self._organizational_diagnostics is None:
+            raise ValueError(
+                "Organizational diagnostics have not been calculated yet. "
+                "Please call compute_organizational_diagnostics() first."
+            )
+        return self._organizational_diagnostics["group_member_contribution"]
