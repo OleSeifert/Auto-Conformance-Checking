@@ -4,7 +4,7 @@ This module defines the ResourceBased class which uses PM4Py to discover
 resource-based conformance checking metrics from event logs.
 """
 
-from typing import Any, Dict, Optional, Protocol, Tuple, TypeAlias
+from typing import Any, Dict, List, Optional, Protocol, Tuple, TypeAlias
 
 import numpy as np
 import pandas as pd
@@ -69,6 +69,7 @@ class ResourceBased:
         self._subcontracting: Optional[SNAProtocol] = None
         self._working_together: Optional[SNAProtocol] = None
         self._similar_activities: Optional[SNAProtocol] = None
+        self._organizational_roles: Optional[List[Any]] = None
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
@@ -101,6 +102,9 @@ class ResourceBased:
 
         Returns:
             HandoverOfWorkType: The Handover of Work metric.
+
+        Raises:
+            ValueError: If the Handover of Work values have not been calculated yet.
         """
         if self._handover_of_work is None:
             raise ValueError(
@@ -147,6 +151,9 @@ class ResourceBased:
 
         Returns:
             SubcontractingType: The Subcontracting metric.
+
+        Raises:
+            ValueError: If the Subcontracting values have not been calculated yet.
         """
         if self._subcontracting is None:
             raise ValueError(
@@ -160,6 +167,9 @@ class ResourceBased:
 
         Returns:
             bool: True if the Subcontracting metric is directed, False otherwise.
+
+        Raises:
+            ValueError: If the Subcontracting values have not been calculated yet.
         """
         if self._subcontracting is None:
             raise ValueError(
@@ -191,6 +201,9 @@ class ResourceBased:
 
         Returns:
             WorkingTogetherType: The Working Together metric.
+
+        Raises:
+            ValueError: If the Working Together values have not been calculated yet.
         """
         if self._working_together is None:
             raise ValueError(
@@ -204,6 +217,9 @@ class ResourceBased:
 
         Returns:
             bool: True if the Working Together metric is directed, False otherwise.
+
+        Raises:
+            ValueError: If the Working Together values have not been calculated yet.
         """
         if self._working_together is None:
             raise ValueError(
@@ -236,6 +252,9 @@ class ResourceBased:
 
         Returns:
             SimilarActivitiesType: The Similar Activities metric.
+
+        Raises:
+            ValueError: If the Similar Activities values have not been calculated yet.
         """
         if self._similar_activities is None:
             raise ValueError(
@@ -249,6 +268,9 @@ class ResourceBased:
 
         Returns:
             bool: True if the Similar Activities metric is directed, False otherwise.
+
+        Raises:
+            ValueError: If the Similar Activities values have not been calculated yet.
         """
         if self._similar_activities is None:
             raise ValueError(
@@ -259,7 +281,7 @@ class ResourceBased:
 
     # **************** Role Discovery ****************
 
-    def get_organizational_roles(self):
+    def compute_organizational_roles(self) -> None:
         """Calculates the organizational roles.
 
         A role is a set of activities in the log that are executed by a similar
@@ -273,8 +295,52 @@ class ResourceBased:
         Initially, each activity corresponds to a different role and is
         associated with the multiset of its originators. After that, roles are
         merged according to their similarity until no more merges are possible.
+
+        The information about the roles is stored as a semi-structured list of
+        activity groups, where each group associates a list of activities
+        with a dictionary of originators and their corresponding
+        importance scores.
+
+        Returns:
+            None
         """
-        pass
+        self._organizational_roles = pm4py.discover_organizational_roles(self.log)
+
+    def get_organizational_roles(self) -> List[Dict[str, Any]]:
+        """Returns the organizational roles.
+
+        The organizational roles are stored as a semi-structured list of
+        activity groups, where each group associates a list of activities
+        with a dictionary of originators and their corresponding
+        importance scores.
+
+        Returns:
+            List[Dict[str, Any]]: A list of dictionaries, where each dictionary
+            contains the activities and their corresponding originators' importance
+            scores.
+            Each dictionary has the following structure:
+            {
+                "activities": List[str],    # List of activities in the role
+                "originators_importance": Dict[str, float]
+                    # Dictionary of originators and their importance scores
+            }
+
+        Raises:
+            ValueError: If the organizational roles have not been calculated yet.
+        """
+        if self._organizational_roles is None:
+            raise ValueError(
+                "Organizational roles have not been calculated yet. "
+                "Please call compute_organizational_roles() first."
+            )
+        structured_roles = [
+            {
+                "activities": role.activities,
+                "originators_importance": role.originator_importance,
+            }
+            for role in self._organizational_roles
+        ]
+        return structured_roles
 
     # **************** Resource Profiles ****************
 
