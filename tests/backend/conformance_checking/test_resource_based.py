@@ -211,7 +211,7 @@ def test_get_interaction_two_resources(resource_based):  # type: ignore
     interaction = resource_based.get_interaction_two_resources(  # type: ignore
         "2010-12-30 00:00:00", "2011-01-25 00:00:00", "Sara", "Mike"
     )
-    assert isinstance(interaction, int)
+    assert isinstance(interaction, float)
     assert interaction >= 0.0
 
 

@@ -4,9 +4,8 @@ This module defines the ResourceBased class which uses PM4Py to discover
 resource-based conformance checking metrics from event logs.
 """
 
-from typing import Any, Dict, List, Optional, Protocol, Tuple, TypeAlias
+from typing import Any, Dict, List, Optional, Tuple, TypeAlias
 
-import numpy as np
 import pandas as pd
 import pm4py  # type: ignore
 from pm4py.algo.organizational_mining.local_diagnostics import (  # type: ignore
@@ -15,23 +14,9 @@ from pm4py.algo.organizational_mining.local_diagnostics import (  # type: ignore
 from pm4py.algo.organizational_mining.resource_profiles import (  # type: ignore
     algorithm as rp_algorithm,  # type: ignore
 )
+from pm4py.objects.org.sna.obj import SNA  # type: ignore
 
-HandoverOfWorkType: TypeAlias = Dict[Tuple[str, str], float]
-SubcontractingType: TypeAlias = Dict[Tuple[str, str], float]
-WorkingTogetherType: TypeAlias = Dict[Tuple[str, str], float]
-SimilarActivitiesType: TypeAlias = Dict[Tuple[str, str], np.float64]
-
-
-class SNAProtocol(Protocol):
-    """Protocol for Social Network Analysis (SNA) metrics.
-
-    This protocol defines the structure of SNA metrics used in the
-    ResourceBased class. It includes attributes for the connections and
-    whether the metric is directed.
-    """
-
-    connections: Dict[Tuple[str, str], Any]
-    is_directed: bool
+SocialNetworkAnalysisType: TypeAlias = Dict[Tuple[str, str], float]
 
 
 class ResourceBased:
@@ -71,10 +56,10 @@ class ResourceBased:
               to None.
         """
         self.log = log
-        self._handover_of_work: Optional[SNAProtocol] = None
-        self._subcontracting: Optional[SNAProtocol] = None
-        self._working_together: Optional[SNAProtocol] = None
-        self._similar_activities: Optional[SNAProtocol] = None
+        self._handover_of_work: Optional[SNA] = None
+        self._subcontracting: Optional[SNA] = None
+        self._working_together: Optional[SNA] = None
+        self._similar_activities: Optional[SNA] = None
         self._organizational_roles: Optional[List[Any]] = None
         self._organizational_diagnostics: Optional[Dict[str, Any]] = None
         self.case_id_col: Optional[str] = case_id_col
@@ -99,7 +84,7 @@ class ResourceBased:
         """
         self._handover_of_work = pm4py.discover_handover_of_work_network(self.log)
 
-    def get_handover_of_work_values(self) -> HandoverOfWorkType:
+    def get_handover_of_work_values(self) -> SocialNetworkAnalysisType:
         """Returns the Handover of Work metric.
 
         The Handover of Work metric is a dictionary where the keys are
@@ -108,7 +93,7 @@ class ResourceBased:
         in the execution of a business process.
 
         Returns:
-            HandoverOfWorkType: The Handover of Work metric.
+            SocialNetworkAnalysisType: The Handover of Work metric.
 
         Raises:
             ValueError: If the Handover of Work values have not been calculated yet.
@@ -148,7 +133,7 @@ class ResourceBased:
         """
         self._subcontracting = pm4py.discover_subcontracting_network(self.log)
 
-    def get_subcontracting_values(self) -> SubcontractingType:
+    def get_subcontracting_values(self) -> SocialNetworkAnalysisType:
         """Returns the Subcontracting metric.
 
         The Subcontracting metric is a dictionary where the keys are
@@ -157,7 +142,7 @@ class ResourceBased:
         in the execution of a business process.
 
         Returns:
-            SubcontractingType: The Subcontracting metric.
+            SocialNetworkAnalysisType: The Subcontracting metric.
 
         Raises:
             ValueError: If the Subcontracting values have not been calculated yet.
@@ -199,7 +184,7 @@ class ResourceBased:
         """
         self._working_together = pm4py.discover_working_together_network(self.log)
 
-    def get_working_together_values(self) -> WorkingTogetherType:
+    def get_working_together_values(self) -> SocialNetworkAnalysisType:
         """Returns the Working Together metric.
 
         The Working Together metric is a dictionary where the keys are
@@ -207,7 +192,7 @@ class ResourceBased:
         the two individuals worked together to resolve a process instance.
 
         Returns:
-            WorkingTogetherType: The Working Together metric.
+            SocialNetworkAnalysisType: The Working Together metric.
 
         Raises:
             ValueError: If the Working Together values have not been calculated yet.
@@ -250,7 +235,7 @@ class ResourceBased:
             self.log
         )
 
-    def get_similar_activities_values(self) -> SimilarActivitiesType:
+    def get_similar_activities_values(self) -> SocialNetworkAnalysisType:
         """Returns the Similar Activities metric.
 
         The Similar Activities metric is a dictionary where the keys are
@@ -258,7 +243,7 @@ class ResourceBased:
         between the two individuals.
 
         Returns:
-            SimilarActivitiesType: The Similar Activities metric.
+            SocialNetworkAnalysisType: The Similar Activities metric.
 
         Raises:
             ValueError: If the Similar Activities values have not been calculated yet.
@@ -568,8 +553,10 @@ class ResourceBased:
             float: The interaction between the two resources in the
                 given time interval.
         """
-        return rp_algorithm.interaction_two_resources(
-            self.log, start_time, end_time, resource1, resource2
+        return float(
+            rp_algorithm.interaction_two_resources(
+                self.log, start_time, end_time, resource1, resource2
+            )
         )
 
     def get_social_position(
