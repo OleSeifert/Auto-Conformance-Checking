@@ -12,6 +12,7 @@ dependencies = [
     "rich>=14.0.0",
     "fastapi>=0.115.12",
     "uvicorn>=0.34.2",
+    "python-multipart>=0.0.20",
 ]
 
 [dependency-groups]

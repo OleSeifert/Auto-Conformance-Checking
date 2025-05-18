@@ -8,13 +8,11 @@ metadata to create a celonis connection.
 """
 
 import json
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-import pandas as pd
-import pm4py  # type: ignore
-import pm4py.objects.conversion.log.variants as log_variants  # type: ignore
-from fastapi import APIRouter, Depends, Form, UploadFile
+from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
 
+import backend.utils.file_handlers as file_handlers
 from backend.api.celonis import get_celonis_connection
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
@@ -26,7 +24,7 @@ router = APIRouter(prefix="/api/logs", tags=["Logs"])
 @router.post("/upload-log")
 async def upload_log(
     file: UploadFile,
-    metadata: str = Form(...),
+    metadata: Optional[str] = Form(None),
     celonis_conn: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
     """Uploads an event log file to Celonis.
@@ -34,7 +32,7 @@ async def upload_log(
     Args:
         file: The event log to be uploaded. This should be a .csv of .xes file.
         metadata (optional): The metadata required for the Celonis connection.
-          Defaults to Form(...).
+          Defaults to None.
         celonis_conn (optional): The dependency injection for the celonis
           connection. User does not need to provide this. Defaults to
           Depends(get_celonis_connection).
@@ -43,16 +41,23 @@ async def upload_log(
         A dictionary containing a message indicating the success of the
         operation.
     """
-    # Parse metadata
-    meta: Dict[Any, Any] = json.loads(metadata)
+    # Parse metadata if provided
+    meta: Dict[Any, Any] = {}
+    if metadata:
+        meta = json.loads(metadata)
 
     # Get uploaded content
     content = await file.read()
 
-    # Assume xes file
-    # TODO: Add a check for the file type + handle csv
-    result = pm4py.read_xes(content)  # type: ignore
-    result: pd.DataFrame = log_variants.to_data_frame.apply(result)  # type: ignore
+    try:
+        # Process the XES file using the utility function
+        result = file_handlers.process_xes_file(content)
+    except ValueError as e:
+        # The file could not be processed
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error processing file: {str(e)}",
+        )
 
     # Access metadata
     try:

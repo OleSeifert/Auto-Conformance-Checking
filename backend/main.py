@@ -32,6 +32,7 @@ async def lifespan(app: FastAPI):
     """
     # Load environment variables from .env file
     load_dotenv()
+
     # Get environment variables
     base_url_ = os.getenv("CELONIS_BASE_URL")
     data_pool_name_ = os.getenv("CELONIS_DATA_POOL_NAME")
@@ -39,7 +40,7 @@ async def lifespan(app: FastAPI):
     api_token_ = str(os.getenv("API_TOKEN"))
 
     # Check if environment variables are set
-    if not base_url_ or not data_pool_name_ or not data_model_name_ or api_token_:
+    if not base_url_ or not data_pool_name_ or not data_model_name_ or not api_token_:
         raise ValueError(
             """Please set the CELONIS_BASE_URL, CELONIS_DATA_POOL_NAME,
             CELONIS_DATA_MODEL_NAME, and API_TOKEN environment variables."""
@@ -65,6 +66,7 @@ app = FastAPI(lifespan=lifespan)
 # CORS and middleware
 app.add_middleware(
     CORSMiddleware,
+    # TODO: Allow later only the frontend URL
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
@@ -75,7 +77,7 @@ app.add_middleware(
 # **************** Routers ****************
 
 
-app.include_router(log_router, prefix="/api/logs", tags=["logs"])
+app.include_router(log_router)
 
 
 # **************** API *****************

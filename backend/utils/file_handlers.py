@@ -1,0 +1,48 @@
+"""Contains utility functions for handling file uploads."""
+
+import os
+import tempfile
+
+import pandas as pd
+import pm4py  # type: ignore
+import pm4py.objects.conversion.log.variants as log_variants  # type: ignore
+
+
+def process_xes_file(file_content: bytes) -> pd.DataFrame:
+    """Processes XES file content and converts it to a DataFrame.
+
+    This function is needed, as the transferred file via the API is in bytes,
+    and pm4py does not support reading from bytes directly. Therefore, we
+    create a temporary file to store the uploaded content and then read it
+    using pm4py.
+
+    Args:
+        file_content: Binary content of the XES file.
+
+    Returns:
+        A pandas DataFrame containing the event log.
+
+    Raises:
+        ValueError: If the file cannot be processed.
+    """
+    # Create a temporary file to store the uploaded content
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xes") as tmp_file:
+        tmp_file.write(file_content)
+        tmp_path = tmp_file.name
+
+        try:
+            # Read the XES file using pm4py
+            log = pm4py.read_xes(tmp_path)  # type: ignore
+
+            # Check if the log is already a DataFrame, if not convert it
+            if not isinstance(log, pd.DataFrame):
+                # Convert the log to a DataFrame
+                log = log_variants.to_data_frame.apply(log)  # type: ignore
+
+            return log  # type: ignore
+        except Exception as e:
+            raise ValueError(f"Failsed to process XES file {str(e)}") from e
+        finally:
+            # Clean up the temporary file
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
