@@ -23,7 +23,9 @@ def get_celonis_connection(request: Request) -> CelonisConnectionManager:
 
     Args:
         request: The FastAPI request object. This is used to access the
-
+          application state via `request.app.state`. The application state
+          contains the `CelonisConnectionManager` instance, which is created
+          during application startup and stored for later use.
 
     Returns:
         The CelonisConnectionManager instance. This is used to connect to the

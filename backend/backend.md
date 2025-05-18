@@ -10,8 +10,7 @@ In the `api` directory lie the routers for specific conformance checking methods
 The overview that chatGPT gave.
 
 ```
-backend/
-├── app/
+├── backend/
 │   ├── main.py               # create_app(), include routers
 │   ├── api/
 │   │   ├── logs.py           # /api/logs: upload & metadata
@@ -21,13 +20,13 @@ backend/
 │   │       ├── temporal.py  # router for temportal cc
 │   │       └── ...
 │   ├── conformance_checking/
-│   │   ├── fuzzy.py          # pure-python implementation
-│   │   ├── heuristic.py
+│   │   ├── log_skeleton.py          # pure-python implementation
+│   │   ├── temporal_profile.py
 │   │   └── ...
 │   └── models/
 │       └── schemas.py        # Pydantic models: LogUpload, ModuleResult, etc.
 ├── tests/
-│   └── test_modules/
+│   └── backend/
 ├── Dockerfile
 └── requirements.txt
 ```
