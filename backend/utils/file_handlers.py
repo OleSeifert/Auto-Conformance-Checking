@@ -41,7 +41,7 @@ def process_xes_file(file_content: bytes) -> pd.DataFrame:
 
             return log  # type: ignore
         except Exception as e:
-            raise ValueError(f"Failsed to process XES file {str(e)}") from e
+            raise ValueError(f"Failed to process XES file {str(e)}") from e
         finally:
             # Clean up the temporary file
             if os.path.exists(tmp_path):
