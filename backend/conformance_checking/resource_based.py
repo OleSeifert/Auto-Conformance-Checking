@@ -32,6 +32,14 @@ class ResourceBased:
             the log is read as a csv file.
         resource_col (optional): The name of the Resource column. Only needed if
             the log is read as a csv file.
+        _handover_of_work: The Handover of Work metric. Defaults to None.
+        _subcontracting: The Subcontracting metric. Defaults to None.
+        _working_together: The Working Together metric. Defaults to None.
+        _similar_activities: The Similar Activities metric. Defaults to None.
+        _organizational_roles: The Organizational Roles of the log. Defaults
+            to None.
+        _organizational_diagnostics: The Organizational Diagnostics of the log.
+            Defaults to None.
     """
 
     def __init__(
@@ -74,13 +82,10 @@ class ResourceBased:
 
         The Handover of Work metric measures how many times an
         individual is followed by another individual in the execution of
-        a business process. It is stored in a dictionary where the keys are
-        tuples of two individuals and the values are the number of times
-        the first individual is followed by the second individual
+        a business process. It is stored in a dictionary where the keys
+        are tuples of two individuals and the values are the number of
+        times the first individual is followed by the second individual
         in the execution of a business process.
-
-        Returns:
-            None.
         """
         self._handover_of_work = pm4py.discover_handover_of_work_network(self.log)
 
@@ -93,7 +98,7 @@ class ResourceBased:
         in the execution of a business process.
 
         Returns:
-            SocialNetworkAnalysisType: The Handover of Work metric.
+            The Handover of Work metric.
 
         Raises:
             ValueError: If the Handover of Work values have not been calculated yet.
@@ -109,7 +114,7 @@ class ResourceBased:
         """Checks if the Handover of Work metric is directed.
 
         Returns:
-            bool: True if the Handover of Work metric is directed, False otherwise.
+            True if the Handover of Work metric is directed, False otherwise.
         """
         if self._handover_of_work is None:
             raise ValueError(
@@ -123,13 +128,11 @@ class ResourceBased:
 
         The Subcontracting metric calculates how many times the work of
         an individual is interleaved by the work of another individual,
-        only to eventually “return” to the original individual. It is stored
-        in a dictionary where the keys are tuples of two individuals and
-        the values are the number of times the first individual is  interleaved
-        by the second individual in the execution of a business process.
-
-        Returns:
-            None.
+        only to eventually “return” to the original individual. It is
+        stored in a dictionary where the keys are tuples of two
+        individuals and the values are the number of times the first
+        individual is  interleaved by the second individual in the
+        execution of a business process.
         """
         self._subcontracting = pm4py.discover_subcontracting_network(self.log)
 
@@ -142,7 +145,7 @@ class ResourceBased:
         in the execution of a business process.
 
         Returns:
-            SocialNetworkAnalysisType: The Subcontracting metric.
+            The Subcontracting metric.
 
         Raises:
             ValueError: If the Subcontracting values have not been calculated yet.
@@ -158,7 +161,7 @@ class ResourceBased:
         """Checks if the Subcontracting metric is directed.
 
         Returns:
-            bool: True if the Subcontracting metric is directed, False otherwise.
+            True if the Subcontracting metric is directed, False otherwise.
 
         Raises:
             ValueError: If the Subcontracting values have not been calculated yet.
@@ -174,13 +177,10 @@ class ResourceBased:
         """Calculates the Working Together metric.
 
         The Working Together metric calculates how many times two
-        individuals work together to resolve a process instance. It is stored
-        in a dictionary where the keys are tuples of two individuals and
-        the values are the number of times the two individuals worked
-        together to resolve a process instance.
-
-        Returns:
-            None.
+        individuals work together to resolve a process instance. It is
+        stored in a dictionary where the keys are tuples of two
+        individuals and the values are the number of times the two
+        individuals worked together to resolve a process instance.
         """
         self._working_together = pm4py.discover_working_together_network(self.log)
 
@@ -192,7 +192,7 @@ class ResourceBased:
         the two individuals worked together to resolve a process instance.
 
         Returns:
-            SocialNetworkAnalysisType: The Working Together metric.
+            The Working Together metric.
 
         Raises:
             ValueError: If the Working Together values have not been calculated yet.
@@ -208,7 +208,7 @@ class ResourceBased:
         """Checks if the Working Together metric is directed.
 
         Returns:
-            bool: True if the Working Together metric is directed, False otherwise.
+            True if the Working Together metric is directed, False otherwise.
 
         Raises:
             ValueError: If the Working Together values have not been calculated yet.
@@ -224,12 +224,9 @@ class ResourceBased:
         """Calculates the Similar Activities metric.
 
         The Similar Activities metric calculates how similar the work
-        patterns are between two individuals. It is stored in a dictionary
-        where the keys are tuples of two individuals and the values are the
-        similarity score between the two individuals.
-
-        Returns:
-            None.
+        patterns are between two individuals. It is stored in a
+        dictionary where the keys are tuples of two individuals and the
+        values are the similarity score between the two individuals.
         """
         self._similar_activities = pm4py.discover_activity_based_resource_similarity(
             self.log
@@ -243,7 +240,7 @@ class ResourceBased:
         between the two individuals.
 
         Returns:
-            SocialNetworkAnalysisType: The Similar Activities metric.
+            The Similar Activities metric.
 
         Raises:
             ValueError: If the Similar Activities values have not been calculated yet.
@@ -259,7 +256,7 @@ class ResourceBased:
         """Checks if the Similar Activities metric is directed.
 
         Returns:
-            bool: True if the Similar Activities metric is directed, False otherwise.
+            True if the Similar Activities metric is directed, False otherwise.
 
         Raises:
             ValueError: If the Similar Activities values have not been calculated yet.
@@ -292,9 +289,6 @@ class ResourceBased:
         activity groups, where each group associates a list of activities
         with a dictionary of originators and their corresponding
         importance scores.
-
-        Returns:
-            None
         """
         self._organizational_roles = pm4py.discover_organizational_roles(self.log)
 
@@ -307,7 +301,7 @@ class ResourceBased:
         importance scores.
 
         Returns:
-            List[Dict[str, Any]]: A list of dictionaries, where each dictionary
+            A list of dictionaries, where each dictionary
             contains the activities and their corresponding originators' importance
             scores.
             Each dictionary has the following structure:
@@ -351,8 +345,8 @@ class ResourceBased:
                 distinct activities.
 
         Returns:
-            int: The number of distinct activities done by the resource in the
-                given time interval.
+            An integer indicating the number of distinct activities done by
+            the resource in the given time interval.
         """
         return rp_algorithm.distinct_activities(
             self.log, start_time, end_time, resource
@@ -376,8 +370,8 @@ class ResourceBased:
             activity (str): The activity for which to calculate the frequency.
 
         Returns:
-            float: The activity frequency of the given activity by the resource
-                in the given time interval.
+            A float indicating the activity frequency of the given activity
+            by the resource in the given time interval.
         """
         return rp_algorithm.activity_frequency(
             self.log, start_time, end_time, resource, activity
@@ -398,8 +392,8 @@ class ResourceBased:
                 completions.
 
         Returns:
-            int: The number of activity instances completed by the resource
-                in the given time interval.
+            An integer indicating the number of activity instances completed
+            by the resource in the given time interval.
         """
         return rp_algorithm.activity_completions(
             self.log, start_time, end_time, resource
@@ -420,8 +414,8 @@ class ResourceBased:
                 completions.
 
         Returns:
-            int: The number of cases completed by the resource in the
-                given time interval.
+            An integer indicating the number of cases completed by the
+            resource in the given time interval.
         """
         return rp_algorithm.case_completions(self.log, start_time, end_time, resource)
 
@@ -441,8 +435,8 @@ class ResourceBased:
                 fraction case completions.
 
         Returns:
-            float: The fraction of cases completed by the resource in the
-                given time interval.
+            A float indicating the fraction of cases completed by the
+            resource in the given time interval.
         """
         return rp_algorithm.fraction_case_completions(
             self.log, start_time, end_time, resource
@@ -463,8 +457,8 @@ class ResourceBased:
                 workload.
 
         Returns:
-            float: The average workload of the given resource in the
-                given time interval.
+            A float indicating the average workload of the given resource
+            in the given time interval.
         """
         return rp_algorithm.average_workload(self.log, start_time, end_time, resource)
 
@@ -482,8 +476,8 @@ class ResourceBased:
                 multitasking.
 
         Returns:
-            float: The multitasking of the given resource in the
-                given time interval.
+            A float indicating the multitasking of the given resource
+            in the given time interval.
         """
         return rp_algorithm.multitasking(self.log, start_time, end_time, resource)
 
@@ -504,8 +498,8 @@ class ResourceBased:
                 duration.
 
         Returns:
-            float: The average duration of the given activity by the resource
-                in the given time interval.
+            A float indicating the average duration of the given activity
+            by the resource in the given time interval.
         """
         return rp_algorithm.average_duration_activity(
             self.log, start_time, end_time, resource, activity
@@ -526,8 +520,8 @@ class ResourceBased:
                 case duration.
 
         Returns:
-            float: The average duration of cases completed by the resource
-                in the given time interval.
+            A float indicating the average duration of cases completed
+            by the resource in the given time interval.
         """
         return rp_algorithm.average_case_duration(
             self.log, start_time, end_time, resource
@@ -550,8 +544,8 @@ class ResourceBased:
                 interaction.
 
         Returns:
-            float: The interaction between the two resources in the
-                given time interval.
+            A float indicating the interaction between the two resources
+            in the given time interval.
         """
         return float(
             rp_algorithm.interaction_two_resources(
@@ -575,8 +569,8 @@ class ResourceBased:
                 social position.
 
         Returns:
-            float: The social position of the given resource in the
-                given time interval.
+            A float indicating the social position of the given resource
+            in the given time interval.
         """
         return rp_algorithm.social_position(self.log, start_time, end_time, resource)
 
@@ -590,9 +584,6 @@ class ResourceBased:
         specified by the attribute. It is stored in a dictionary where the keys are
         the names of the group-related metrics and the values are the
         corresponding diagnostic values.
-
-        Returns:
-            None.
 
         Raises:
             ValueError: If the resource column name is not provided.
@@ -617,10 +608,9 @@ class ResourceBased:
          types of work, i.e., work diversification of the group.
 
         Returns:
-            Dict[str, Dict[str, float]]: A dictionary where the keys are
-            the names of the resources and the values are
-            dictionaries containing activity names and the Group Relative Focus
-            metric.
+            A dictionary where the keys are the names of the resources
+            and the values are dictionaries containing activity names
+            and the Group Relative Focus metric.
 
         Raises:
             ValueError: If the organizational diagnostics have not been
@@ -643,10 +633,9 @@ class ResourceBased:
         organizational model, i.e., work participation by different groups.
 
         Returns:
-            Dict[str, Dict[str, float]]: A dictionary where the keys are
-            the names of the resources and the values are
-            dictionaries containing activity names and the Group Relative Stake
-            metric.
+            A dictionary where the keys are the names of the resources and
+            the values are dictionaries containing activity names and the
+            Group Relative Stake metric.
 
         Raises:
             ValueError: If the organizational diagnostics have not been
@@ -667,10 +656,9 @@ class ResourceBased:
         performed this type of work.
 
         Returns:
-            Dict[str, Dict[str, float]]: A dictionary where the keys are
-            the names of the resources and the values are
-            dictionaries containing resources and the Group Coverage
-            metric.
+            A dictionary where the keys are the names of the resources
+            and the values are dictionaries containing resources and the
+            Group Coverage metric.
 
         Raises:
             ValueError: If the organizational diagnostics have not been
@@ -693,10 +681,9 @@ class ResourceBased:
         type of work is distributed over the group members.
 
         Returns:
-            Dict[str, Dict[str, Dict[str, int]]]: A dictionary where the keys are
-            the names of the resources and the values are
-            dictionaries containing resources and the Group Member Contribution
-            metric.
+            A dictionary where the keys are the names of the resources and
+            the values are dictionaries containing resources and the Group
+            Member Contribution metric.
 
         Raises:
             ValueError: If the organizational diagnostics have not been
