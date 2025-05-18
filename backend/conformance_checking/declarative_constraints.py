@@ -1,19 +1,17 @@
 """Contains functionality for declarative conformance checking.
 
-This module defines the DeclerativeConstraints class which uses PM4Py to
+This module defines the DeclarativeConstraints class which uses PM4Py to
 discover declarative profiles from event logs and checks conformance based
 on the discovered declarative profiles.
 """
 
-from typing import Dict, List, Optional, Tuple, TypeAlias, Any
+from typing import Dict, Optional, Any
 import pandas as pd
 import pm4py
-# from pm4py.objects.conversion.log import converter as log_converter
-# from pm4py.util.xes_constants import DEFAULT_TIMESTAMP_KEY
 from pm4py.algo.conformance.declare import algorithm as declare_conformance
 
 
-class DeclerativeConstraints :
+class DeclarativeConstraints:
     """
     A class to handle the conformance checking of declarative constraints
     in an event log using the PM4Py library.
@@ -22,15 +20,22 @@ class DeclerativeConstraints :
         log : The main event log
         min_support_ratio : The minimum support ratio for discovering rules
         min_confidence_ratio : The minimum confidence ratio for discovering rules
+        case_id_col : The column which is has the Case_ID data
+        activity_col : The column which is has the Activity data
+        timestamp_col : The column which is has the Timestamp data
     """
 
-    def __init__ (  self,
-                    log : pd.DataFrame,
-                    min_support_ratio : Optional[float] = 0.3,
-                    min_confidence_ratio : Optional[float] = 0.75
-                ) -> None :
+    def __init__(
+        self,
+        log: pd.DataFrame,
+        min_support_ratio: Optional[float] = 0.3,
+        min_confidence_ratio: Optional[float] = 0.75,
+        case_id_col: Optional[str] = None,
+        activity_col: Optional[str] = None,
+        timestamp_col: Optional[str] = None,
+    ) -> None:
         """
-        Initializes the DeclerativeConstraints class with an event log.
+        Initializes the DeclarativeConstraints class with an event log.
         Also defines the model and the memory for all results
 
         Args:
@@ -39,24 +44,51 @@ class DeclerativeConstraints :
                                 Defaults to 0.3
             min_confidence_ratio :  The minimum confidence ratio for discovering rules
                                     Defaults to 0.75
+            case_id_col :   The column which is has the Case_ID data
+                            Defaults to None
+            activity_col :  The column which is has the Activity data
+                            Defaults to None
+            timestamp_col : The column which is has the Timestamp data
+                            Defaults to None
         """
         self.log = log
-        self.declare_model = pm4py.discover_declare(log, min_support_ratio=min_support_ratio, min_confidence_ratio=min_confidence_ratio)
-        self.valid_rules = ['existence', 'absence', 'exactly_one',
-                            'init', 'responded_existence', 'coexistence',
-                            'response', 'precedence', 'succession',
-                            'altresponse', 'altprecedence', 'altsuccession',
-                            'chainresponse', 'chainprecedence', 'chainsuccession',
-                            'noncoexistence', 'nonsuccession', 'nonchainsuccession']
-        self.conf_results_memory = {rule : None for rule in self.valid_rules}
+        self.declare_model = pm4py.discover_declare(
+            log,
+            min_support_ratio=min_support_ratio,
+            min_confidence_ratio=min_confidence_ratio,
+        )
+        self.case_id_col: Optional[str] = case_id_col
+        self.activity_col: Optional[str] = activity_col
+        self.timestamp_col: Optional[str] = timestamp_col
+        self.valid_rules = [
+            "existence",
+            "absence",
+            "exactly_one",
+            "init",
+            "responded_existence",
+            "coexistence",
+            "response",
+            "precedence",
+            "succession",
+            "altresponse",
+            "altprecedence",
+            "altsuccession",
+            "chainresponse",
+            "chainprecedence",
+            "chainsuccession",
+            "noncoexistence",
+            "nonsuccession",
+            "nonchainsuccession",
+        ]
+        self.conf_results_memory = {rule: None for rule in self.valid_rules}
 
     def rule_specific_violation_summary(
-                                        self,
-                                        declare_model : Optional[Dict[str, Any]] = None,
-                                        log : Optional[pd.DataFrame] = None,
-                                        rule_name : Optional[str] = None,
-                                        verbose : Optional[bool] = False
-                                        ) -> Dict[str, Any] :
+        self,
+        declare_model: Optional[Dict[str, Any]] = None,
+        log: Optional[pd.DataFrame] = None,
+        rule_name: Optional[str] = None,
+        verbose: Optional[bool] = False,
+    ) -> Dict[str, Any]:
         """
         Summarizes number of violations in the event log for a specified declarative rule.
 
@@ -75,61 +107,63 @@ class DeclerativeConstraints :
             ValueError: If an unsupported rule name is provided.
         """
 
-        if declare_model is None : declare_model = self.declare_model
-        if log is None : log = self.log
+        if declare_model is None:
+            declare_model = self.declare_model
+        if log is None:
+            log = self.log
 
-        if str(rule_name).lower() not in self.valid_rules : raise ValueError(f"Unsupported rule: '{rule_name}'")
+        if str(rule_name).lower() not in self.valid_rules:
+            raise ValueError(f"Unsupported rule: '{rule_name}'")
 
         rule_dict = declare_model.get(rule_name, {})
-        output = {"graph": {"nodes": [],
-                            "edges": []},
-                  "table": []}
+        output = {"graph": {"nodes": [], "edges": []}, "table": []}
 
         nodes_set = set()
         if verbose:
-            print('Total # Rules : ', len(rule_dict.keys()))
+            print("Total # Rules : ", len(rule_dict.keys()))
             print(rule_dict)
-
         for rule_key, rule_info in rule_dict.items():
-            if isinstance(rule_key, tuple) and len(rule_key) == 2: A, B = rule_key
-            else: A, B = rule_key, None
-            if verbose : print(f"\nChecking Rule : {rule_name.upper()} : '{A}' vs '{B}'")
+            if isinstance(rule_key, tuple) and len(rule_key) == 2:
+                A, B = rule_key
+            else:
+                A, B = rule_key, None
+            if verbose:
+                print(f"\nChecking Rule : {rule_name.upper()} : '{A}' vs '{B}'")
 
             internal_model = {rule_name.upper(): {(A, B): rule_info}}
             diagnostics = declare_conformance.apply(log, internal_model)
             violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
             violation_count = len(violated)
 
-            if verbose : print(f"Num Violations : {violation_count}")
+            if verbose:
+                print(f"Num Violations : {violation_count}")
 
-            if B is not None: nodes_set.update([A, B])
-            else: nodes_set.add(A)
             if B is not None:
-                output["graph"]["edges"].append({
-                                                "from": A,
-                                                "to": B,
-                                                "label": str(violation_count)
-                                                })
+                nodes_set.update([A, B])
             else:
-                output["graph"]["edges"].append({
-                                                "from": A,
-                                                "to": A,
-                                                "label": str(violation_count)
-                                                })
-            output["table"].append({
-                                    "First Activity": A,
-                                    "Next Activity": B if B is not None else "-",
-                                    "Num Violations": str(violation_count)
-                                    })
+                nodes_set.add(A)
+            if B is not None:
+                output["graph"]["edges"].append(
+                    {"from": A, "to": B, "label": str(violation_count)}
+                )
+            else:
+                output["graph"]["edges"].append(
+                    {"from": A, "to": A, "label": str(violation_count)}
+                )
+            output["table"].append(
+                {
+                    "First Activity": A,
+                    "Next Activity": B if B is not None else "-",
+                    "Num Violations": str(violation_count),
+                }
+            )
         output["graph"]["nodes"] = sorted(list(nodes_set))
 
         return output
 
     def get_declarative_conformance_diagnostics(
-                                                self,
-                                                rule_name : str,
-                                                run_from_scratch : Optional[bool] = False
-                                                ) -> Dict[str, Any]:
+        self, rule_name: str, run_from_scratch: Optional[bool] = False
+    ) -> Dict[str, Any]:
         """
         The main function to get the conformance diagnostics for a specified declarative rule.
         Check for results stored in memory and runs conformance checking of any rule only if results previously not stored in memory.
@@ -146,9 +180,11 @@ class DeclerativeConstraints :
         """
 
         rule_name = str(rule_name).lower()
-        if rule_name not in self.valid_rules : raise ValueError(f"Unsupported rule: '{rule_name}'")
+        if rule_name not in self.valid_rules:
+            raise ValueError(f"Unsupported rule: '{rule_name}'")
 
-        if (self.conf_results_memory[rule_name] is None) or (run_from_scratch is True) :
-            self.conf_results_memory[rule_name] = self.rule_specific_violation_summary(self.declare_model, self.log, rule_name=rule_name)
-
+        if (self.conf_results_memory[rule_name] is None) or (run_from_scratch is True):
+            self.conf_results_memory[rule_name] = self.rule_specific_violation_summary(
+                self.declare_model, self.log, rule_name=rule_name
+            )
         return self.conf_results_memory[rule_name]
