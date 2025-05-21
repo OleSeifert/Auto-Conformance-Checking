@@ -89,56 +89,49 @@
 // };
 //
 // export default MappingPage;
-
 import React, { useState, useEffect } from 'react';
 import {
   Box, Button, Card, CardContent, Typography,
   FormControl, InputLabel, MenuItem, Select, FormHelperText
 } from '@mui/material';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { API_BASE } from './config';
 
 const MappingPage = () => {
-  const location = useLocation();
   const navigate = useNavigate();
 
-  const file = location.state?.file || null;
-  const fileType = location.state?.fileType || 'csv'; // 'csv' or 'xes'
   const [columns, setColumns] = useState([]);
+  const [isXES, setIsXES] = useState(false);
 
-  // Mapping values
   const [caseIdCol, setCaseIdCol] = useState('');
   const [activityCol, setActivityCol] = useState('');
   const [timestampCol, setTimestampCol] = useState('');
   const [resourceCol1, setResourceCol1] = useState('');
   const [resourceCol2, setResourceCol2] = useState('');
 
-  const isXES = fileType === 'xes';
-
   useEffect(() => {
     const fetchColumns = async () => {
       try {
-        const res = await fetch(`${API_BASE}/get-columns`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fileType })  // optional payload
-        });
+        const res = await fetch(`${API_BASE}/get-columns`);
         const result = await res.json();
-        setColumns(result.columns || []);
+        const cols = result.columns || [];
 
-        // Pre-fill and disable case/activity/timestamp for XES
-        if (isXES) {
-          setCaseIdCol(result.default_case_id);
-          setActivityCol(result.default_activity);
-          setTimestampCol(result.default_timestamp);
+        setColumns(cols);
+
+        // If it's .xes, use first 3 as fixed values
+        if (cols.length >= 3 && cols[0].toLowerCase().includes('case')) {
+          setIsXES(true);
+          setCaseIdCol(cols[0]);
+          setActivityCol(cols[1]);
+          setTimestampCol(cols[2]);
         }
       } catch (err) {
-        alert('Failed to fetch column names');
+        alert('Failed to fetch column names: ' + err.message);
       }
     };
 
     fetchColumns();
-  }, [fileType]);
+  }, []);
 
   const handleSubmit = async () => {
     const payload = {
@@ -146,8 +139,7 @@ const MappingPage = () => {
       activity_col: activityCol,
       timestamp_col: timestampCol,
       resource_col1: resourceCol1,
-      resource_col2: resourceCol2,
-      file_type: fileType
+      resource_col2: resourceCol2
     };
 
     try {
