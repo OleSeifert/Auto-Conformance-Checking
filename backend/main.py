@@ -6,15 +6,17 @@ includes the API routers.
 
 import os
 from contextlib import asynccontextmanager
+from typing import Dict
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.log import router as log_router
+from backend.api.setup import router as setup_router
 from backend.celonis_connection.celonis_connection_manager import (
-    CelonisConnectionManager,  # type: ignore
-)
+    CelonisConnectionManager,
+)  # type: ignore
 
 # **************** Startup and Shutdown ****************
 
@@ -74,10 +76,18 @@ app.add_middleware(
 )
 
 
+# 'Empty' route
+@app.get("/")
+def home() -> Dict[str, str]:
+    """Returns a simple message indicating that the API is running."""
+    return {"message": "API is running."}
+
+
 # **************** Routers ****************
 
 
 app.include_router(log_router)
+app.include_router(setup_router)
 
 
 # **************** API *****************
