@@ -12,6 +12,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.log import router as log_router
+from backend.api.modules.declarative_router import router as declarative_router
+from backend.api.modules.log_skeleton_router import router as log_skeleton_router
+from backend.api.modules.resource_based_router import router as resource_based_router
+from backend.api.modules.temporal_profile_router import (
+    router as temporal_profile_router,
+)
 from backend.api.setup import router as setup_router
 
 # **************** Startup and Shutdown ****************
@@ -71,3 +77,8 @@ def home() -> Dict[str, str]:
 
 app.include_router(log_router)
 app.include_router(setup_router)
+app.include_router(declarative_router)
+app.include_router(log_skeleton_router)
+app.include_router(resource_based_router)
+app.include_router(temporal_profile_router)
+app.include_router(temporal_profile_router)
