@@ -67,8 +67,7 @@ def get_celonis_connection(request: Request) -> CelonisConnectionManager:
     except ValidationError:
         raise HTTPException(
             status_code=400,
-            detail="""Celonis not configured. POST to
-            /api/setup/celonis-credentials first.""",
+            detail="Celonis not configured. POST to /api/setup/celonis-credentials first.",
         )
 
     # Build the connection manager and cache it
