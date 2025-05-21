@@ -66,12 +66,26 @@ async def celonis_credentials(credentials: CelonisCredentials):
         return {"message": "Credentials already exist and match."}
 
     # If they don't exist or don't match, update the .env file
-    set_key(".env", "CELONIS_BASE_URL", credentials.celonis_base_url)
-    set_key(".env", "CELONIS_DATA_POOL_NAME", credentials.celonis_data_pool_name)
-    set_key(".env", "CELONIS_DATA_MODEL_NAME", credentials.celonis_data_model_name)
-    set_key(".env", "API_TOKEN", credentials.api_token)
+    set_key(
+        ".env", "CELONIS_BASE_URL", credentials.celonis_base_url, quote_mode="never"
+    )
+    set_key(
+        ".env",
+        "CELONIS_DATA_POOL_NAME",
+        credentials.celonis_data_pool_name,
+        quote_mode="never",
+    )
+    set_key(
+        ".env",
+        "CELONIS_DATA_MODEL_NAME",
+        credentials.celonis_data_model_name,
+        quote_mode="never",
+    )
+    set_key(".env", "API_TOKEN", credentials.api_token, quote_mode="never")
     if credentials.data_table_name:
-        set_key(".env", "DATA_TABLE_NAME", credentials.data_table_name)
+        set_key(
+            ".env", "DATA_TABLE_NAME", credentials.data_table_name, quote_mode="never"
+        )
 
     return {"message": "Credentials saved to .env"}
 
