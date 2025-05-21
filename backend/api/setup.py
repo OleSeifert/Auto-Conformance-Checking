@@ -4,10 +4,10 @@ It contains several 'utility' endpoints that are used in the setup of
 the application and the general configuration for event logs.
 """
 
-from typing import Optional
+from typing import Dict, List, Optional
 
 from dotenv import dotenv_values, set_key
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/api/setup", tags=["Setup"])
@@ -107,3 +107,29 @@ async def map_columns(column_mapping: ColumnMapping, request: Request):
     # Save the column mapping as a dictionary in the request state
     request.app.state.column_mapping = column_mapping.model_dump()
     return {"message": "Column mapping saved."}
+
+
+@router.get("/get-column-names")
+async def get_column_names(request: Request) -> Dict[str, List[str]]:
+    """Provides the column names of the current log.
+
+    Args:
+        request: The FastAPI request object. This is used to access the app state
+          and retrieve the current log columns.
+
+    Returns:
+        A dictionary containing the column names of the current log.
+
+    Raises:
+        HTTPException: If no log columns are found in the app state, a 400 error is raised
+        with a message indicating that no log columns were found. The user should
+        upload a log first.
+    """
+    if not request.app.state.current_log_columns:
+        raise HTTPException(
+            status_code=400,
+            detail="No log columns found. Please upload a log first.",
+        )
+    return {
+        "columns": request.app.state.current_log_columns,
+    }

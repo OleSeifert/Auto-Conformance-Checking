@@ -35,6 +35,9 @@ async def lifespan(app: FastAPI):
     # It is handled by the get_celonis_connection DI
     app.state.celonis = None
 
+    # Store the log's columns in the app state
+    app.state.current_log_columns = []
+
     yield
     # *** Shutdown ***
     # Potentially add something here, if we need to
