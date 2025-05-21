@@ -8,6 +8,7 @@ metadata to create a celonis connection.
 """
 
 import json
+import os
 from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile, status
@@ -41,6 +42,19 @@ async def upload_log(
         A dictionary containing a message indicating the success of the
         operation.
     """
+    # Enforce .csv or .xes file
+    if file.filename:
+        ext = os.path.splitext(file.filename)[1].lower()
+        if ext not in (".csv", ".xes"):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid file type. Only .csv and .xes are allowed.",
+            )
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="File name is required.",
+        )
     # Parse metadata if provided
     meta: Dict[Any, Any] = {}
     if metadata:
