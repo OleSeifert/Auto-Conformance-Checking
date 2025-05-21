@@ -6,7 +6,7 @@ library.
 """
 
 from collections.abc import MutableMapping
-from os import environ, path
+from os import curdir, environ, path
 from typing import Union
 
 import pandas as pd
@@ -335,9 +335,9 @@ class CelonisConnectionManager:
             variables.
         """
         # Check if the .env file exists and create it if it does not
-        # TODO: The .env file should be created in the root directory of the project and not in this subdirectory
-        if not path.isfile(path.join(path.dirname(__file__), ".env")):
-            open(path.join(path.dirname(__file__), ".env"), "w").close()
+        root_path = path.abspath(curdir)
+        if not path.isfile(path.join(root_path, ".env")):
+            open(path.join(root_path, ".env"), "w").close()
 
         # Load the environment variables from the .env file
         load_dotenv()
@@ -355,7 +355,7 @@ class CelonisConnectionManager:
             return token
         else:
             set_key(
-                dotenv_path=path.join(path.dirname(__file__), ".env"),
+                dotenv_path=path.join(root_path, ".env"),
                 key_to_set="API_TOKEN",
                 value_to_set=api_token,
             )

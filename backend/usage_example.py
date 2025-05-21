@@ -8,13 +8,13 @@ Celonis.
 from celonis_connection.celonis_connection_manager import CelonisConnectionManager
 from conformance_checking.log_skeleton import LogSkeleton
 from pandas import DataFrame as DF
-from pm4py.objects.conversion.log.variants import (
+from pm4py.objects.conversion.log.variants import (  # type : ignore
     to_data_frame as log_to_df,  # type: ignore
 )
 from pm4py.objects.log.importer.xes import importer as xes_importer  # type: ignore
 from pycelonis_core.utils.errors import PyCelonisNotFoundError
 
-BASE_URL = "https://academic-celonis-umzf0j.eu-2.celonis.cloud/"
+BASE_URL = "https://academic-rene-rockstedt-rwth-aachen-de.eu-2.celonis.cloud/"
 DATA_POOL = "Test Data Pool"
 DATA_MODEL = "Test Data Model"
 EVENT_LOG_LOC = "tests/input_data/running-example.xes"
@@ -25,7 +25,11 @@ result = log_to_df.apply(result)  # type: ignore
 
 # Create a Celonis connection
 # and add the event log to the data model
-my_celonis = CelonisConnectionManager(BASE_URL, DATA_POOL, DATA_MODEL)
+my_celonis = CelonisConnectionManager(
+    BASE_URL,
+    DATA_POOL,
+    DATA_MODEL,
+)
 if isinstance(result, DF):
     my_celonis.add_dataframe(result)
     my_celonis.create_table()
