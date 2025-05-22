@@ -1,16 +1,3 @@
-"""Contains functionality for declarative conformance checking.
-
-This module defines the DeclarativeConstraints class which uses PM4Py to
-discover declarative profiles from event logs and checks conformance based
-on the discovered declarative profiles.
-"""
-
-from typing import Dict, Optional, Any
-import pandas as pd
-import pm4py
-from pm4py.algo.conformance.declare import algorithm as declare_conformance
-
-
 class DeclerativeConstraints:
     """
     A class to handle the conformance checking of declarative constraints
@@ -43,11 +30,9 @@ class DeclerativeConstraints:
                                     Defaults to 0.75
         """
         self.log = log
-        self.declare_model = pm4py.discover_declare(
-            log,
-            min_support_ratio=min_support_ratio,
-            min_confidence_ratio=min_confidence_ratio,
-        )
+        self.min_support_ratio = min_support_ratio
+        self.min_confidence_ratio = min_confidence_ratio
+        self.declare_model = None
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
@@ -71,6 +56,25 @@ class DeclerativeConstraints:
             "nonchainsuccession",
         ]
         self.conf_results_memory = {rule: None for rule in self.valid_rules}
+
+    def run_model(
+        self,
+        log: Optional[pd.DataFrame] = None,
+        min_support_ratio: Optional[float] = None,
+        min_confidence_ratio: Optional[float] = None,
+    ) -> None:
+        if log is None:
+            log = self.log
+        if min_support_ratio is None:
+            min_support_ratio = self.min_support_ratio
+        if min_confidence_ratio is None:
+            min_confidence_ratio = self.min_confidence_ratio
+
+        self.declare_model = pm4py.discover_declare(
+            log,
+            min_support_ratio=min_support_ratio,
+            min_confidence_ratio=min_confidence_ratio,
+        )
 
     def rule_specific_violation_summary(
         self,
@@ -97,6 +101,8 @@ class DeclerativeConstraints:
             ValueError: If an unsupported rule name is provided.
         """
 
+        if self.declare_model is None:
+            self.run_model()
         if declare_model is None:
             declare_model = self.declare_model
         if log is None:
