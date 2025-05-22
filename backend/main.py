@@ -4,17 +4,21 @@ This module initializes the FastAPI application, sets up middleware, and
 includes the API routers.
 """
 
-import os
 from contextlib import asynccontextmanager
+from typing import Dict
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.api.log import router as log_router
-from backend.celonis_connection.celonis_connection_manager import (
-    CelonisConnectionManager,  # type: ignore
+from backend.api.modules.declarative_router import router as declarative_router
+from backend.api.modules.log_skeleton_router import router as log_skeleton_router
+from backend.api.modules.resource_based_router import router as resource_based_router
+from backend.api.modules.temporal_profile_router import (
+    router as temporal_profile_router,
 )
+from backend.api.setup import router as setup_router
 
 # **************** Startup and Shutdown ****************
 
@@ -33,26 +37,13 @@ async def lifespan(app: FastAPI):
     # Load environment variables from .env file
     load_dotenv()
 
-    # Get environment variables
-    base_url_ = os.getenv("CELONIS_BASE_URL")
-    data_pool_name_ = os.getenv("CELONIS_DATA_POOL_NAME")
-    data_model_name_ = os.getenv("CELONIS_DATA_MODEL_NAME")
-    api_token_ = str(os.getenv("API_TOKEN"))
+    # Initialize the CelonisConnectionManager
+    # It is handled by the get_celonis_connection DI
+    app.state.celonis = None
 
-    # Check if environment variables are set
-    if not base_url_ or not data_pool_name_ or not data_model_name_ or not api_token_:
-        raise ValueError(
-            """Please set the CELONIS_BASE_URL, CELONIS_DATA_POOL_NAME,
-            CELONIS_DATA_MODEL_NAME, and API_TOKEN environment variables."""
-        )
+    # Store the log's columns in the app state
+    app.state.current_log_columns = []
 
-    # *** Startup ***
-    app.state.celonis = CelonisConnectionManager(
-        base_url=base_url_,
-        data_pool_name=data_pool_name_,
-        data_model_name=data_model_name_,
-        api_token=api_token_,
-    )
     yield
     # *** Shutdown ***
     # Potentially add something here, if we need to
@@ -74,10 +65,19 @@ app.add_middleware(
 )
 
 
+# 'Empty' route
+@app.get("/")
+def home() -> Dict[str, str]:
+    """Returns a simple message indicating that the API is running."""
+    return {"message": "API is running."}
+
+
 # **************** Routers ****************
 
 
 app.include_router(log_router)
-
-
-# **************** API *****************
+app.include_router(setup_router)
+app.include_router(declarative_router)
+app.include_router(log_skeleton_router)
+app.include_router(resource_based_router)
+app.include_router(temporal_profile_router)
