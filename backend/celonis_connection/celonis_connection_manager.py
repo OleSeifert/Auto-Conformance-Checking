@@ -6,10 +6,11 @@ library.
 """
 
 from collections.abc import MutableMapping
-from os import environ, path
+from os import curdir, environ, path
+from typing import Union
 
+import pandas as pd
 from dotenv import load_dotenv, set_key
-from pandas import DataFrame as DF
 from pycelonis import get_celonis
 from pycelonis.ems.data_integration.data_model import DataModel
 from pycelonis.ems.data_integration.data_model_table import DataModelTable
@@ -28,7 +29,7 @@ class CelonisConnectionManager:
     api_token: str
     data_pool_name: str
     data_model_name: str
-    data_frame: DF
+    data_frame: pd.DataFrame
 
     def __init__(
         self,
@@ -48,7 +49,7 @@ class CelonisConnectionManager:
         self.base_url = base_url
         self.data_pool_name = data_pool_name
         self.data_model_name = data_model_name
-        self.data_frame = DF()
+        self.data_frame = pd.DataFrame()
         if api_token == "":
             self.api_token = self.acquire_api_token()
         else:
@@ -74,7 +75,7 @@ class CelonisConnectionManager:
             print(f"Data pool '{data_pool_name}' not found. Creating a new one.")
             return self.celonis.data_integration.create_data_pool(self.data_pool_name)
 
-    def find_data_model(self, data_model_name: str) -> DataModel | None:
+    def find_data_model(self, data_model_name: str) -> Union[DataModel, None]:
         """Find a data model by name.
 
         It will return the data model if it is found or create a new one if it does not exist.
@@ -159,7 +160,7 @@ class CelonisConnectionManager:
         # Reload the data model to reflect the changes
         self.data_model.reload()
 
-    def add_dataframe(self, df: DF) -> None:
+    def add_dataframe(self, df: pd.DataFrame) -> None:
         """Add a DataFrame to the CelonisConnection object.
 
         Allows the data frame to be created outside of the class and
@@ -176,11 +177,11 @@ class CelonisConnectionManager:
 
     def get_basic_dataframe_from_celonis(
         self, table_name: str = "ACTIVITIES"
-    ) -> pqlDataFrame | None:
+    ) -> Union[pd.DataFrame, None]:
         """Get the dataframe from the data model in Celonis.
 
-        It will create a new dataframe with the columns "Case_ID",
-        "Activity" and "Timestamp" from the table in the data model.
+        It will create a new dataframe with the columns "case:concept:name",
+        "concept:name" and "time:timestamp" from the table in the data model.
         Returns None if the data model does not exist or the table is not
         found.
 
@@ -188,7 +189,7 @@ class CelonisConnectionManager:
             table_name: Name of the table to get. Default is "ACTIVITIES".
 
         Returns:
-            pqlDataFrame object or None.
+            DataFrame object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -203,19 +204,19 @@ class CelonisConnectionManager:
 
         df = pqlDataFrame(
             {
-                "Case_ID": activities_columns.find("case:concept:name"),
-                "Activity": activities_columns.find("concept:name"),
-                "Timestamp": activities_columns.find("time:timestamp"),
+                "case:concept:name": activities_columns.find("case:concept:name"),
+                "concept:name": activities_columns.find("concept:name"),
+                "time:timestamp": activities_columns.find("time:timestamp"),
             },
             data_model=self.data_model,
         )
 
-        return df
+        return df.to_pandas()
 
     def get_dataframe_from_celonis(
         self,
         pql_query: MutableMapping[str, SeriesLike | DataModelTableColumn],
-    ) -> pqlDataFrame | None:
+    ) -> Union[pd.DataFrame, None]:
         """Get the dataframe from the data model in Celonis.
 
         It will create a new dataframe with the columns from the PQL
@@ -229,7 +230,7 @@ class CelonisConnectionManager:
             pql_query: PQL query used to define the dataframe.
 
         Returns:
-            pqlDataFrame object or None.
+            DataFrame object or None.
         """
         if not self.data_model:
             print("Data model does not exist. Cannot get table.")
@@ -241,9 +242,9 @@ class CelonisConnectionManager:
             pql_query,
             data_model=self.data_model,
         )
-        return df
+        return df.to_pandas()
 
-    def get_table(self, table_name: str = "ACTIVITIES") -> DataModelTable | None:
+    def get_table(self, table_name: str = "ACTIVITIES") -> Union[DataModelTable, None]:
         """Get the table from the data model in Celonis.
 
         It will return the table object if it is found or None if it
@@ -267,7 +268,7 @@ class CelonisConnectionManager:
 
     def get_table_columns(
         self, table_name: str = "ACTIVITIES"
-    ) -> CelonisCollection[DataModelTableColumn] | None:
+    ) -> Union[CelonisCollection[DataModelTableColumn], None]:
         """Get the columns of the table from the data model in Celonis.
 
         It will return the columns of the table object if it is found or
@@ -290,7 +291,7 @@ class CelonisConnectionManager:
             print(f"Table {table_name} not found in data model.")
             return None
 
-    def get_data_pool(self) -> DataPool | None:
+    def get_data_pool(self) -> Union[DataPool, None]:
         """Get the data pool object.
 
         Returns:
@@ -301,7 +302,7 @@ class CelonisConnectionManager:
             return None
         return self.data_pool
 
-    def get_data_model(self) -> DataModel | None:
+    def get_data_model(self) -> Union[DataModel, None]:
         """Get the data model object.
 
         Returns:
@@ -334,8 +335,9 @@ class CelonisConnectionManager:
             variables.
         """
         # Check if the .env file exists and create it if it does not
-        if not path.isfile(path.join(path.dirname(__file__), ".env")):
-            open(path.join(path.dirname(__file__), ".env"), "w").close()
+        root_path = path.abspath(curdir)
+        if not path.isfile(path.join(root_path, ".env")):
+            open(path.join(root_path, ".env"), "w").close()
 
         # Load the environment variables from the .env file
         load_dotenv()
@@ -353,7 +355,7 @@ class CelonisConnectionManager:
             return token
         else:
             set_key(
-                dotenv_path=path.join(path.dirname(__file__), ".env"),
+                dotenv_path=path.join(root_path, ".env"),
                 key_to_set="API_TOKEN",
                 value_to_set=api_token,
             )

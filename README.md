@@ -46,6 +46,34 @@ It ensures that all commit messages follow the same format and are descriptive a
 We should follow this [code review styleguide](https://github.com/iai-group/guidelines/blob/main/github/Code_review.md).
 It ensures that the code review process runs as smoothly as possible.
 
+## Starting the backend Server
+
+On the main branch you can start the backend server.
+This works if you have installed all dependencies, as well as created a `.env` file at the root of the directory.
+The `.env` file needs to contain the following entries:
+
+```dotenv
+CELONIS_BASE_URL=<your base url>
+CELONIS_DATA_POOL_NAME=<a name for the Celonis data pool>
+CELONIS_DATA_MODEL_NAME=<a name for the Celonis data model>
+API_TOKEN=<your Celonis API token>
+```
+
+You can then start the backend server with the command:
+
+```bash
+uv run uvicorn backend.main:app
+```
+
+This starts the backend server by default on port `8000` on your localhost.
+If you navigate to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) you see the FastAPI Swagger documentation for the endpoints.
+Currently there exists only one endpoint to upload an event log, which you can also try via documentation.
+
+## Starting the Frontend
+
+To start the frontend server, you have to checkout the `frontend` branch.
+The detailled startup is written in [this readme file](./frontend/README.md).
+
 ## Contribution Workflow
 
 We use a classic *feature-branch* workflow, where a new branch is created for every feature or bug fix.

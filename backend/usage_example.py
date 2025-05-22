@@ -5,18 +5,19 @@ dataframe to the data model, create a table, and get a dataframe from
 Celonis.
 """
 
-from celonis_connection_manager import CelonisConnectionManager
+from celonis_connection.celonis_connection_manager import CelonisConnectionManager
+from conformance_checking.log_skeleton import LogSkeleton
 from pandas import DataFrame as DF
-from pm4py.objects.conversion.log.variants import (  # type: ignore
-    to_data_frame as log_to_df,
+from pm4py.objects.conversion.log.variants import (  # type : ignore
+    to_data_frame as log_to_df,  # type: ignore
 )
 from pm4py.objects.log.importer.xes import importer as xes_importer  # type: ignore
 from pycelonis_core.utils.errors import PyCelonisNotFoundError
 
-BASE_URL = "https://academic-rene-rockstedt-rwth-aachen-de.eu-2.celonis.cloud"
+BASE_URL = "https://academic-rene-rockstedt-rwth-aachen-de.eu-2.celonis.cloud/"
 DATA_POOL = "Test Data Pool"
 DATA_MODEL = "Test Data Model"
-EVENT_LOG_LOC = "event_logs/all.xes"
+EVENT_LOG_LOC = "tests/input_data/running-example.xes"
 
 # Import the event log as a dataframe
 result = xes_importer.apply(EVENT_LOG_LOC)  # type: ignore
@@ -24,7 +25,11 @@ result = log_to_df.apply(result)  # type: ignore
 
 # Create a Celonis connection
 # and add the event log to the data model
-my_celonis = CelonisConnectionManager(BASE_URL, DATA_POOL, DATA_MODEL)
+my_celonis = CelonisConnectionManager(
+    BASE_URL,
+    DATA_POOL,
+    DATA_MODEL,
+)
 if isinstance(result, DF):
     my_celonis.add_dataframe(result)
     my_celonis.create_table()
@@ -60,5 +65,10 @@ dataframe = my_celonis.get_dataframe_from_celonis(my_pql_query)  # type: ignore
 # Resulting in a "classic" event log with the columns "Case_ID", "Activity", and "Timestamp"
 # dataframe = my_celonis.get_basic_dataframe_from_celonis()
 
+dataframe = my_celonis.get_basic_dataframe_from_celonis()
 if dataframe is not None:
-    print(dataframe.head())
+    ls = LogSkeleton(
+        dataframe,
+    )
+    ls.compute_skeleton()
+    print(ls.get_activity_frequencies())
