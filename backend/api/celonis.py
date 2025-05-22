@@ -38,7 +38,7 @@ class CelonisSettings(BaseSettings):
 def get_celonis_connection(request: Request) -> CelonisConnectionManager:
     """Returns a CelonisConnectionManager instance.
 
-    It tryies to get the CelonisConnectionManager instance from the
+    It tries to get the CelonisConnectionManager instance from the
     application state. If it is not present, it creates a new instance
     using the settings from the environment variables. The instance is
     then stored in the application state for later use.

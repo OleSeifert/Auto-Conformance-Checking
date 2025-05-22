@@ -32,8 +32,7 @@ class ColumnMapping(BaseModel):
     case_id_column: str
     activity_column: str
     timestamp_column: str
-    ressource_1_column: Optional[str] = None
-    ressource_2_column: Optional[str] = None
+    resource_1_column: Optional[str] = None
 
 
 # **************** Endpoints ****************
