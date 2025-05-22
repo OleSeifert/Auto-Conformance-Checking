@@ -1,39 +1,83 @@
-from fastapi import FastAPI, UploadFile, Form
+"""Contains the main entry point for the FastAPI backend.
+
+This module initializes the FastAPI application, sets up middleware, and
+includes the API routers.
+"""
+
+from contextlib import asynccontextmanager
+from typing import Dict
+
+from dotenv import load_dotenv
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import pandas as pd
-import io, json
 
- # celonis connection imports
- # imports for the temporal/declarative/log-skeleton/resource based profiles
+from backend.api.log import router as log_router
+from backend.api.modules.declarative_router import router as declarative_router
+from backend.api.modules.log_skeleton_router import router as log_skeleton_router
+from backend.api.modules.resource_based_router import router as resource_based_router
+from backend.api.modules.temporal_profile_router import (
+    router as temporal_profile_router,
+)
+from backend.api.setup import router as setup_router
 
-app = FastAPI()
+# **************** Startup and Shutdown ****************
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Initializes the CelonisConnectionManager and stores it in the app state.
+
+    This function is used as a context manager to ensure that the
+    CelonisConnectionManager is properly initialized.
+
+    Args:
+        app: The FastAPI application instance. This is used to store the
+          CelonisConnectionManager instance in the application state.
+    """
+    # Load environment variables from .env file
+    load_dotenv()
+
+    # Initialize the CelonisConnectionManager
+    # It is handled by the get_celonis_connection DI
+    app.state.celonis = None
+
+    # Store the log's columns in the app state
+    app.state.current_log_columns = []
+
+    yield
+    # *** Shutdown ***
+    # Potentially add something here, if we need to
+
+
+# **************** Create Application ****************
+
+
+app = FastAPI(lifespan=lifespan)
+
+# CORS and middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # your React dev server
+    # TODO: Allow later only the frontend URL
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-@app.post("/analyze")
-async def analyze(file: UploadFile, metadata: str = Form(...)):
-    # Parse inputs
-    meta = json.loads(metadata)
-    content = await file.read()
-    df = pd.read_csv(io.BytesIO(content), sep=';')  # change if needed
 
-    # Celonis connection (if used)
-    #celonis = connect_to_celonis(meta['api_url'], meta['api_token'])
+# 'Empty' route
+@app.get("/")
+def home() -> Dict[str, str]:
+    """Returns a simple message indicating that the API is running."""
+    return {"message": "API is running."}
 
-    # Run all checks
-    # temporal_result = run_temporal_profile(df, meta, celonis)
-    # declarative_result = run_log_skeleton(df, meta, celonis)
-    # resource_result = run_resource_analysis(df, meta, celonis)
 
-    # return JSONResponse(content={
-    #     "temporal": temporal_result,
-    #     "declarative": declarative_result,
-    #     "resource": resource_result
-    # })
+# **************** Routers ****************
+
+
+app.include_router(log_router)
+app.include_router(setup_router)
+app.include_router(declarative_router)
+app.include_router(log_skeleton_router)
+app.include_router(resource_based_router)
+app.include_router(temporal_profile_router)
