@@ -21,6 +21,6 @@ class JobStatus(BaseModel):
     """
 
     module: str  # e.g. log_skeleton, temporal
-    status: Literal["pending", "running", "completed", "failed"]
+    status: Literal["pending", "running", "complete", "failed"]
     result: Optional[Dict[str, Any]] = None
     error: Optional[str] = None
