@@ -57,10 +57,11 @@ async def celonis_credentials(credentials: CelonisCredentials):
     # Check whether they already exist and match
     if (
         env_vars.get("CELONIS_BASE_URL") == credentials.celonis_base_url
+        and env_vars.get("API_TOKEN") == credentials.api_token
         and env_vars.get("CELONIS_DATA_POOL_NAME") == credentials.celonis_data_pool_name
         and env_vars.get("CELONIS_DATA_MODEL_NAME")
         == credentials.celonis_data_model_name
-        and env_vars.get("API_TOKEN") == credentials.api_token
+        
     ):
         return {"message": "Credentials already exist and match."}
 

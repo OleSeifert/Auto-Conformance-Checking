@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.9.0",
     "d3": "^7.9.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -19,9 +20,9 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently \"npm run frontend\" \"npm run backend\"",
     "frontend": "react-scripts start",
-    "backend": "cd ../backend && uvicorn main:app --reload --port 8000",
+    "backend": "cd .. && PYTHONPATH=. uvicorn backend.main:app --reload --port 8000",
+    "start": "concurrently \"npm run frontend\" \"npm run backend\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
