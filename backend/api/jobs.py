@@ -1,7 +1,8 @@
 """Contains the router for handling jobs."""
 
-from api.models.schemas.job_models import JobStatus
 from fastapi import APIRouter, HTTPException, Request
+
+from backend.api.models.schemas.job_models import JobStatus
 
 router = APIRouter(prefix="/api/jobs", tags=["Jobs"])
 

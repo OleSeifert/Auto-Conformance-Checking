@@ -1,9 +1,12 @@
 """Contains the tasks for handling log skeletons and related operations."""
 
-from api.models.schemas.job_models import JobStatus
-from celonis_connection.celonis_connection_manager import CelonisConnectionManager
-from conformance_checking.log_skeleton import LogSkeleton
 from fastapi import FastAPI
+
+from backend.api.models.schemas.job_models import JobStatus
+from backend.celonis_connection.celonis_connection_manager import (
+    CelonisConnectionManager,
+)
+from backend.conformance_checking.log_skeleton import LogSkeleton
 
 
 def compute_and_store_log_skeleton(
