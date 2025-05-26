@@ -15,7 +15,7 @@ from backend.conformance_checking.temporal_profile import (
 def compute_and_store_temporal_conformance_result(
     app: FastAPI, job_id: str, celonis_connection: CelonisConnectionManager, zeta: float
 ) -> None:
-    """Computes the temporal profile and stores it in the app state.
+    """Computes the temporal conformance result and stores it in the app state.
 
     Args:
         app (FastAPI): The FastAPI application instance.
@@ -23,15 +23,18 @@ def compute_and_store_temporal_conformance_result(
         celonis_connection: The Celonis connection manager instance.
         zeta: The zeta value used for temporal profile conformance checking.
     """
-    rec: JobStatus = app.state.jobs.get[job_id]
+    rec: JobStatus = app.state.jobs[job_id]
 
     try:
         rec.status = "running"
+        app.state.jobs[job_id] = rec
         df = celonis_connection.get_basic_dataframe_from_celonis()
 
         if df is None or df.empty:
             rec.status = "failed"
-            return
+            raise RuntimeError(
+                "The DataFrame is empty. Please check the Celonis connection and the data."
+            )
 
         tp = TemporalProfile(df)
         tp.discover_temporal_profile()
@@ -47,3 +50,6 @@ def compute_and_store_temporal_conformance_result(
     except Exception as e:
         rec.status = "failed"
         rec.error = str(e)
+
+    finally:
+        app.state.jobs[job_id] = rec
