@@ -43,6 +43,7 @@ async def lifespan(app: FastAPI):
     app.state.celonis = None
 
     # Store the log's columns in the app state
+    app.state.current_log = None  # will get path to tmp file
     app.state.current_log_columns = []
 
     # *** Log Skeleton ***
