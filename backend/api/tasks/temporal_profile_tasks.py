@@ -12,7 +12,7 @@ from backend.conformance_checking.temporal_profile import (
 )
 
 
-def compute_and_store_temporal_profile(
+def compute_and_store_temporal_conformance_result(
     app: FastAPI, job_id: str, celonis_connection: CelonisConnectionManager, zeta: float
 ) -> None:
     """Computes the temporal profile and stores it in the app state.
