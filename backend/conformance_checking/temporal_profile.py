@@ -9,8 +9,12 @@ from typing import Dict, List, Optional, Tuple, TypeAlias
 
 import pandas as pd
 from pandas.io.formats.style import Styler
-from pm4py.algo.conformance.temporal_profile import algorithm as tp_conformance  # type: ignore
-from pm4py.algo.discovery.temporal_profile import algorithm as tp_discovery  # type: ignore
+from pm4py.algo.conformance.temporal_profile import (  # type: ignore
+    algorithm as tp_conformance,
+)
+from pm4py.algo.discovery.temporal_profile import (  # type: ignore
+    algorithm as tp_discovery,
+)
 
 TemporalProfileType: TypeAlias = Dict[Tuple[str, str], Tuple[float, float]]
 ConformanceResultType: TypeAlias = List[List[Tuple[float, float, float, float]]]
@@ -23,6 +27,7 @@ class TemporalProfile:
         log: The event log.
         _temporal_profile: The discovered temporal profile.
         _temporal_conformance_result: The result of temporal conformance checking.
+        _zeta: The zeta value used for temporal conformance checking.
         case_id_col (optional): The name of the Case ID column. Only needed if
         the log is read as a csv file.
         activity_col (optional): The name of the Activity column. Only needed if
@@ -65,9 +70,6 @@ class TemporalProfile:
         and the value is a tuple containing:
             1. The mean duration between the two activities
             2. The standard deviation of those durations.
-
-        Returns:
-            None.
         """
         self._temporal_profile = tp_discovery.apply(self.log)
 
@@ -84,9 +86,6 @@ class TemporalProfile:
 
         Args:
             zeta: Multiplier for the standard deviation.
-
-        Returns:
-            None.
 
         Raises:
             ValueError: If the temporal profile has not been discovered yet.
@@ -184,7 +183,7 @@ class TemporalProfile:
             - Red: If the value is greater than 1.0
 
         Returns:
-            pd.io.formats.style.Styler: A styled DataFrame containing the sorted diagnostics with colour-coding.
+            A styled DataFrame containing the sorted diagnostics with colour-coding.
         """
         diagnostics_dataframe = self.get_conformance_diagnostics()
         sorted_diagnostics = diagnostics_dataframe.sort_values(  # type: ignore
