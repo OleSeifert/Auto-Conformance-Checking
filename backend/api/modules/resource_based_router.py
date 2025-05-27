@@ -3,11 +3,14 @@
 import uuid
 from typing import Dict, List
 
-from api.models.schemas.resource_based_models import OrganizationalRole, SNAMetric
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
 from backend.api.celonis import get_celonis_connection
 from backend.api.models.schemas.job_models import JobStatus
+from backend.api.models.schemas.resource_based_models import (
+    OrganizationalRole,
+    SNAMetric,
+)
 from backend.api.tasks.resource_based_tasks import (
     compute_and_store_resource_based_metrics,
 )
