@@ -18,6 +18,8 @@ from backend.conformance_checking.resource_based import ResourceBased
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 
+# **************** Social Network Analysis ****************
+
 
 @router.post("/sna/compute", status_code=202)
 async def compute_sna_metrics(
@@ -120,6 +122,9 @@ def get_similar_activities_metric(job_id: str, request: Request) -> List[SNAMetr
     )
 
 
+# **************** Role Discovery ****************
+
+
 @router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
 async def get_organizational_roles_result(
     job_id: str, request: Request
@@ -134,6 +139,9 @@ async def get_organizational_roles_result(
         A list of OrganizationalRole objects representing the discovered roles.
     """
     return request.app.state.jobs[job_id].result.get("organizational_roles", [])
+
+
+# **************** Resource Profiles ****************
 
 
 @router.get("/resource-profile/distinct-activities/", response_model=int)
@@ -487,6 +495,9 @@ def get_resource_social_position(
         raise HTTPException(
             status_code=500, detail="Internal server error calculating social position."
         )
+
+
+# **************** Organizational Mining ****************
 
 
 @router.post("/organizational-mining/compute", status_code=202)
