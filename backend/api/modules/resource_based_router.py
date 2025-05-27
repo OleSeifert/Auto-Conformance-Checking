@@ -3,13 +3,13 @@
 import uuid
 from typing import Dict, List
 
-from api.models.schemas.resource_based_models import SNAMetricValue
+from api.models.schemas.resource_based_models import OrganizationalRole, SNAMetric
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
 from backend.api.celonis import get_celonis_connection
 from backend.api.models.schemas.job_models import JobStatus
 from backend.api.tasks.resource_based_tasks import (
-    compute_and_store_sna_metrics,
+    compute_and_store_resource_based_metrics,
 )
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
@@ -39,7 +39,7 @@ async def compute_sna_metrics(
         module="resource_based", status="pending"
     )
     background_tasks.add_task(
-        compute_and_store_sna_metrics,
+        compute_and_store_resource_based_metrics,
         request.app,
         job_id,
         celonis,
@@ -47,8 +47,8 @@ async def compute_sna_metrics(
     return {"job_id": job_id}
 
 
-@router.get("/sna/handover-of-work/{job_id}", response_model=List[SNAMetricValue])
-def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetricValue]:
+@router.get("/sna/handover-of-work/{job_id}", response_model=List[SNAMetric])
+def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Handover of Work SNA metric.
 
     Args:
@@ -65,8 +65,8 @@ def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetric
     )
 
 
-@router.get("/sna/subcontracting/{job_id}", response_model=List[SNAMetricValue])
-def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetricValue]:
+@router.get("/sna/subcontracting/{job_id}", response_model=List[SNAMetric])
+def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Subcontracting metric.
 
     Args:
@@ -83,8 +83,8 @@ def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetricVa
     )
 
 
-@router.get("/sna/working-together/{job_id}", response_model=List[SNAMetricValue])
-def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetricValue]:
+@router.get("/sna/working-together/{job_id}", response_model=List[SNAMetric])
+def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Working Together metric.
 
     Args:
@@ -101,10 +101,8 @@ def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetric
     )
 
 
-@router.get("/sna/similar-activities/{job_id}", response_model=List[SNAMetricValue])
-def get_similar_activities_metric(
-    job_id: str, request: Request
-) -> List[SNAMetricValue]:
+@router.get("/sna/similar-activities/{job_id}", response_model=List[SNAMetric])
+def get_similar_activities_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Similar Activities metric.
 
     Args:
@@ -119,3 +117,19 @@ def get_similar_activities_metric(
         .result.get("similar_activities", {})
         .get("values", [])
     )
+
+
+@router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
+def get_organizational_roles_result(
+    job_id: str, request: Request
+) -> List[OrganizationalRole]:
+    """Retrieves the computed organizational roles.
+
+    Args:
+        job_id: The ID of the job to retrieve the organizational roles for.
+        request: The FastAPI request object.
+
+    Returns:
+        A list of OrganizationalRole objects representing the discovered roles.
+    """
+    return request.app.state.jobs[job_id].result.get("organizational_roles", [])

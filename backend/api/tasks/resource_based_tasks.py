@@ -23,12 +23,12 @@ def _serialize_sna_connections(
     ]
 
 
-def compute_and_store_sna_metrics(
+def compute_and_store_resource_based_metrics(
     app: FastAPI,
     job_id: str,
     celonis_connection: CelonisConnectionManager,
 ) -> None:
-    """Computes the SNA metrics and stores it in the app state.
+    """Computes the resource-based metrics and stores it in the app state.
 
     Args:
         app: The FastAPI application instance.
@@ -57,6 +57,8 @@ def compute_and_store_sna_metrics(
         rb.compute_working_together()
         rb.compute_similar_activities()
 
+        rb.compute_organizational_roles()
+
         rec.result = {
             "handover_of_work": {
                 "values": _serialize_sna_connections(rb.get_handover_of_work_values()),
@@ -76,6 +78,7 @@ def compute_and_store_sna_metrics(
                 ),
                 "is_directed": rb.is_similar_activities_directed(),
             },
+            "organizational_roles": rb.get_organizational_roles(),
         }
         rec.status = "complete"
         rec.error = None
