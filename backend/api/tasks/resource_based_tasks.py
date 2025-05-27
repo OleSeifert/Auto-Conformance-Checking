@@ -27,7 +27,6 @@ def compute_and_store_resource_based_metrics(
     app: FastAPI,
     job_id: str,
     celonis_connection: CelonisConnectionManager,
-    resource_column_name: str,
 ) -> None:
     """Computes the resource-based metrics and stores it in the app state.
 
@@ -53,7 +52,7 @@ def compute_and_store_resource_based_metrics(
                 "The DataFrame is empty. Please check the Celonis connection and the data."
             )
 
-        rb = ResourceBased(df, resource_col=resource_column_name)
+        rb = ResourceBased(df)
         rb.compute_handover_of_work()
         rb.compute_subcontracting()
         rb.compute_working_together()

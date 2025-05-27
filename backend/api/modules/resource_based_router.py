@@ -121,7 +121,7 @@ def get_similar_activities_metric(job_id: str, request: Request) -> List[SNAMetr
 
 
 @router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
-def get_organizational_roles_result(
+async def get_organizational_roles_result(
     job_id: str, request: Request
 ) -> List[OrganizationalRole]:
     """Retrieves the computed organizational roles.
@@ -487,3 +487,124 @@ def get_resource_social_position(
         raise HTTPException(
             status_code=500, detail="Internal server error calculating social position."
         )
+
+
+@router.post("/organizational-mining/compute", status_code=202)
+async def compute_organizational_mining_metrics(
+    background_tasks: BackgroundTasks,
+    request: Request,
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> Dict[str, str]:
+    """Computes the organizational mining metrics and stores it.
+
+    Args:
+        background_tasks: The background tasks manager.
+        request: The FastAPI request object.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        A dictionary containing the job ID of the scheduled task.
+    """
+    job_id = str(uuid.uuid4())
+    request.app.state.jobs[job_id] = JobStatus(
+        module="resource_based", status="pending"
+    )
+    background_tasks.add_task(
+        compute_and_store_resource_based_metrics,
+        request.app,
+        job_id,
+        celonis,
+    )
+    return {"job_id": job_id}
+
+
+@router.get(
+    "organizational-mining/group-relative-focus/{job_id}",
+    response_model=Dict[str, Dict[str, float]],
+)
+def get_group_relative_focus_metric(
+    job_id: str, request: Request
+) -> Dict[str, Dict[str, float]]:
+    """Retrieves the Group Relative Focus metric.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the Group Relative Focus metric.
+    """
+    return (
+        request.app.state.jobs[job_id]
+        .result.get("organizational_diagnostics", {})
+        .get("group_relative_focus", {})
+    )
+
+
+@router.get(
+    "organizational-mining/group-relative-stake/{job_id}",
+    response_model=Dict[str, Dict[str, float]],
+)
+def get_group_relative_stake_metric(
+    job_id: str, request: Request
+) -> Dict[str, Dict[str, float]]:
+    """Retrieves the Group Relative Stake metric.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the Group Relative Stake metric.
+    """
+    return (
+        request.app.state.jobs[job_id]
+        .result.get("organizational_diagnostics", {})
+        .get("group_relative_stake", {})
+    )
+
+
+@router.get(
+    "organizational-mining/group-coverage/{job_id}",
+    response_model=Dict[str, Dict[str, float]],
+)
+def get_group_coverage_metric(
+    job_id: str, request: Request
+) -> Dict[str, Dict[str, float]]:
+    """Retrieves the Group Coverage metric.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the Group Coverage metric.
+    """
+    return (
+        request.app.state.jobs[job_id]
+        .result.get("organizational_diagnostics", {})
+        .get("group_coverage", {})
+    )
+
+
+@router.get(
+    "organizational-mining/group-member-contribution/{job_id}",
+    response_model=Dict[str, Dict[str, Dict[str, int]]],
+)
+def get_group_member_contribution_metric(
+    job_id: str, request: Request
+) -> Dict[str, Dict[str, Dict[str, int]]]:
+    """Retrieves the Group Member Contribution metric.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the Group Member Contribution metric.
+    """
+    return (
+        request.app.state.jobs[job_id]
+        .result.get("organizational_diagnostics", {})
+        .get("group_member_contribution", {})
+    )
