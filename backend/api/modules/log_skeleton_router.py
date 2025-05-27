@@ -128,8 +128,8 @@ def get_directly_follows(job_id: str, request: Request) -> List[List[str]]:
     return request.app.state.jobs[job_id].result.get("directly_follows", [])
 
 
-@router.get("/get_activity_frequences/{job_id}", response_model=Dict[str, List[int]])
-def get_activity_frequences(job_id: str, request: Request) -> Dict[str, List[int]]:
+@router.get("/get_activity_frequencies/{job_id}", response_model=Dict[str, List[int]])
+def get_activity_frequencies(job_id: str, request: Request) -> Dict[str, List[int]]:
     """Retrieves the activity frequencies from the log skeleton.
 
     Args:
