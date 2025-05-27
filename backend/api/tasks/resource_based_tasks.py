@@ -27,6 +27,7 @@ def compute_and_store_resource_based_metrics(
     app: FastAPI,
     job_id: str,
     celonis_connection: CelonisConnectionManager,
+    resource_column_name: str,
 ) -> None:
     """Computes the resource-based metrics and stores it in the app state.
 
@@ -34,6 +35,7 @@ def compute_and_store_resource_based_metrics(
         app: The FastAPI application instance.
         job_id: The job ID for tracking the task.
         celonis_connection: The CelonisConnectionManager instance.
+        resource_column_name: The name of the resource column in the DataFrame.
 
     Raises:
         RuntimeError: If the DataFrame is empty.
@@ -51,13 +53,15 @@ def compute_and_store_resource_based_metrics(
                 "The DataFrame is empty. Please check the Celonis connection and the data."
             )
 
-        rb = ResourceBased(df)
+        rb = ResourceBased(df, resource_col=resource_column_name)
         rb.compute_handover_of_work()
         rb.compute_subcontracting()
         rb.compute_working_together()
         rb.compute_similar_activities()
 
         rb.compute_organizational_roles()
+
+        rb.compute_organizational_diagnostics()
 
         rec.result = {
             "handover_of_work": {
@@ -79,6 +83,12 @@ def compute_and_store_resource_based_metrics(
                 "is_directed": rb.is_similar_activities_directed(),
             },
             "organizational_roles": rb.get_organizational_roles(),
+            "organizational_diagnostics": {
+                "group_relative_focus": rb.get_group_relative_focus(),
+                "group_relative_stake": rb.get_group_relative_stake(),
+                "group_coverage": rb.get_group_coverage(),
+                "group_member_contribution": rb.get_group_member_contribution(),
+            },
         }
         rec.status = "complete"
         rec.error = None
