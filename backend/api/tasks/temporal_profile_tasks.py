@@ -22,6 +22,9 @@ def compute_and_store_temporal_conformance_result(
         job_id: The ID of the job.
         celonis_connection: The Celonis connection manager instance.
         zeta: The zeta value used for temporal profile conformance checking.
+
+    Raises:
+        RuntimeError: If the DataFrame is empty.
     """
     rec: JobStatus = app.state.jobs[job_id]
 
