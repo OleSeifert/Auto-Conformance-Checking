@@ -9,6 +9,9 @@ from typing import Dict, List, Optional
 from dotenv import dotenv_values, set_key
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
+from backend.celonis_connection.celonis_connection_manager import (
+    CelonisConnectionManager,
+)
 
 router = APIRouter(prefix="/api/setup", tags=["Setup"])
 
@@ -86,7 +89,7 @@ async def celonis_credentials(credentials: CelonisCredentials):
         set_key(
             ".env", "DATA_TABLE_NAME", credentials.data_table_name, quote_mode="never"
         )
-
+    
     return {"message": "Credentials saved to .env"}
 
 

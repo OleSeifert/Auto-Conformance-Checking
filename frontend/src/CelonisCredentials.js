@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { API_BASE, CELONIS_CONNECTION } from "./config";
+import { CELONIS_CONNECTION } from "./config";
 import { useNavigate } from 'react-router-dom';
 import {
   Box, Button, Card, CardContent, TextField, Typography, FormHelperText
@@ -22,7 +22,7 @@ const CelonisCredentials = () => {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/${CELONIS_CONNECTION}`, {
+    const res = await fetch(`${CELONIS_CONNECTION}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)

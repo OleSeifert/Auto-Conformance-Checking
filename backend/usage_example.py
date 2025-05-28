@@ -14,7 +14,8 @@ from pm4py.objects.conversion.log.variants import (  # type : ignore
 from pm4py.objects.log.importer.xes import importer as xes_importer  # type: ignore
 from pycelonis_core.utils.errors import PyCelonisNotFoundError
 
-BASE_URL = "https://academic-rene-rockstedt-rwth-aachen-de.eu-2.celonis.cloud/"
+# BASE_URL = "https://academic-rene-rockstedt-rwth-aachen-de.eu-2.celonis.cloud/"
+BASE_URL= "https://academic-celonis-prqxxx.eu-2.celonis.cloud/"
 DATA_POOL = "Test Data Pool"
 DATA_MODEL = "Test Data Model"
 EVENT_LOG_LOC = "tests/input_data/running-example.xes"
