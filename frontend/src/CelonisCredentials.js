@@ -10,7 +10,7 @@ const CelonisCredentials = () => {
   const [token, setToken] = useState('');
   const [dataPoolName, setDataPoolName] = useState('');
   const [dataModelName, setDataModelName] = useState('');
-  const [dataTableName, setDataTableName] = useState('');
+  // const [dataTableName, setDataTableName] = useState('');
   const navigate = useNavigate();
   const handleSubmit = async () => {
   const payload = {
@@ -18,7 +18,7 @@ const CelonisCredentials = () => {
     celonis_data_pool_name: dataPoolName,
     celonis_data_model_name: dataModelName,
     api_token: token,
-    data_table_name: dataTableName.trim() === "" ? "ACTIVITIES" : dataTableName
+    // data_table_name: dataTableName.trim() === "" ? "ACTIVITIES" : dataTableName
   };
 
   try {
@@ -58,10 +58,10 @@ const CelonisCredentials = () => {
           <TextField label="Celonis API Token" fullWidth type="password" value={token} onChange={e => setToken(e.target.value)} />
           <TextField label="Data Pool Name" fullWidth value={dataPoolName} onChange={e => setDataPoolName(e.target.value)} />
           <TextField label="Data Model Name" fullWidth value={dataModelName} onChange={e => setDataModelName(e.target.value)} />
-          <Box>
+          {/* <Box>
             <TextField label="Data Table Name (optional)" fullWidth value={dataTableName} onChange={e => setDataTableName(e.target.value)} />
             <FormHelperText>Defaults to <strong>ACTIVITIES</strong></FormHelperText>
-          </Box>
+          </Box> */}
           <Button variant="contained" onClick={handleSubmit} disabled={
               !apiUrl.trim() ||
               !token.trim() ||
