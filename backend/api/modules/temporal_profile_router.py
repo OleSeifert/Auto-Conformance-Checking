@@ -53,7 +53,7 @@ async def compute_temporal_conformance_result(
 
 
 @router.get("/get-result/{job_id}", response_model=ConformanceResultType)
-def get_temporal_conformance_result(
+async def get_temporal_conformance_result(
     job_id: str,
     request: Request,
 ) -> ConformanceResultType:
