@@ -44,7 +44,7 @@ def compute_and_store_resource_based_metrics(
     try:
         rec.status = "running"
         app.state.jobs[job_id] = rec
-        df = celonis_connection.get_basic_dataframe_from_celonis()
+        df = celonis_connection.get_dataframe_with_resource_group_from_celonis()
 
         if df is None or df.empty:
             rec.status = "failed"
@@ -52,7 +52,8 @@ def compute_and_store_resource_based_metrics(
                 "The DataFrame is empty. Please check the Celonis connection and the data."
             )
 
-        rb = ResourceBased(df)
+        rb = ResourceBased(df, resource_col="org:resource", group_col="org:group")
+        # rb = ResourceBased(df)
         rb.compute_handover_of_work()
         rb.compute_subcontracting()
         rb.compute_working_together()
@@ -60,6 +61,8 @@ def compute_and_store_resource_based_metrics(
 
         rb.compute_organizational_roles()
 
+        # rb.resource_col = "org:resource"
+        # rb.group_col = "org:group"
         rb.compute_organizational_diagnostics()
 
         rec.result = {
@@ -95,6 +98,7 @@ def compute_and_store_resource_based_metrics(
     except Exception as e:
         rec.status = "failed"
         rec.error = str(e)
+        raise e
 
     finally:
         app.state.jobs[job_id] = rec

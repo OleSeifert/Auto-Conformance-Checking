@@ -21,10 +21,8 @@ from backend.conformance_checking.resource_based import ResourceBased
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 
-# **************** Social Network Analysis ****************
 
-
-@router.post("/sna/compute", status_code=202)
+@router.post("/compute", status_code=202)
 async def compute_sna_metrics(
     background_tasks: BackgroundTasks,
     request: Request,
@@ -53,8 +51,11 @@ async def compute_sna_metrics(
     return {"job_id": job_id}
 
 
+# **************** Social Network Analysis ****************
+
+
 @router.get("/sna/handover-of-work/{job_id}", response_model=List[SNAMetric])
-def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetric]:
+async def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Handover of Work SNA metric.
 
     Args:
@@ -72,7 +73,7 @@ def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetric
 
 
 @router.get("/sna/subcontracting/{job_id}", response_model=List[SNAMetric])
-def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetric]:
+async def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Subcontracting metric.
 
     Args:
@@ -90,7 +91,7 @@ def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetric]:
 
 
 @router.get("/sna/working-together/{job_id}", response_model=List[SNAMetric])
-def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetric]:
+async def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetric]:
     """Retrieves the computed Working Together metric.
 
     Args:
@@ -108,7 +109,9 @@ def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetric
 
 
 @router.get("/sna/similar-activities/{job_id}", response_model=List[SNAMetric])
-def get_similar_activities_metric(job_id: str, request: Request) -> List[SNAMetric]:
+async def get_similar_activities_metric(
+    job_id: str, request: Request
+) -> List[SNAMetric]:
     """Retrieves the computed Similar Activities metric.
 
     Args:
@@ -148,7 +151,7 @@ async def get_organizational_roles_result(
 
 
 @router.get("/resource-profile/distinct-activities/", response_model=int)
-def get_distinct_activities(
+async def get_distinct_activities(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time."),
     end_time: str = Query(..., description="End time."),
@@ -166,7 +169,7 @@ def get_distinct_activities(
     Returns:
         The number of distinct activities for the specified resource.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
 
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
@@ -180,7 +183,7 @@ def get_distinct_activities(
 
 
 @router.get("/resource-profile/activity-frequency", response_model=float)
-def get_resource_activity_frequency(
+async def get_resource_activity_frequency(
     resource: str = Query(..., description="The resource identifier."),
     activity: str = Query(..., description="The specific activity name."),
     start_time: str = Query(
@@ -202,7 +205,7 @@ def get_resource_activity_frequency(
     Returns:
         A float indicating the activity frequency.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -216,7 +219,7 @@ def get_resource_activity_frequency(
 
 
 @router.get("/resource-profile/activity-completions", response_model=int)
-def get_resource_activity_completions(
+async def get_resource_activity_completions(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -233,7 +236,7 @@ def get_resource_activity_completions(
     Returns:
         An integer indicating the number of activity completions.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -247,7 +250,7 @@ def get_resource_activity_completions(
 
 
 @router.get("/resource-profile/case-completions", response_model=int)
-def get_resource_case_completions(
+async def get_resource_case_completions(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -264,7 +267,7 @@ def get_resource_case_completions(
     Returns:
         An integer indicating the number of case completions involving the resource.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -278,7 +281,7 @@ def get_resource_case_completions(
 
 
 @router.get("/resource-profile/fraction-case-completions", response_model=float)
-def get_resource_fraction_case_completions(
+async def get_resource_fraction_case_completions(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -295,7 +298,7 @@ def get_resource_fraction_case_completions(
     Returns:
         A float indicating the fraction of case completions involving the resource.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -309,7 +312,7 @@ def get_resource_fraction_case_completions(
 
 
 @router.get("/resource-profile/average-workload", response_model=float)
-def get_resource_average_workload(
+async def get_resource_average_workload(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -326,7 +329,7 @@ def get_resource_average_workload(
     Returns:
         A float indicating the average workload.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -340,7 +343,7 @@ def get_resource_average_workload(
 
 
 @router.get("/resource-profile/multitasking", response_model=float)
-def get_resource_multitasking(
+async def get_resource_multitasking(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -357,7 +360,7 @@ def get_resource_multitasking(
     Returns:
         A float indicating the multitasking metric.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -370,7 +373,7 @@ def get_resource_multitasking(
 
 
 @router.get("/resource-profile/average-activity-duration", response_model=float)
-def get_resource_average_activity_duration(
+async def get_resource_average_activity_duration(
     resource: str = Query(..., description="The resource identifier."),
     activity: str = Query(..., description="The specific activity name."),
     start_time: str = Query(..., description="Start time of the interval."),
@@ -389,7 +392,7 @@ def get_resource_average_activity_duration(
     Returns:
         A float indicating the average duration of the activity for the resource.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -405,7 +408,7 @@ def get_resource_average_activity_duration(
 
 
 @router.get("/resource-profile/average-case-duration", response_model=float)
-def get_resource_average_case_duration(
+async def get_resource_average_case_duration(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -422,7 +425,7 @@ def get_resource_average_case_duration(
     Returns:
         A float indicating the average duration of cases involving the resource.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -436,7 +439,7 @@ def get_resource_average_case_duration(
 
 
 @router.get("/resource-profile/interaction-two-resources", response_model=float)
-def get_interaction_of_two_resources(
+async def get_interaction_of_two_resources(
     resource1: str = Query(..., description="The first resource identifier."),
     resource2: str = Query(..., description="The second resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
@@ -455,7 +458,7 @@ def get_interaction_of_two_resources(
     Returns:
         A float indicating the interaction (number of common cases) between the two resources.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -471,7 +474,7 @@ def get_interaction_of_two_resources(
 
 
 @router.get("/resource-profile/social-position", response_model=float)
-def get_resource_social_position(
+async def get_resource_social_position(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time of the interval."),
     end_time: str = Query(..., description="End time of the interval."),
@@ -488,7 +491,7 @@ def get_resource_social_position(
     Returns:
         A float indicating the social position of the resource.
     """
-    df = celonis.get_basic_dataframe_from_celonis()
+    df = celonis.get_dataframe_with_resource_group_from_celonis()
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
@@ -503,40 +506,40 @@ def get_resource_social_position(
 # **************** Organizational Mining ****************
 
 
-@router.post("/organizational-mining/compute", status_code=202)
-async def compute_organizational_mining_metrics(
-    background_tasks: BackgroundTasks,
-    request: Request,
-    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> Dict[str, str]:
-    """Computes the organizational mining metrics and stores it.
+# @router.post("/organizational-mining/compute", status_code=202)
+# async def compute_organizational_mining_metrics(
+#     background_tasks: BackgroundTasks,
+#     request: Request,
+#     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+# ) -> Dict[str, str]:
+#     """Computes the organizational mining metrics and stores it.
 
-    Args:
-        background_tasks: The background tasks manager.
-        request: The FastAPI request object.
-        celonis: The Celonis connection manager instance.
+#     Args:
+#         background_tasks: The background tasks manager.
+#         request: The FastAPI request object.
+#         celonis: The Celonis connection manager instance.
 
-    Returns:
-        A dictionary containing the job ID of the scheduled task.
-    """
-    job_id = str(uuid.uuid4())
-    request.app.state.jobs[job_id] = JobStatus(
-        module="resource_based", status="pending"
-    )
-    background_tasks.add_task(
-        compute_and_store_resource_based_metrics,
-        request.app,
-        job_id,
-        celonis,
-    )
-    return {"job_id": job_id}
+#     Returns:
+#         A dictionary containing the job ID of the scheduled task.
+#     """
+#     job_id = str(uuid.uuid4())
+#     request.app.state.jobs[job_id] = JobStatus(
+#         module="resource_based", status="pending"
+#     )
+#     background_tasks.add_task(
+#         compute_and_store_resource_based_metrics,
+#         request.app,
+#         job_id,
+#         celonis,
+#     )
+#     return {"job_id": job_id}
 
 
 @router.get(
-    "organizational-mining/group-relative-focus/{job_id}",
+    "/organizational-mining/group-relative-focus/{job_id}",
     response_model=Dict[str, Dict[str, float]],
 )
-def get_group_relative_focus_metric(
+async def get_group_relative_focus_metric(
     job_id: str, request: Request
 ) -> Dict[str, Dict[str, float]]:
     """Retrieves the Group Relative Focus metric.
@@ -556,10 +559,10 @@ def get_group_relative_focus_metric(
 
 
 @router.get(
-    "organizational-mining/group-relative-stake/{job_id}",
+    "/organizational-mining/group-relative-stake/{job_id}",
     response_model=Dict[str, Dict[str, float]],
 )
-def get_group_relative_stake_metric(
+async def get_group_relative_stake_metric(
     job_id: str, request: Request
 ) -> Dict[str, Dict[str, float]]:
     """Retrieves the Group Relative Stake metric.
@@ -579,10 +582,10 @@ def get_group_relative_stake_metric(
 
 
 @router.get(
-    "organizational-mining/group-coverage/{job_id}",
+    "/organizational-mining/group-coverage/{job_id}",
     response_model=Dict[str, Dict[str, float]],
 )
-def get_group_coverage_metric(
+async def get_group_coverage_metric(
     job_id: str, request: Request
 ) -> Dict[str, Dict[str, float]]:
     """Retrieves the Group Coverage metric.
@@ -602,10 +605,10 @@ def get_group_coverage_metric(
 
 
 @router.get(
-    "organizational-mining/group-member-contribution/{job_id}",
+    "/organizational-mining/group-member-contribution/{job_id}",
     response_model=Dict[str, Dict[str, Dict[str, int]]],
 )
-def get_group_member_contribution_metric(
+async def get_group_member_contribution_metric(
     job_id: str, request: Request
 ) -> Dict[str, Dict[str, Dict[str, int]]]:
     """Retrieves the Group Member Contribution metric.

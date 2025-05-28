@@ -208,6 +208,48 @@ class CelonisConnectionManager:
 
         return df.to_pandas()
 
+    def get_dataframe_with_resource_group_from_celonis(
+        self, table_name: str = "ACTIVITIES"
+    ) -> Union[pd.DataFrame, None]:
+        """Get the dataframe from the data model in Celonis.
+
+        It will create a new dataframe with the columns "case:concept:name",
+        "concept:name", "time:timestamp", "org:resource", and "org:group"
+        from the table in the data model. Returns None if the data model
+        does not exist or the table is not found.
+
+        Args:
+            table_name: Name of the table to get. Default is "ACTIVITIES".
+
+        Returns:
+            DataFrame object or None.
+        """
+        if not self.data_model:
+            print("Data model does not exist. Cannot get table.")
+            return None
+        try:
+            table = self.data_model.get_tables().find(table_name)
+        except PyCelonisNotFoundError:
+            print(f"Table {table_name} not found in data model.")
+            return None
+
+        activities_columns = table.get_columns()
+
+        df = pqlDataFrame(
+            {
+                "case:concept:name": activities_columns.find("case:concept:name"),
+                "concept:name": activities_columns.find("concept:name"),
+                "time:timestamp": activities_columns.find("time:timestamp"),
+                "org:resource": activities_columns.find("org:resource"),
+                "org:group": activities_columns.find(
+                    "org:group", default=activities_columns.find("Resource")
+                ),
+            },
+            data_model=self.data_model,
+        )
+
+        return df.to_pandas()
+
     def get_dataframe_from_celonis(
         self,
         pql_query: MutableMapping[str, SeriesLike | DataModelTableColumn],
