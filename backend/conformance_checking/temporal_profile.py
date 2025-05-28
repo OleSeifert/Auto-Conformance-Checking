@@ -5,7 +5,7 @@ discover temporal profiles from event logs and checks conformance based
 on the discovered temporal profiles.
 """
 
-from typing import Dict, List, Optional, Tuple, TypeAlias
+from typing import Any, Dict, List, Optional, Tuple, TypeAlias
 
 import pandas as pd
 from pandas.io.formats.style import Styler
@@ -17,7 +17,7 @@ from pm4py.algo.discovery.temporal_profile import (  # type: ignore
 )
 
 TemporalProfileType: TypeAlias = Dict[Tuple[str, str], Tuple[float, float]]
-ConformanceResultType: TypeAlias = List[List[Tuple[float, float, float, float]]]
+ConformanceResultType: TypeAlias = List[List[Tuple[Any, ...]]]
 
 
 class TemporalProfile:
