@@ -52,6 +52,10 @@ def compute_and_store_resource_based_metrics(
                 "The DataFrame is empty. Please check the Celonis connection and the data."
             )
 
+        # Sometimes CaseID may be interpreted as int
+        if df["case:concept:name"].dtype != "string":
+            df["case:concept:name"] = df["case:concept:name"].astype("string")
+
         rb = ResourceBased(df, resource_col="org:resource", group_col="org:group")
         # rb = ResourceBased(df)
         rb.compute_handover_of_work()
