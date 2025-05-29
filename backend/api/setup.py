@@ -60,10 +60,6 @@ async def celonis_credentials(credentials: CelonisCredentials):
         quote_mode="never",
     )
     set_key(".env", "API_TOKEN", credentials.api_token, quote_mode="never")
-    if credentials.data_table_name:
-        set_key(
-            ".env", "DATA_TABLE_NAME", credentials.data_table_name, quote_mode="never"
-        )
 
     return {"message": "Credentials saved to .env"}
 
