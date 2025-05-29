@@ -241,13 +241,10 @@ class CelonisConnectionManager:
                 "concept:name": activities_columns.find("concept:name"),
                 "time:timestamp": activities_columns.find("time:timestamp"),
                 "org:resource": activities_columns.find("org:resource"),
-                "org:group": activities_columns.find(
-                    "org:group", default=activities_columns.find("Resource")
-                ),
+                "org:group": activities_columns.find("org:group"),
             },
             data_model=self.data_model,
         )
-
         return df.to_pandas()
 
     def get_dataframe_from_celonis(

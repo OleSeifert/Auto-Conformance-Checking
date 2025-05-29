@@ -31,3 +31,4 @@ class ColumnMapping(BaseModel):
     activity_column: str
     timestamp_column: str
     resource_1_column: Optional[str] = None
+    group_column: Optional[str] = None
