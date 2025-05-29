@@ -131,3 +131,11 @@ class LogSkeleton:
             occurences per trace.
         """
         return self._skeleton["activ_freq"]
+
+    def get_skeleton(self) -> Dict[str, Any]:
+        """Returns the log skeleton.
+
+        Returns:
+            The log skeleton.
+        """
+        return self._skeleton

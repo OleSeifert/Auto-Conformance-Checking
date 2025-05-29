@@ -4,35 +4,14 @@ It contains several 'utility' endpoints that are used in the setup of
 the application and the general configuration for event logs.
 """
 
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from dotenv import dotenv_values, set_key
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel
+
+from backend.api.models.schemas.setup_models import CelonisCredentials, ColumnMapping
 
 router = APIRouter(prefix="/api/setup", tags=["Setup"])
-
-
-# **************** Pydantic classes for validation ****************
-
-
-class CelonisCredentials(BaseModel):
-    """Defines the Celonis credentials required for the connection."""
-
-    celonis_base_url: str
-    celonis_data_pool_name: str
-    celonis_data_model_name: str
-    api_token: str
-    data_table_name: Optional[str] = None
-
-
-class ColumnMapping(BaseModel):
-    """Defines the column mapping for the event log."""
-
-    case_id_column: str
-    activity_column: str
-    timestamp_column: str
-    resource_1_column: Optional[str] = None
 
 
 # **************** Endpoints ****************

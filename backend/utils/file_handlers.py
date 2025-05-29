@@ -32,7 +32,7 @@ def process_xes_file(file_content: bytes) -> pd.DataFrame:
         tmp_file.write(file_content)
         tmp_file.close()  # Close the file before reading it
         tmp_path = tmp_file.name
-
+        
         # Read the XES file using pm4py
         log = pm4py.read_xes(tmp_path)  # type: ignore
 
@@ -48,6 +48,7 @@ def process_xes_file(file_content: bytes) -> pd.DataFrame:
         # Clean up the temporary file
         if os.path.exists(tmp_file.name):
             os.unlink(tmp_file.name)
+
 
 
 def process_csv_file(file_content: bytes) -> pd.DataFrame:

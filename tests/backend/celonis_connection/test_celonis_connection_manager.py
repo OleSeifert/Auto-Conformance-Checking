@@ -43,19 +43,15 @@ def mock_celonis_connection_manager():
     with patch(
         "backend.celonis_connection.celonis_connection_manager.get_celonis"
     ) as mock_get_celonis:
-        with patch.object(
-            CelonisConnectionManager,
-            "acquire_api_token",
-            return_value="mock-token",
-        ):
-            mock_celonis = MagicMock()
-            mock_get_celonis.return_value = mock_celonis
+        mock_celonis = MagicMock()
+        mock_get_celonis.return_value = mock_celonis
 
-            manager = CelonisConnectionManager(
-                base_url="http://mock-url",
-                data_pool_name="mock-pool",
-                data_model_name="mock-model",
-            )
+        manager = CelonisConnectionManager(
+            base_url="http://mock-url",
+            data_pool_name="mock-pool",
+            data_model_name="mock-model",
+            api_token="mock-token",
+        )
         return manager
 
 
@@ -514,35 +510,3 @@ def test_get_data_model_no_data_model(
     mock_celonis_connection_manager.data_model = None  # type: ignore
     result = mock_celonis_connection_manager.get_data_model()
     assert result is None
-
-
-def test_acquire_api_token_without_parameter(
-    mock_celonis_connection_manager: CelonisConnectionManager,
-):
-    """Test acquiring an API token.
-
-    :param mock_celonis_connection_manager: Mock
-        CelonisConnectionManager object.
-    """
-    with patch(
-        "backend.celonis_connection.celonis_connection_manager.environ.get"
-    ) as mock_get_key:
-        mock_get_key.return_value = "mock-token"
-        result = mock_celonis_connection_manager.acquire_api_token()
-        assert result == "mock-token"
-
-
-def test_acquire_api_token_with_parameter(
-    mock_celonis_connection_manager: CelonisConnectionManager,
-):
-    """Test acquiring an API token with a parameter.
-
-    :param mock_celonis_connection_manager: Mock
-        CelonisConnectionManager object.
-    """
-    with patch(
-        "backend.celonis_connection.celonis_connection_manager.set_key"
-    ) as mock_set_key:
-        mock_set_key.return_value = "mock-token"
-        result = mock_celonis_connection_manager.acquire_api_token("mock-token")
-        assert result == "mock-token"
