@@ -6,6 +6,7 @@ from typing import Dict, List
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
 from backend.api.celonis import get_celonis_connection
+from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
 from backend.api.models.schemas.resource_based_models import (
     OrganizationalRole,
@@ -20,6 +21,7 @@ from backend.celonis_connection.celonis_connection_manager import (
 from backend.conformance_checking.resource_based import ResourceBased
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
+MODULE_NAME = "resource_based"
 
 
 @router.post("/compute", status_code=202)
@@ -39,9 +41,7 @@ async def compute_sna_metrics(
         A dictionary containing the job ID of the scheduled task.
     """
     job_id = str(uuid.uuid4())
-    request.app.state.jobs[job_id] = JobStatus(
-        module="resource_based", status="pending"
-    )
+    request.app.state.jobs[job_id] = JobStatus(module=MODULE_NAME, status="pending")
     background_tasks.add_task(
         compute_and_store_resource_based_metrics,
         request.app,
@@ -65,6 +65,8 @@ async def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNA
     Returns:
         The Handover of Work metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("handover_of_work", {})
@@ -83,6 +85,8 @@ async def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMe
     Returns:
         The Subcontracting metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("subcontracting", {})
@@ -101,6 +105,8 @@ async def get_working_together_metric(job_id: str, request: Request) -> List[SNA
     Returns:
         The Working Together metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("working_together", {})
@@ -121,6 +127,8 @@ async def get_similar_activities_metric(
     Returns:
         The Similar Activities metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("similar_activities", {})
@@ -144,6 +152,8 @@ async def get_organizational_roles_result(
     Returns:
         A list of OrganizationalRole objects representing the discovered roles.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("organizational_roles", [])
 
 
@@ -551,6 +561,8 @@ async def get_group_relative_focus_metric(
     Returns:
         A dictionary containing the Group Relative Focus metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
@@ -574,6 +586,8 @@ async def get_group_relative_stake_metric(
     Returns:
         A dictionary containing the Group Relative Stake metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
@@ -597,6 +611,8 @@ async def get_group_coverage_metric(
     Returns:
         A dictionary containing the Group Coverage metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
@@ -620,6 +636,8 @@ async def get_group_member_contribution_metric(
     Returns:
         A dictionary containing the Group Member Contribution metric.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})

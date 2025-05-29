@@ -6,6 +6,7 @@ from typing import Dict
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
 from backend.api.celonis import get_celonis_connection
+from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
 from backend.api.tasks.temporal_profile_tasks import (
     compute_and_store_temporal_conformance_result,
@@ -16,6 +17,7 @@ from backend.celonis_connection.celonis_connection_manager import (
 from backend.conformance_checking.temporal_profile import ConformanceResultType
 
 router = APIRouter(prefix="/api/temporal-profile", tags=["Temporal Profile CC"])
+MODULE_NAME = "temporal"
 
 
 @router.post("/compute-result", status_code=202)
@@ -41,7 +43,7 @@ async def compute_temporal_conformance_result(
         A dictionary containing the job ID of the scheduled task.
     """
     job_id = str(uuid.uuid4())
-    request.app.state.jobs[job_id] = JobStatus(module="temporal", status="pending")
+    request.app.state.jobs[job_id] = JobStatus(module=MODULE_NAME, status="pending")
     background_tasks.add_task(
         compute_and_store_temporal_conformance_result,
         request.app,
@@ -72,6 +74,8 @@ async def get_temporal_conformance_result(
     Raises:
         HTTPException: If the job is not found or if the result is not available.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     job: JobStatus = request.app.state.jobs.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail=f"Job with ID {job_id} not found")

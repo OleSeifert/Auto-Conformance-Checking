@@ -6,6 +6,7 @@ from typing import Dict, List
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
 from backend.api.celonis import get_celonis_connection
+from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
 from backend.api.tasks.log_skeleton_tasks import compute_and_store_log_skeleton
 from backend.celonis_connection.celonis_connection_manager import (
@@ -13,6 +14,7 @@ from backend.celonis_connection.celonis_connection_manager import (
 )
 
 router = APIRouter(prefix="/api/log-skeleton", tags=["Log Skeleton CC"])
+MODULE_NAME = "log_skeleton"
 
 
 @router.post("/compute-skeleton", status_code=202)
@@ -39,7 +41,7 @@ async def compute_log_skeleton(
     job_id = str(uuid.uuid4())
 
     # Intialize the record in the app state
-    request.app.state.jobs[job_id] = JobStatus(module="log_skeleton", status="pending")
+    request.app.state.jobs[job_id] = JobStatus(module=MODULE_NAME, status="pending")
 
     # Schedule the worker
     background_tasks.add_task(
@@ -65,6 +67,8 @@ def get_equivalence(job_id: str, request: Request) -> List[List[str]]:
     Returns:
         A list of lists containing the equivalence relations for the specified job.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("equivalence", [])
 
 
@@ -80,6 +84,8 @@ def get_always_after(job_id: str, request: Request) -> List[List[str]]:
     Returns:
         A list of lists containing the always-after relations for the specified job.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("always_after", [])
 
 
@@ -95,6 +101,8 @@ def get_always_before(job_id: str, request: Request) -> List[List[str]]:
     Returns:
         A list of lists containing the always-before relations for the specified job.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("always_before", [])
 
 
@@ -110,6 +118,8 @@ def get_never_together(job_id: str, request: Request) -> List[List[str]]:
     Returns:
         A list of lists containing the never-together relations for the specified job.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("never_together", [])
 
 
@@ -125,6 +135,8 @@ def get_directly_follows(job_id: str, request: Request) -> List[List[str]]:
     Returns:
         A list of lists containing the directly-follows relations for the specified job.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("directly_follows", [])
 
 
@@ -140,4 +152,6 @@ def get_activity_frequencies(job_id: str, request: Request) -> Dict[str, List[in
     Returns:
         A dictionary containing the activity frequencies for the specified job.
     """
+    verify_correct_job_module(job_id, request, MODULE_NAME)
+
     return request.app.state.jobs[job_id].result.get("activ_freq", {})
