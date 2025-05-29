@@ -160,7 +160,7 @@ async def get_organizational_roles_result(
 # **************** Resource Profiles ****************
 
 
-@router.get("/resource-profile/distinct-activities/", response_model=int)
+@router.get("/resource-profile/distinct-activities", response_model=int)
 async def get_distinct_activities(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time."),
