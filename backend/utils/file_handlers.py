@@ -27,26 +27,28 @@ def process_xes_file(file_content: bytes) -> pd.DataFrame:
         ValueError: If the file cannot be processed.
     """
     # Create a temporary file to store the uploaded content
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".xes") as tmp_file:
+    tmp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".xes")
+    try:
         tmp_file.write(file_content)
+        tmp_file.close()  # Close the file before reading it
         tmp_path = tmp_file.name
+        
+        # Read the XES file using pm4py
+        log = pm4py.read_xes(tmp_path)  # type: ignore
 
-        try:
-            # Read the XES file using pm4py
-            log = pm4py.read_xes(tmp_path)  # type: ignore
+        # Check if the log is already a DataFrame, if not convert it
+        if not isinstance(log, pd.DataFrame):
+            # Convert the log to a DataFrame
+            log = log_variants.to_data_frame.apply(log)  # type: ignore
 
-            # Check if the log is already a DataFrame, if not convert it
-            if not isinstance(log, pd.DataFrame):
-                # Convert the log to a DataFrame
-                log = log_variants.to_data_frame.apply(log)  # type: ignore
+        return log  # type: ignore
+    except Exception as e:
+        raise ValueError(f"Failed to process XES file {str(e)}") from e
+    finally:
+        # Clean up the temporary file
+        if os.path.exists(tmp_file.name):
+            os.unlink(tmp_file.name)
 
-            return log  # type: ignore
-        except Exception as e:
-            raise ValueError(f"Failed to process XES file {str(e)}") from e
-        finally:
-            # Clean up the temporary file
-            if os.path.exists(tmp_path):
-                os.unlink(tmp_path)
 
 
 def process_csv_file(file_content: bytes) -> pd.DataFrame:
