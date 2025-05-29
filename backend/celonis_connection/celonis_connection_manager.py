@@ -235,7 +235,7 @@ class CelonisConnectionManager:
 
         activities_columns = table.get_columns()
 
-        df = pqlDataFrame(
+        pql_df = pqlDataFrame(
             {
                 "case:concept:name": activities_columns.find("case:concept:name"),
                 "concept:name": activities_columns.find("concept:name"),
@@ -245,7 +245,9 @@ class CelonisConnectionManager:
             },
             data_model=self.data_model,
         )
-        return df.to_pandas()
+        pandas_df: pd.DataFrame = pql_df.to_pandas()
+        pandas_df["time:timestamp"] = pandas_df["time:timestamp"].dt.tz_localize("UTC")  # type: ignore
+        return pandas_df
 
     def get_dataframe_from_celonis(
         self,
