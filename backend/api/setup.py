@@ -9,7 +9,7 @@ from typing import Dict, List
 from dotenv import dotenv_values, set_key
 from fastapi import APIRouter, HTTPException, Request
 
-from backend.api.models.schemas.setup_models import CelonisCredentials, ColumnMapping
+from backend.api.models.schemas.setup_models import CelonisCredentials
 
 router = APIRouter(prefix="/api/setup", tags=["Setup"])
 
@@ -62,25 +62,6 @@ async def celonis_credentials(credentials: CelonisCredentials):
     set_key(".env", "API_TOKEN", credentials.api_token, quote_mode="never")
 
     return {"message": "Credentials saved to .env"}
-
-
-@router.post("/map-columns")
-async def map_columns(column_mapping: ColumnMapping, request: Request):
-    """Saves the column mapping to the app state.
-
-    Args:
-        column_mapping: The column mapping to be saved. This should be a
-          ColumnMapping object.
-        request: The FastAPI request object. This is used to access the app state
-          and save the column mapping.
-
-    Returns:
-        A dictionary containing a message indicating the success of the
-        operation.
-    """
-    # Save the column mapping as a dictionary in the request state
-    request.app.state.column_mapping = column_mapping.model_dump()
-    return {"message": "Column mapping saved."}
 
 
 @router.get("/get-column-names")
