@@ -77,7 +77,6 @@
 
 #     return {"columns": df.columns.tolist()}
 
-
 """Contains the API routes to handle logs and log-related operations.
 
 This module defines the FastAPI routes for managing logs, including

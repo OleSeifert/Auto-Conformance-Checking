@@ -103,7 +103,6 @@
 #             f"Unsupported file extension: {file_extension}. "
 #             "Only .csv and .xes are supported."
 #         )
-
 """Contains utility functions for handling file uploads."""
 
 import io
