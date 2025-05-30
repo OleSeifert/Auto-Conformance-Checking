@@ -97,21 +97,19 @@
 // };
 
 // export default MappingPage;
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box, Button, Card, CardContent, Typography,
   FormControl, InputLabel, MenuItem, Select, FormHelperText
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MAPPING_COLUMNS } from './config';
+import { API_BASE } from './config';
 
 const MappingPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   const columns = location.state?.columns || [];
-  const fileType = location.state?.fileType || 'csv';
-  const isXES = fileType === 'xes';
 
   const [caseIdCol, setCaseIdCol] = useState('');
   const [activityCol, setActivityCol] = useState('');
@@ -119,18 +117,10 @@ const MappingPage = () => {
   const [resourceCol1, setResourceCol1] = useState('');
   const [resourceCol2, setResourceCol2] = useState('');
 
-  const reservedCols = ['concept:name', 'Activity', 'time:timestamp'];
-  const resourceOptions = isXES
-    ? columns.filter(col => !reservedCols.includes(col))
-    : columns;
+  const selectedValues = [caseIdCol, activityCol, timestampCol, resourceCol1, resourceCol2];
 
-  useEffect(() => {
-    if (isXES) {
-      setCaseIdCol('concept:name');
-      setActivityCol('Activity');
-      setTimestampCol('time:timestamp');
-    }
-  }, [columns, isXES]);
+  const getFilteredOptions = (currentValue) =>
+    columns.filter((col) => col === currentValue || !selectedValues.includes(col));
 
   const handleSubmit = async () => {
     const payload = {
@@ -138,14 +128,14 @@ const MappingPage = () => {
       activity_col: activityCol,
       timestamp_col: timestampCol,
       resource_col1: resourceCol1,
-      resource_col2: resourceCol2
+      resource_col2: resourceCol2,
     };
 
     try {
-      const res = await fetch(`${MAPPING_COLUMNS}`, {
+      const res = await fetch(`${API_BASE}/mapping-columns`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       const result = await res.json();
@@ -159,14 +149,12 @@ const MappingPage = () => {
     label,
     value,
     setter,
-    disabled = false,
-    required = true,
-    options = columns
+    required = true
   ) => (
-    <FormControl fullWidth required={required} error={required && !value} disabled={disabled}>
+    <FormControl fullWidth required={required} error={required && !value}>
       <InputLabel>{label}</InputLabel>
       <Select value={value} onChange={(e) => setter(e.target.value)} label={label}>
-        {options.map((col, i) => (
+        {getFilteredOptions(value).map((col, i) => (
           <MenuItem key={i} value={col}>
             {col}
           </MenuItem>
@@ -181,12 +169,14 @@ const MappingPage = () => {
       <CardContent>
         <Typography variant="h5">Map Columns</Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-          {renderDropdown("Case ID Column", caseIdCol, setCaseIdCol, isXES)}
-          {renderDropdown("Activity Column", activityCol, setActivityCol, isXES)}
-          {renderDropdown("Timestamp Column", timestampCol, setTimestampCol, isXES)}
-          {renderDropdown("Resource Column (optional)", resourceCol1, setResourceCol1, false, false, resourceOptions)}
-          {renderDropdown("Resource 2 Column (optional)", resourceCol2, setResourceCol2, false, false, resourceOptions)}
-          <Button variant="contained" onClick={handleSubmit}>Confirm Mapping</Button>
+          {renderDropdown("Case ID Column", caseIdCol, setCaseIdCol)}
+          {renderDropdown("Activity Column", activityCol, setActivityCol)}
+          {renderDropdown("Timestamp Column", timestampCol, setTimestampCol)}
+          {renderDropdown("Resource Column (optional)", resourceCol1, setResourceCol1, false)}
+          {renderDropdown("Resource 2 Column (optional)", resourceCol2, setResourceCol2, false)}
+          <Button variant="contained" onClick={handleSubmit}>
+            Confirm Mapping
+          </Button>
         </Box>
       </CardContent>
     </Card>
