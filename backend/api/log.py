@@ -148,3 +148,4 @@ async def commit_log_to_celonis(
     request.app.state.current_log_columns = []
 
     return {"message": "Table created successfully"}
+

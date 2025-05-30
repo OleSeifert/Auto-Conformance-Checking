@@ -49,6 +49,7 @@ class ResourceBased:
         activity_col: Optional[str] = None,
         timestamp_col: Optional[str] = None,
         resource_col: Optional[str] = None,
+        group_col: Optional[str] = None,
     ) -> None:
         """Initializes the ResourceBased class with an event log.
 
@@ -62,6 +63,7 @@ class ResourceBased:
               to None.
             resource_col (optional): The name of the Resource column. Defaults
               to None.
+            group_col (optional): The name of the Group column. Defaults to None.
         """
         self.log = log
         self._handover_of_work: Optional[SNA] = None
@@ -74,6 +76,7 @@ class ResourceBased:
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
         self.resource_col: Optional[str] = resource_col
+        self.group_col: Optional[str] = group_col
 
     # **************** Social Network Analysis ****************
 
@@ -593,9 +596,16 @@ class ResourceBased:
                 "Resource column name is not provided. "
                 "Please provide a resource column name."
             )
+        if self.group_col is None:
+            raise ValueError(
+                "Group column name is not provided. Please provide a group column name."
+            )
 
         self._organizational_diagnostics = org_algorithm.apply_from_group_attribute(
-            self.log, parameters={org_algorithm.Parameters.GROUP_KEY: self.resource_col}
+            self.log,
+            parameters={
+                org_algorithm.Parameters.GROUP_KEY: self.group_col,
+            },
         )
 
     def get_group_relative_focus(self) -> Dict[str, Dict[str, float]]:
