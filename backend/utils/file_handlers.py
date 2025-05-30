@@ -103,3 +103,4 @@ def process_file(file_content: bytes, file_extension: str) -> pd.DataFrame:
             f"Unsupported file extension: {file_extension}. "
             "Only .csv and .xes are supported."
         )
+
