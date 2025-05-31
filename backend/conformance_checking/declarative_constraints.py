@@ -367,7 +367,7 @@ class DeclerativeConstraints:
         self,
         list_of_rules: Optional[list] = None,
         run_from_scratch: Optional[bool] = False,
-    ) -> None:
+    ) -> Dict[str, Dict[str, Any]]:
         """
         Runs conformance checking for all rules and stores results in memory.
         Useful for poling when all rules need to be pre-computed in the background
@@ -377,7 +377,7 @@ class DeclerativeConstraints:
                                              If None, runs for all valid rules.
 
         Returns:
-            None : Just used for computing all rules and storing in the memory
+            Dictionary of all violations
         """
         if list_of_rules is None:
             list_of_rules = self.valid_rules
