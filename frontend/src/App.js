@@ -1,27 +1,7 @@
-// import React from 'react';
-// import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import UploadPage from './UploadPage';
-// import MappingPage from './MappingPage';
-// import ResultsPage from './ResultsPage';
-// import SidebarLayout from './SidebarLayout';
-// import CssBaseline from '@mui/material/CssBaseline';
-//
-// function App() {
-//   return (
-//     <Router>
-//       <CssBaseline />
-//       <SidebarLayout>
-//         <Routes>
-//           <Route path="/" element={<UploadPage />} />
-//           <Route path="/mapping" element={<MappingPage />} />
-//           <Route path="/results" element={<ResultsPage />} />
-//         </Routes>
-//       </SidebarLayout>
-//     </Router>
-//   );
-// }
-//
-// export default App;
+/*
+This is the main entry point for the React application.
+*/
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import CelonisCredentials from './CelonisCredentials';

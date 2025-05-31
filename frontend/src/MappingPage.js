@@ -1,16 +1,16 @@
-// import React, { useState, useEffect } from 'react';
+// import React, { useState } from 'react';
 // import {
 //   Box, Button, Card, CardContent, Typography,
 //   FormControl, InputLabel, MenuItem, Select, FormHelperText
 // } from '@mui/material';
-// import { useNavigate } from 'react-router-dom';
+// import { useLocation, useNavigate } from 'react-router-dom';
 // import { API_BASE } from './config';
 
 // const MappingPage = () => {
+//   const location = useLocation();
 //   const navigate = useNavigate();
 
-//   const [columns, setColumns] = useState([]);
-//   const [isXES, setIsXES] = useState(false);
+//   const columns = location.state?.columns || [];
 
 //   const [caseIdCol, setCaseIdCol] = useState('');
 //   const [activityCol, setActivityCol] = useState('');
@@ -18,58 +18,47 @@
 //   const [resourceCol1, setResourceCol1] = useState('');
 //   const [resourceCol2, setResourceCol2] = useState('');
 
-//   useEffect(() => {
-//     const fetchColumns = async () => {
-//       try {
-//         const res = await fetch(`${API_BASE}/get-columns`);
-//         const result = await res.json();
-//         const cols = result.columns || [];
+//   const selectedValues = [caseIdCol, activityCol, timestampCol, resourceCol1, resourceCol2];
 
-//         setColumns(cols);
-
-//         // If it's .xes, use first 3 as fixed values
-//         if (cols.length >= 3 && cols[0].toLowerCase().includes('case')) {
-//           setIsXES(true);
-//           setCaseIdCol(cols[0]);
-//           setActivityCol(cols[1]);
-//           setTimestampCol(cols[2]);
-//         }
-//       } catch (err) {
-//         alert('Failed to fetch column names: ' + err.message);
-//       }
-//     };
-
-//     fetchColumns();
-//   }, []);
+//   const getFilteredOptions = (currentValue) =>
+//     columns.filter((col) => col === currentValue || !selectedValues.includes(col));
 
 //   const handleSubmit = async () => {
+//     // const payload = {
+//     //   case_id_col: caseIdCol,
+//     //   activity_col: activityCol,
+//     //   timestamp_col: timestampCol,
+//     //   resource_col1: resourceCol1,
+//     //   resource_col2: resourceCol2
+//     // };
 //     const payload = {
-//       case_id_col: caseIdCol,
-//       activity_col: activityCol,
-//       timestamp_col: timestampCol,
-//       resource_col1: resourceCol1,
-//       resource_col2: resourceCol2
+//       case_id_column: caseIdCol,
+//       activity_column: activityCol,
+//       timestamp_column: timestampCol,
+//       resource_1_column: resourceCol1,
+//       resource_2_column: resourceCol2
 //     };
 
 //     try {
-//       const res = await fetch(`${API_BASE}/mapping-columns`, {
+//       const res = await fetch(`${API_BASE}/api/logs/commit-log-to-celonis`, {
 //         method: 'POST',
 //         headers: { 'Content-Type': 'application/json' },
 //         body: JSON.stringify(payload)
 //       });
 
+//       if (!res.ok) throw new Error(await res.text());
 //       const result = await res.json();
 //       navigate('/results', { state: result });
 //     } catch (err) {
-//       alert('Failed to send mappings: ' + err.message);
+//       alert('Failed to commit logs: ' + err.message);
 //     }
 //   };
 
-//   const renderDropdown = (label, value, setter, disabled = false, required = true) => (
-//     <FormControl fullWidth required={required} error={required && !value} disabled={disabled}>
+//   const renderDropdown = (label, value, setter, required = true) => (
+//     <FormControl fullWidth required={required} error={required && !value}>
 //       <InputLabel>{label}</InputLabel>
 //       <Select value={value} onChange={(e) => setter(e.target.value)} label={label}>
-//         {columns.map((col, i) => (
+//         {getFilteredOptions(value).map((col, i) => (
 //           <MenuItem key={i} value={col}>
 //             {col}
 //           </MenuItem>
@@ -84,11 +73,11 @@
 //       <CardContent>
 //         <Typography variant="h5">Map Columns</Typography>
 //         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-//           {renderDropdown("Case ID Column", caseIdCol, setCaseIdCol, isXES)}
-//           {renderDropdown("Activity Column", activityCol, setActivityCol, isXES)}
-//           {renderDropdown("Timestamp Column", timestampCol, setTimestampCol, isXES)}
-//           {renderDropdown("Resource Column (optional)", resourceCol1, setResourceCol1, false, false)}
-//           {renderDropdown("Resource 2 Column (optional)", resourceCol2, setResourceCol2, false, false)}
+//           {renderDropdown("Case ID Column", caseIdCol, setCaseIdCol)}
+//           {renderDropdown("Activity Column", activityCol, setActivityCol)}
+//           {renderDropdown("Timestamp Column", timestampCol, setTimestampCol)}
+//           {renderDropdown("Resource Column (optional)", resourceCol1, setResourceCol1, false)}
+//           {renderDropdown("Resource 2 Column (optional)", resourceCol2, setResourceCol2, false)}
 //           <Button variant="contained" onClick={handleSubmit}>Confirm Mapping</Button>
 //         </Box>
 //       </CardContent>
@@ -97,13 +86,15 @@
 // };
 
 // export default MappingPage;
+
+
 import React, { useState } from 'react';
 import {
   Box, Button, Card, CardContent, Typography,
-  FormControl, InputLabel, MenuItem, Select, FormHelperText
+  FormControl, InputLabel, MenuItem, Select, FormHelperText, CircularProgress
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { API_BASE } from './config';
+import { COMMIT_LOG_TO_CELONIS } from './config';
 
 const MappingPage = () => {
   const location = useLocation();
@@ -117,6 +108,8 @@ const MappingPage = () => {
   const [resourceCol1, setResourceCol1] = useState('');
   const [resourceCol2, setResourceCol2] = useState('');
 
+  const [loading, setLoading] = useState(false);
+
   const selectedValues = [caseIdCol, activityCol, timestampCol, resourceCol1, resourceCol2];
 
   const getFilteredOptions = (currentValue) =>
@@ -124,33 +117,38 @@ const MappingPage = () => {
 
   const handleSubmit = async () => {
     const payload = {
-      case_id_col: caseIdCol,
-      activity_col: activityCol,
-      timestamp_col: timestampCol,
-      resource_col1: resourceCol1,
-      resource_col2: resourceCol2,
+      case_id_column: caseIdCol,
+      activity_column: activityCol,
+      timestamp_column: timestampCol,
+      resource_1_column: resourceCol1,
+      resource_2_column: resourceCol2
     };
 
     try {
-      const res = await fetch(`${API_BASE}/mapping-columns`, {
+      setLoading(true);
+      const res = await fetch(COMMIT_LOG_TO_CELONIS, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload)
       });
 
       const result = await res.json();
-      navigate('/results', { state: result });
+      setLoading(false);
+
+      if (result.message === "Table created successfully") {
+        alert(result.message);
+        navigate('/results', { state: result });
+      } else {
+        alert('Unexpected response from server.');
+      }
+
     } catch (err) {
-      alert('Failed to send mappings: ' + err.message);
+      setLoading(false);
+      alert('Failed to commit logs: ' + err.message);
     }
   };
 
-  const renderDropdown = (
-    label,
-    value,
-    setter,
-    required = true
-  ) => (
+  const renderDropdown = (label, value, setter, required = true) => (
     <FormControl fullWidth required={required} error={required && !value}>
       <InputLabel>{label}</InputLabel>
       <Select value={value} onChange={(e) => setter(e.target.value)} label={label}>
@@ -174,9 +172,16 @@ const MappingPage = () => {
           {renderDropdown("Timestamp Column", timestampCol, setTimestampCol)}
           {renderDropdown("Resource Column (optional)", resourceCol1, setResourceCol1, false)}
           {renderDropdown("Resource 2 Column (optional)", resourceCol2, setResourceCol2, false)}
-          <Button variant="contained" onClick={handleSubmit}>
-            Confirm Mapping
-          </Button>
+
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <Button variant="contained" onClick={handleSubmit}>
+              Confirm Mapping
+            </Button>
+          )}
         </Box>
       </CardContent>
     </Card>

@@ -1,4 +1,5 @@
-// import React, { useState } from 'react';
+
+// import React, { useState, useEffect } from 'react';
 // import {
 //   Box,
 //   Button,
@@ -6,271 +7,327 @@
 //   CardContent,
 //   Typography,
 //   Divider,
+//   MenuItem,
+//   Select,
+//   InputLabel,
+//   FormControl,
+//   CircularProgress
 // } from '@mui/material';
 // import Graph from './Graph';
 // import Table from './Table';
-//
-// const dummyData = {
-//   log_skeleton: {
-//     graph: {
-//       nodes: [
-//         { id: 'Start' },
-//         { id: 'Validate' },
-//         { id: 'Approve' },
-//         { id: 'Reject' },
-//         { id: 'End' }
-//       ],
-//       edges: [
-//         { from: "Start", to: 'Validate', label: 'always before' },
-//         { from: 'Validate', to: 'Approve', label: 'sometimes before' },
-//         { from: 'Validate', to: 'Reject', label: 'sometimes before' },
-//         { from: 'Approve', to: 'End', label: 'always before' },
-//         { from: 'Reject', to: 'End', label: 'always before' }
-//       ]
-//     },
-//     table: [
-//       { constraint: 'Start always before Validate', violated: 'No' },
-//       { constraint: 'Validate sometimes before Approve', violated: 'Yes' },
-//       { constraint: 'Approve always before End', violated: 'No' },
-//       { constraint: 'Reject always before End', violated: 'No' }
-//     ]
-//   },
-//
-//   temporal: {
-//     graph: {
-//       nodes: [
-//         { id: 'Submit Request' },
-//         { id: 'Review Request' },
-//         { id: 'Finalize' }
-//       ],
-//       edges: [
-//         { from: 'Submit Request', to: 'Review Request', label: 'avg 2.1d' },
-//         { from: 'Review Request', to: 'Finalize', label: 'avg 1.3d' }
-//       ]
-//     },
-//     table: [
-//       { activity: 'Submit Request', avg_duration: '1.8 days' },
-//       { activity: 'Review Request', avg_duration: '2.1 days' },
-//       { activity: 'Finalize', avg_duration: '0.9 days' },
-//       { activity: 'Total Flow', avg_duration: '4.8 days' }
-//     ]
-//   },
-//
-//   declarative: {
-//     graph: {
-//       nodes: [
-//         { id: 'Login' },
-//         { id: 'Edit' },
-//         { id: 'Save' },
-//         { id: 'Logout' }
-//       ],
-//       edges: [
-//         { from: 'Login', to: 'Logout', label: 'eventually follows' },
-//         { from: 'Edit', to: 'Save', label: 'response' },
-//         { from: 'Save', to: 'Edit', label: 'not co-exist' }
-//       ]
-//     },
-//     table: [
-//       { rule: 'Login must eventually be followed by Logout', satisfied: 'Yes' },
-//       { rule: 'Edit should be followed by Save', satisfied: 'No' },
-//       { rule: 'Edit and Save should not co-exist', satisfied: 'Yes' },
-//       { rule: 'No duplicate Logout allowed', satisfied: 'Yes' }
-//     ]
-//   },
-//
-//   resource: {
-//     graph: {
-//       nodes: [
-//         { id: 'Alice' },
-//         { id: 'Bob' },
-//         { id: 'Charlie' },
-//         { id: 'Diana' }
-//       ],
-//       edges: [
-//         { from: 'Alice', to: 'Bob', label: 'handover' },
-//         { from: 'Bob', to: 'Charlie', label: 'handover' },
-//         { from: 'Charlie', to: 'Diana', label: 'handover' },
-//         { from: 'Diana', to: 'Alice', label: 'handover' }
-//       ]
-//     },
-//     table: [
-//       { resource: 'Alice', actions: 12, handovers: 3 },
-//       { resource: 'Bob', actions: 15, handovers: 4 },
-//       { resource: 'Charlie', actions: 8, handovers: 2 },
-//       { resource: 'Diana', actions: 10, handovers: 3 }
-//     ]
-//   }
-// };
-//
+// import {
+//   COMPUTE_SKELETON,
+//   GET_EQUVALENCE,
+//   GET_ALWAYS_BEFORE,
+//   GET_ALWAYS_AFTER,
+//   GET_NEVER_TOGETHER,
+//   GET_DIRECTLY_FOLLOWS,
+//   GET_ACTIVITY_FREQUENCIES
+// } from './config';
+
+// const LOG_SKELETON_OPTIONS = [
+//   { label: "Get Equivalence", value: "get_equivalence", endpoint: GET_EQUVALENCE },
+//   { label: "Always Before", value: "get_always_before", endpoint: GET_ALWAYS_BEFORE },
+//   { label: "Always After", value: "get_always_after", endpoint: GET_ALWAYS_AFTER },
+//   { label: "Never Together", value: "get_never_together", endpoint: GET_NEVER_TOGETHER },
+//   { label: "Directly Follows", value: "get_directly_follows", endpoint: GET_DIRECTLY_FOLLOWS },
+//   { label: "Activity Frequencies", value: "get_activity_frequencies", endpoint: GET_ACTIVITY_FREQUENCIES }
+// ];
+
 // const ResultsPage = () => {
 //   const [view, setView] = useState('log_skeleton');
-//   const current = dummyData[view];
-//
+//   const [jobId, setJobId] = useState(null);
+//   const [selectedOption, setSelectedOption] = useState('');
+//   const [graphData, setGraphData] = useState([]);
+//   const [tableData, setTableData] = useState([]);
+//   const [loading, setLoading] = useState(false);
+
+//   useEffect(() => {
+//     const computeJob = async () => {
+//       try {
+//         const res = await fetch(COMPUTE_SKELETON, { method: 'POST' });
+//         const data = await res.json();
+//         setJobId(data.job_id);
+//       } catch (err) {
+//         alert('Error starting log skeleton computation: ' + err.message);
+//       }
+//     };
+//     computeJob();
+//   }, []);
+
+//   const handleOptionSelect = async (option) => {
+//     setSelectedOption(option.value);
+//     setGraphData([]);
+//     setTableData([]);
+//     setLoading(true);
+
+//     try {
+//       const res = await fetch(`${option.endpoint}/${jobId}`);
+//       const result = await res.json();
+//       setGraphData(result.graphs || []);
+//       setTableData(result.tables || []);
+//     } catch (err) {
+//       alert('Failed to fetch result: ' + err.message);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   const renderGraphAndTable = () => (
+//     <>
+//       {Array.isArray(graphData) && graphData.length > 0 ? (
+//         graphData.map((graph, idx) => (
+//           <Box key={idx} sx={{ mt: 4 }}>
+//             <Typography variant="h6">Graph {idx + 1}</Typography>
+//             <Graph graphData={graph} />
+//           </Box>
+//         ))
+//       ) : (
+//         <Typography color="text.secondary" sx={{ mt: 2 }}>
+//           No graph data
+//         </Typography>
+//       )}
+
+//       {Array.isArray(tableData) && tableData.length > 0 ? (
+//         tableData.map((table, idx) => (
+//           <Box key={idx} sx={{ mt: 4 }}>
+//             <Typography variant="h6">Table {idx + 1}</Typography>
+//             <Table headers={table.headers} rows={table.rows} />
+//           </Box>
+//         ))
+//       ) : (
+//         <Typography color="text.secondary" sx={{ mt: 2 }}>
+//           No table data
+//         </Typography>
+//       )}
+//     </>
+//   );
+
 //   return (
-//     <Card sx={{ mx: 'auto', mt: 4, maxWidth: 900, boxShadow: 3 }}>
+//     <Card sx={{ mx: 'auto', mt: 4, maxWidth: 1000, boxShadow: 3 }}>
 //       <CardContent>
 //         <Typography variant="h5" gutterBottom>
 //           Conformance Insights
 //         </Typography>
-//
-//         <Box sx={{ display: 'flex', gap: 2, my: 2, flexWrap: 'wrap' }}>
-//           <Button
-//             variant={view === 'log_skeleton' ? 'contained' : 'outlined'}
-//             onClick={() => setView('log_skeleton')}
-//           >
+
+//         <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
+//           <Button variant={view === 'log_skeleton' ? 'contained' : 'outlined'} onClick={() => setView('log_skeleton')}>
 //             Log Skeleton
 //           </Button>
-//           <Button
-//             variant={view === 'temporal' ? 'contained' : 'outlined'}
-//             onClick={() => setView('temporal')}
-//           >
+//           <Button variant={view === 'temporal' ? 'contained' : 'outlined'} onClick={() => setView('temporal')}>
 //             Temporal
 //           </Button>
-//           <Button
-//             variant={view === 'declarative' ? 'contained' : 'outlined'}
-//             onClick={() => setView('declarative')}
-//           >
+//           <Button variant={view === 'declarative' ? 'contained' : 'outlined'} onClick={() => setView('declarative')}>
 //             Declarative
 //           </Button>
-//           <Button
-//             variant={view === 'resource' ? 'contained' : 'outlined'}
-//             onClick={() => setView('resource')}
-//           >
+//           <Button variant={view === 'resource' ? 'contained' : 'outlined'} onClick={() => setView('resource')}>
 //             Resource
 //           </Button>
 //         </Box>
-//
+
 //         <Divider />
-//
+
 //         <Box sx={{ mt: 3 }}>
-//           {current?.graph && <Graph graphData={current.graph} />}
-//           {current?.table && <Table tableData={current.table} />}
-//           {!current?.graph && !current?.table && (
-//             <Typography color="text.secondary">
-//               ⚠ No data available for this conformance check.
-//             </Typography>
+//           {view === 'log_skeleton' && (
+//             <>
+//               <FormControl fullWidth sx={{ mb: 2 }}>
+//                 <InputLabel>Select Log Skeleton Operation</InputLabel>
+//                 <Select
+//                   value={selectedOption}
+//                   label="Select Log Skeleton Operation"
+//                   onChange={(e) =>
+//                     handleOptionSelect(
+//                       LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
+//                     )
+//                   }
+//                   disabled={!jobId}
+//                 >
+//                   {LOG_SKELETON_OPTIONS.map((opt) => (
+//                     <MenuItem key={opt.value} value={opt.value}>
+//                       {opt.label}
+//                     </MenuItem>
+//                   ))}
+//                 </Select>
+//               </FormControl>
+
+//               {loading ? (
+//                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+//                   <CircularProgress />
+//                 </Box>
+//               ) : (
+//                 renderGraphAndTable()
+//               )}
+//             </>
 //           )}
 //         </Box>
 //       </CardContent>
 //     </Card>
 //   );
 // };
-//
+
 // export default ResultsPage;
+
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Card, CardContent, Typography, Divider,
-  MenuItem, Select, FormControl, InputLabel
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Divider,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  CircularProgress
 } from '@mui/material';
 import Graph from './Graph';
 import Table from './Table';
-import { API_BASE } from './config';
+import {
+  COMPUTE_SKELETON,
+  GET_EQUVALENCE,
+  GET_ALWAYS_BEFORE,
+  GET_ALWAYS_AFTER,
+  GET_NEVER_TOGETHER,
+  GET_DIRECTLY_FOLLOWS,
+  GET_ACTIVITY_FREQUENCIES
+} from './config';
 
-// ✅ Custom labels with URLs per option
-const dropdownOptions = {
-  log_skeleton: [
-    { label: 'Log Skeleton A', endpoint: '/log_skeleton/a' },
-    { label: 'Log Skeleton B', endpoint: '/log_skeleton/b' }
-  ],
-  declarative: [
-    { label: 'Declare A', endpoint: '/declarative/a' },
-    { label: 'Declare B', endpoint: '/declarative/b' }
-  ],
-  resource: [
-    { label: 'Resource View A', endpoint: '/resource/a' },
-    { label: 'Resource View B', endpoint: '/resource/b' }
-  ]
-};
+const LOG_SKELETON_OPTIONS = [
+  { label: "Get Equivalence", value: "get_equivalence", endpoint: GET_EQUVALENCE },
+  { label: "Always Before", value: "get_always_before", endpoint: GET_ALWAYS_BEFORE },
+  { label: "Always After", value: "get_always_after", endpoint: GET_ALWAYS_AFTER },
+  { label: "Never Together", value: "get_never_together", endpoint: GET_NEVER_TOGETHER },
+  { label: "Directly Follows", value: "get_directly_follows", endpoint: GET_DIRECTLY_FOLLOWS },
+  { label: "Activity Frequencies", value: "get_activity_frequencies", endpoint: GET_ACTIVITY_FREQUENCIES }
+];
 
 const ResultsPage = () => {
   const [view, setView] = useState('log_skeleton');
-  const [dropdownSelection, setDropdownSelection] = useState('');
-  const [result, setResult] = useState({ graph: null, table: null });
+  const [jobId, setJobId] = useState(null);
+  const [selectedOption, setSelectedOption] = useState('');
+  const [graphData, setGraphData] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (view === 'temporal') {
-      fetch(`${API_BASE}/temporal`)
-        .then(res => res.json())
-        .then(data => setResult(data))
-        .catch(err => console.error('Failed to fetch temporal data:', err));
-    } else {
-      setResult({ graph: null, table: null });
-      setDropdownSelection('');
-    }
-  }, [view]);
+    const computeJob = async () => {
+      try {
+        const res = await fetch(COMPUTE_SKELETON, { method: 'POST' });
+        const data = await res.json();
+        setJobId(data.job_id);
+      } catch (err) {
+        alert('Error starting log skeleton computation: ' + err.message);
+      }
+    };
+    computeJob();
+  }, []);
 
-  const handleDropdownChange = async (e) => {
-    const selectedEndpoint = e.target.value;
-    setDropdownSelection(selectedEndpoint);
+  const handleOptionSelect = async (option) => {
+    setSelectedOption(option.value);
+    setGraphData([]);
+    setTableData([]);
+    setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE}${selectedEndpoint}`);
-      const data = await res.json();
-      setResult(data);
+      const res = await fetch(`${option.endpoint}/${jobId}`);
+      const result = await res.json();
+      setGraphData(result.graphs || []);
+      setTableData(result.tables || []);
     } catch (err) {
-      console.error(`Failed to fetch ${selectedEndpoint}:`, err);
+      alert('Failed to fetch result: ' + err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const showDropdown = view !== 'temporal';
-  const options = dropdownOptions[view] || [];
+  const renderGraphAndTable = () => {
+    const hasGraphs = Array.isArray(graphData) && graphData.length > 0;
+    const hasTables = Array.isArray(tableData) && tableData.length > 0;
+
+    return (
+      <>
+        {hasGraphs &&
+          graphData.map((graph, idx) => (
+            <Box key={idx} sx={{ mt: 4 }}>
+              <Typography variant="h6">Graph {idx + 1}</Typography>
+              <Graph graphData={graph} />
+            </Box>
+          ))}
+
+        {hasTables &&
+          tableData.map((table, idx) => (
+            <Box key={idx} sx={{ mt: 4 }}>
+              <Typography variant="h6">Table {idx + 1}</Typography>
+              <Table headers={table.headers} rows={table.rows} />
+            </Box>
+          ))}
+
+        {!hasGraphs && !hasTables && (
+          <Typography color="text.secondary" sx={{ mt: 2 }}>
+            No data to display.
+          </Typography>
+        )}
+      </>
+    );
+  };
 
   return (
-    <Card sx={{ mx: 'auto', mt: 4, maxWidth: 900, boxShadow: 3 }}>
+    <Card sx={{ mx: 'auto', mt: 4, maxWidth: 1000, boxShadow: 3 }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
           Conformance Insights
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: 2, my: 2, flexWrap: 'wrap' }}>
-          <Button
-            variant={view === 'log_skeleton' ? 'contained' : 'outlined'}
-            onClick={() => setView('log_skeleton')}
-          >
+        <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
+          <Button variant={view === 'log_skeleton' ? 'contained' : 'outlined'} onClick={() => setView('log_skeleton')}>
             Log Skeleton
           </Button>
-          <Button
-            variant={view === 'temporal' ? 'contained' : 'outlined'}
-            onClick={() => setView('temporal')}
-          >
+          <Button variant={view === 'temporal' ? 'contained' : 'outlined'} onClick={() => setView('temporal')}>
             Temporal
           </Button>
-          <Button
-            variant={view === 'declarative' ? 'contained' : 'outlined'}
-            onClick={() => setView('declarative')}
-          >
+          <Button variant={view === 'declarative' ? 'contained' : 'outlined'} onClick={() => setView('declarative')}>
             Declarative
           </Button>
-          <Button
-            variant={view === 'resource' ? 'contained' : 'outlined'}
-            onClick={() => setView('resource')}
-          >
+          <Button variant={view === 'resource' ? 'contained' : 'outlined'} onClick={() => setView('resource')}>
             Resource
           </Button>
         </Box>
 
-        {showDropdown && (
-          <FormControl fullWidth sx={{ mb: 2 }}>
-            <InputLabel>Select an option</InputLabel>
-            <Select
-              value={dropdownSelection}
-              onChange={handleDropdownChange}
-              label="Select an option"
-            >
-              {options.map((opt, i) => (
-                <MenuItem key={i} value={opt.endpoint}>
-                  {opt.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )}
-
         <Divider />
 
         <Box sx={{ mt: 3 }}>
-          {result.graph && <Graph graphData={result.graph} />}
-          {result.table && <Table tableData={result.table} />}
+          {view === 'log_skeleton' && (
+            <>
+              <FormControl fullWidth sx={{ mb: 2 }}>
+                <InputLabel>Select Log Skeleton Operation</InputLabel>
+                <Select
+                  value={selectedOption}
+                  label="Select Log Skeleton Operation"
+                  onChange={(e) =>
+                    handleOptionSelect(
+                      LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
+                    )
+                  }
+                  disabled={!jobId}
+                >
+                  {LOG_SKELETON_OPTIONS.map((opt) => (
+                    <MenuItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                renderGraphAndTable()
+              )}
+            </>
+          )}
         </Box>
       </CardContent>
     </Card>
