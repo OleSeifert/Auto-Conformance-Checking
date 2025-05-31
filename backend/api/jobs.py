@@ -30,7 +30,9 @@ async def get_jobs(job_id: str, request: Request) -> JobStatus:
 
 
 def verify_correct_job_module(job_id: str, request: Request, module: str):
-    """Helper function that verifies if a job belongs to the module.
+    """Verifies if a job belongs to the module.
+
+    Helper funciton used for the request of job states.
 
     Args:
         job_id: The ID of the job to be fetched.
