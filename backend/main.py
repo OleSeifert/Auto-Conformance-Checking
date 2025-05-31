@@ -10,6 +10,9 @@ from typing import Dict
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from backend.api.jobs import router as jobs_router
+from backend.api.log import router as log_router
 from backend.api.modules.declarative_router import router as declarative_router
 from backend.api.modules.log_skeleton_router import router as log_skeleton_router
 from backend.api.modules.resource_based_router import router as resource_based_router
@@ -40,7 +43,11 @@ async def lifespan(app: FastAPI):
     app.state.celonis = None
 
     # Store the log's columns in the app state
+    app.state.current_log = None  # will get path to tmp file
     app.state.current_log_columns = []
+
+    # *** Log Skeleton ***
+    app.state.jobs = {}
 
     yield
     # *** Shutdown ***
@@ -62,6 +69,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # 'Empty' route
 @app.get("/")
 def home() -> Dict[str, str]:
@@ -71,9 +79,10 @@ def home() -> Dict[str, str]:
 
 # **************** Routers ****************
 
-
-app.include_router(log_router)
+app.include_router(jobs_router)
 app.include_router(setup_router)
+app.include_router(log_router)
+
 app.include_router(declarative_router)
 app.include_router(log_skeleton_router)
 app.include_router(resource_based_router)
