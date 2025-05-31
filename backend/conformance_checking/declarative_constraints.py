@@ -70,6 +70,8 @@ class DeclerativeConstraints:
         ]
         self.conf_results_memory = {rule: None for rule in self.valid_rules}
 
+    # ************************* Runing Model *************************
+
     def run_model(
         self,
         log: Optional[pd.DataFrame] = None,
@@ -90,6 +92,8 @@ class DeclerativeConstraints:
         )
         self.conf_results_memory = {rule: None for rule in self.valid_rules}
 
+    # ************************* Getting Violations & Graphs Data *************************
+
     def rule_specific_violation_summary(
         self,
         declare_model: Optional[Dict[str, Any]] = None,
@@ -99,6 +103,7 @@ class DeclerativeConstraints:
     ) -> Dict[str, Any]:
         """
         Summarizes number of violations in the event log for a specified declarative rule.
+        This function does not access memory variable, so it runs the rule from scratch even if results are pre-computed and stored
 
         Args:
             declare_model (Optional[Dict[str, Any]]) :  The Declare model.
@@ -198,6 +203,8 @@ class DeclerativeConstraints:
                 declare_model=self.declare_model, log=self.log, rule_name=rule_name
             )
         return self.conf_results_memory[rule_name]
+
+    # ************************* Getting Violations for All/Each Rule *************************
 
     def declarative_conformance_for_existance(self) -> Dict[str, Any]:
         """
@@ -355,3 +362,26 @@ class DeclerativeConstraints:
         return self.get_declarative_conformance_diagnostics(
             rule_name="nonchainsuccession"
         )
+
+    def run_all_rules(
+        self,
+        list_of_rules: Optional[list] = None,
+        run_from_scratch: Optional[bool] = False,
+    ) -> None:
+        """
+        Runs conformance checking for all rules and stores results in memory.
+        Useful for poling when all rules need to be pre-computed in the background
+
+        Args:
+            list_of_rules (Optional[list]) : List of rule names to check.
+                                             If None, runs for all valid rules.
+
+        Returns:
+            None : Just used for computing all rules and storing in the memory
+        """
+        if list_of_rules is None:
+            list_of_rules = self.valid_rules
+        for rule in list_of_rules:
+            temp = self.get_declarative_conformance_diagnostics(
+                rule_name=rule, run_from_scratch=run_from_scratch
+            )
