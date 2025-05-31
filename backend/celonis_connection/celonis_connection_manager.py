@@ -6,11 +6,9 @@ library.
 """
 
 from collections.abc import MutableMapping
-from os import environ, path
 from typing import Union
 
 import pandas as pd
-from dotenv import load_dotenv, set_key
 from pycelonis import get_celonis
 from pycelonis.ems.data_integration.data_model import DataModel
 from pycelonis.ems.data_integration.data_model_table import DataModelTable
@@ -36,7 +34,7 @@ class CelonisConnectionManager:
         base_url: str,
         data_pool_name: str,
         data_model_name: str,
-        api_token: str = "",
+        api_token: str,
     ) -> None:
         """Initialize the CelonisConnection object.
 
@@ -49,11 +47,8 @@ class CelonisConnectionManager:
         self.base_url = base_url
         self.data_pool_name = data_pool_name
         self.data_model_name = data_model_name
+        self.api_token = api_token
         self.data_frame = pd.DataFrame()
-        if api_token == "":
-            self.api_token = self.acquire_api_token()
-        else:
-            self.api_token = self.acquire_api_token(api_token)
         self.celonis = get_celonis(base_url=base_url, api_token=self.api_token)
         self.data_pool = self.find_data_pool(data_pool_name)
         self.data_model = self.find_data_model(data_model_name)
@@ -213,6 +208,45 @@ class CelonisConnectionManager:
 
         return df.to_pandas()
 
+    def get_dataframe_with_resource_group_from_celonis(
+        self, table_name: str = "ACTIVITIES"
+    ) -> Union[pd.DataFrame, None]:
+        """Get the dataframe from the data model in Celonis.
+
+        It will create a new dataframe with the columns "case:concept:name",
+        "concept:name", "time:timestamp", "org:resource", and "org:group"
+        from the table in the data model. Returns None if the data model
+        does not exist or the table is not found.
+
+        Args:
+            table_name: Name of the table to get. Default is "ACTIVITIES".
+
+        Returns:
+            DataFrame object or None.
+        """
+        if not self.data_model:
+            print("Data model does not exist. Cannot get table.")
+            return None
+        try:
+            table = self.data_model.get_tables().find(table_name)
+        except PyCelonisNotFoundError:
+            print(f"Table {table_name} not found in data model.")
+            return None
+
+        activities_columns = table.get_columns()
+
+        df = pqlDataFrame(
+            {
+                "case:concept:name": activities_columns.find("case:concept:name"),
+                "concept:name": activities_columns.find("concept:name"),
+                "time:timestamp": activities_columns.find("time:timestamp"),
+                "org:resource": activities_columns.find("org:resource"),
+                "org:group": activities_columns.find("org:group"),
+            },
+            data_model=self.data_model,
+        )
+        return df.to_pandas()
+
     def get_dataframe_from_celonis(
         self,
         pql_query: MutableMapping[str, SeriesLike | DataModelTableColumn],
@@ -312,51 +346,3 @@ class CelonisConnectionManager:
             print("Data model does not exist. Cannot get data model.")
             return None
         return self.data_model
-
-    def acquire_api_token(self, api_token: str = "") -> str:
-        """Get the API token.
-
-        At first, it will check if the .env file exists and create it
-        if it does not. Then, it will load the environment variables
-        from the .env file. If the API token is provided, it will set
-        it in the environment variables. If the API token is not
-        provided, it will get it from the environment variables. If the
-        API token is not found in the environment variables, it will
-        raise a ValueError.
-
-        Args:
-            api_token: API token to set in the environment variables.
-
-        Returns:
-            API token as str.
-
-        Raises:
-            ValueError: If the API token is not found in the environment
-            variables.
-        """
-        # Check if the .env file exists and create it if it does not
-        # TODO: The .env file should be created in the root directory of the project and not in this subdirectory
-        if not path.isfile(path.join(path.dirname(__file__), ".env")):
-            open(path.join(path.dirname(__file__), ".env"), "w").close()
-
-        # Load the environment variables from the .env file
-        load_dotenv()
-
-        # Check if the API token is provided
-        # If it is, set it in the environment variables
-        # If it is not, get it from the environment variables
-
-        if api_token == "":
-            token = environ.get("API_TOKEN")
-            if not token:
-                raise ValueError(
-                    "API token not found. Please provide the API Token when creating a Celonis connection for the first time."
-                )
-            return token
-        else:
-            set_key(
-                dotenv_path=path.join(path.dirname(__file__), ".env"),
-                key_to_set="API_TOKEN",
-                value_to_set=api_token,
-            )
-            return api_token
