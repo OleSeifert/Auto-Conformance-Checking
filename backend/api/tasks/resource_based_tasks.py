@@ -57,7 +57,7 @@ def compute_and_store_resource_based_metrics(
             df["case:concept:name"] = df["case:concept:name"].astype("string")
 
         rb = ResourceBased(df, resource_col="org:resource", group_col="org:group")
-        # rb = ResourceBased(df)
+
         rb.compute_handover_of_work()
         rb.compute_subcontracting()
         rb.compute_working_together()
@@ -65,8 +65,6 @@ def compute_and_store_resource_based_metrics(
 
         rb.compute_organizational_roles()
 
-        # rb.resource_col = "org:resource"
-        # rb.group_col = "org:group"
         rb.compute_organizational_diagnostics()
 
         rec.result = {
