@@ -385,3 +385,4 @@ class DeclerativeConstraints:
             temp = self.get_declarative_conformance_diagnostics(
                 rule_name=rule, run_from_scratch=run_from_scratch
             )
+        return self.conf_results_memory
