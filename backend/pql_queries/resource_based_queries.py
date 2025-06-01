@@ -569,34 +569,6 @@ def get_average_workload(
     return float(dataframe["Average Workload"].iloc[0])  # type: ignore
 
 
-def get_multitasking(
-    celonis: CelonisConnectionManager,
-    start_time: str,
-    end_time: str,
-    resource: str,
-) -> float:
-    """Calculates the multitasking metric.
-
-    The fraction of active time during which a given resource is
-    involved in more than one activity with respect to the
-    resource's active time.
-
-    Args:
-        celonis (CelonisConnectionManager): The Celonis connection
-        start_time (str): The start time of the interval.
-        end_time (str): The end time of the interval.
-        resource (str): The resource for which to calculate the
-            multitasking metric.
-
-    Returns:
-        A float indicating the multitasking metric of the resource in
-        the given time interval.
-    """
-    pass
-    result = 0.0
-    return result
-
-
 def get_average_activity_duration(
     celonis: CelonisConnectionManager,
     start_time: str,
