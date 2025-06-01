@@ -160,7 +160,7 @@ async def get_organizational_roles_result(
 # **************** Resource Profiles ****************
 
 
-@router.get("/resource-profile/distinct-activities/", response_model=int)
+@router.get("/resource-profile/distinct-activities", response_model=int)
 async def get_distinct_activities(
     resource: str = Query(..., description="The resource identifier."),
     start_time: str = Query(..., description="Start time."),
@@ -514,35 +514,6 @@ async def get_resource_social_position(
 
 
 # **************** Organizational Mining ****************
-
-
-# @router.post("/organizational-mining/compute", status_code=202)
-# async def compute_organizational_mining_metrics(
-#     background_tasks: BackgroundTasks,
-#     request: Request,
-#     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-# ) -> Dict[str, str]:
-#     """Computes the organizational mining metrics and stores it.
-
-#     Args:
-#         background_tasks: The background tasks manager.
-#         request: The FastAPI request object.
-#         celonis: The Celonis connection manager instance.
-
-#     Returns:
-#         A dictionary containing the job ID of the scheduled task.
-#     """
-#     job_id = str(uuid.uuid4())
-#     request.app.state.jobs[job_id] = JobStatus(
-#         module="resource_based", status="pending"
-#     )
-#     background_tasks.add_task(
-#         compute_and_store_resource_based_metrics,
-#         request.app,
-#         job_id,
-#         celonis,
-#     )
-#     return {"job_id": job_id}
 
 
 @router.get(
