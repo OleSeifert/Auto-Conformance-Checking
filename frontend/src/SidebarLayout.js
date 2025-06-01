@@ -69,10 +69,7 @@ const SidebarLayout = ({ children }) => {
       >
         <Toolbar />
         <List>
-           <ListItem button onClick={() => navigate('/')}>
-            <ListItemText primary="Celonis Credentials" />
-           </ListItem>
-          <ListItem button onClick={() => navigate('/upload')}>
+          <ListItem button onClick={() => navigate('/')}>
             <ListItemText primary="Upload Log" />
           </ListItem>
           <ListItem button onClick={() => navigate('/mapping')}>
