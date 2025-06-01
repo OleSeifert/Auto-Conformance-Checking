@@ -106,11 +106,11 @@ const MappingPage = () => {
   const [activityCol, setActivityCol] = useState('');
   const [timestampCol, setTimestampCol] = useState('');
   const [resourceCol1, setResourceCol1] = useState('');
-  const [resourceCol2, setResourceCol2] = useState('');
+  const [groupCol, setGroupCol] = useState('');
 
   const [loading, setLoading] = useState(false);
 
-  const selectedValues = [caseIdCol, activityCol, timestampCol, resourceCol1, resourceCol2];
+  const selectedValues = [caseIdCol, activityCol, timestampCol, resourceCol1, groupCol];
 
   const getFilteredOptions = (currentValue) =>
     columns.filter((col) => col === currentValue || !selectedValues.includes(col));
@@ -121,7 +121,7 @@ const MappingPage = () => {
       activity_column: activityCol,
       timestamp_column: timestampCol,
       resource_1_column: resourceCol1,
-      resource_2_column: resourceCol2
+      group_column: groupCol
     };
 
     try {
@@ -171,7 +171,7 @@ const MappingPage = () => {
           {renderDropdown("Activity Column", activityCol, setActivityCol)}
           {renderDropdown("Timestamp Column", timestampCol, setTimestampCol)}
           {renderDropdown("Resource Column (optional)", resourceCol1, setResourceCol1, false)}
-          {renderDropdown("Resource 2 Column (optional)", resourceCol2, setResourceCol2, false)}
+          {renderDropdown("Group Column (optional)", groupCol, setGroupCol, false)}
 
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>

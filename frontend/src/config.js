@@ -23,5 +23,6 @@ export const GET_ACTIVITY_FREQUENCIES = `${API_BASE}/api/log-skeleton/get_activi
 //Declerative Constraints Endpoints
 
 // Temporal Profile Endpoints
-
+export const TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/compute-result`;
+export const GET_RESULT_TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/get-result`;
 //Resource-Based Endpoints
