@@ -304,3 +304,499 @@ def get_organizational_roles(celonis: CelonisConnectionManager) -> DataFrame:
     )
 
     return result_df
+
+
+# **************** Resource Profiles ****************
+
+
+def get_number_of_distinct_activities(
+    celonis: CelonisConnectionManager, start_time: str, end_time: str, resource: str
+) -> int:
+    """Calculates the number of distinct activities.
+
+    Number of distinct activities done by a resource in a given time
+    interval [t1, t2).
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the number of
+            distinct activities.
+
+    Returns:
+        An integer denoting the number of distinct activities.
+    """
+    distinct_activities_query = {
+        "Distinct Activities Count": f"""
+        COUNT(DISTINCT
+            CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                 AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                 AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+            THEN "ACTIVITIES"."concept:name"
+            END
+        )
+    """
+    }
+    dataframe = celonis.get_dataframe_from_celonis(distinct_activities_query)  # type: ignore
+    return int(dataframe["Distinct Activities Count"].iloc[0])  # type: ignore
+
+
+def get_activity_frequency(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+    activity: str,
+) -> float:
+    """Calculates the activity frequency.
+
+    Fraction of completions of a given activity a by a given
+    resource r during a given time slot [t1, t2), with respect to
+    the total number of activity completions by resource r during
+    [t1, t2).
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the activity
+            frequency.
+        activity (str): The activity for which to calculate the frequency.
+
+    Returns:
+        A float indicating the activity frequency of the given activity
+        by the resource in the given time interval.
+    """
+    activity_frequency_query = {
+        "Activity Frequency": f"""
+            CASE
+                WHEN COUNT(
+                    CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                         AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                         AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+                    THEN "ACTIVITIES"."concept:name"
+                    END
+                ) = 0
+                THEN 0.0
+                ELSE
+                    COUNT(
+                        CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                             AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                             AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+                             AND "ACTIVITIES"."concept:name" = '{activity}'
+                        THEN "ACTIVITIES"."concept:name"
+                        END
+                    ) * 1.0 /
+                    COUNT(
+                        CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                             AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                             AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+                        THEN "ACTIVITIES"."concept:name"
+                        END
+                    )
+            END
+        """
+    }
+    dataframe = celonis.get_dataframe_from_celonis(activity_frequency_query)  # type: ignore
+    return float(dataframe["Distinct Activities Count"].iloc[0])  # type: ignore
+
+
+def get_activity_completions(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> int:
+    """Calculates the number of activity completions.
+
+    Number of completions of a given activity by a given resource
+    during a given time slot [t1, t2).
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the number of
+            activity completions.
+
+    Returns:
+        An integer denoting the number of activity completions by the
+        resource in the given time interval.
+    """
+    activity_completions_query = {
+        "Activity Completions": f"""
+        COUNT(
+            CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                 AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                 AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+            THEN "ACTIVITIES"."concept:name"
+            END
+        )
+    """
+    }
+    dataframe = celonis.get_dataframe_from_celonis(activity_completions_query)  # type: ignore
+    return int(dataframe["Activity Completions"].iloc[0])  # type: ignore
+
+
+def get_case_completions(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> int:
+    """Calculates the number of case completions.
+
+    Number of completions of a given case by a given resource
+    during a given time slot [t1, t2).
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the number of
+            case completions.
+
+    Returns:
+        An integer denoting the number of case completions by the
+        resource in the given time interval.
+    """
+    case_completions_query = {
+        "Case Completions": f"""
+        COUNT(DISTINCT
+            CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                 AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                 AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+            THEN "ACTIVITIES"."case:concept:name"
+            END
+        )
+    """
+    }
+
+    dataframe = celonis.get_dataframe_from_celonis(case_completions_query)  # type: ignore
+    return int(dataframe["Case Completions"].iloc[0])  # type: ignore
+
+
+def get_fraction_case_completions(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> float:
+    """Calculates the fraction of case completions.
+
+    Fraction of completions of a case by a given resource r during
+    a given time slot [t1, t2), with respect to the total number of
+    case completions during [t1, t2).
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the fraction
+            of case completions.
+
+    Returns:
+        A float indicating the fraction of case completions by the
+        resource in the given time interval.
+    """
+    fraction_case_completions_query = {
+        "Fraction Case Completions": f"""
+        CASE
+            WHEN COUNT(DISTINCT
+                CASE WHEN "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                     AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+                THEN "ACTIVITIES"."case:concept:name"
+                END
+            ) = 0 THEN 0.0
+            ELSE
+                COUNT(DISTINCT
+                    CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                         AND "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                         AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+                    THEN "ACTIVITIES"."case:concept:name"
+                    END
+                ) * 1.0 /
+                COUNT(DISTINCT
+                    CASE WHEN "ACTIVITIES"."time:timestamp" >= {{d'{start_time}'}}
+                         AND "ACTIVITIES"."time:timestamp" < {{d'{end_time}'}}
+                    THEN "ACTIVITIES"."case:concept:name"
+                    END
+                )
+        END
+    """
+    }
+    dataframe = celonis.get_dataframe_from_celonis(fraction_case_completions_query)  # type: ignore
+    return float(dataframe["Fraction Case Completions"].iloc[0])  # type: ignore
+
+
+def get_average_workload(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> float:
+    """Calculates the average workload.
+
+    Average workload of a given resource r during a given time slot
+    [t1, t2).
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the average
+            workload.
+
+    Returns:
+        A float indicating the average workload of the resource in the
+        given time interval.
+    """
+    average_workload_query = {
+        "Average Workload": f"""
+        COUNT(
+            CASE WHEN "ACTIVITIES"."org:resource" = '{resource}'
+                AND PU_FIRST(DOMAIN_TABLE("ACTIVITIES"."case:concept:name"), "ACTIVITIES"."time:timestamp") < {{d'{end_time}'}}
+                AND PU_LAST(DOMAIN_TABLE("ACTIVITIES"."case:concept:name"), "ACTIVITIES"."time:timestamp") >= {{d'{end_time}'}}
+            THEN 1
+        END
+        ) * 1.0
+    """
+    }
+
+    dataframe = celonis.get_dataframe_from_celonis(average_workload_query)  # type: ignore
+    return float(dataframe["Average Workload"].iloc[0])  # type: ignore
+
+
+def get_multitasking(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> float:
+    """Calculates the multitasking metric.
+
+    The fraction of active time during which a given resource is
+    involved in more than one activity with respect to the
+    resource's active time.
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the
+            multitasking metric.
+
+    Returns:
+        A float indicating the multitasking metric of the resource in
+        the given time interval.
+    """
+    pass
+    result = 0.0
+    return result
+
+
+def get_average_activity_duration(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+    activity: str,
+) -> float:
+    """Calculates the average activity duration.
+
+    The average duration of instances of a given activity completed
+    during a given time slot by a given resource.
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the average
+            activity duration.
+        activity (str): The activity for which to calculate the average
+            duration.
+
+    Returns:
+        A float indicating the average duration of the given activity
+        by the resource in the given time interval.
+    """
+    activity_duration_query = {
+        "Resource": 'SOURCE("ACTIVITIES"."org:resource")',
+        "Activity": 'SOURCE("ACTIVITIES"."concept:name")',
+        "Start Time": 'SOURCE("ACTIVITIES"."time:timestamp")',
+        "End Time": 'TARGET("ACTIVITIES"."time:timestamp")',
+        "Duration": 'SECONDS_BETWEEN(SOURCE("ACTIVITIES"."time:timestamp"), TARGET("ACTIVITIES"."time:timestamp"))',
+    }
+
+    dataframe = celonis.get_dataframe_from_celonis(activity_duration_query)  # type: ignore
+
+    mask = (  # type: ignore
+        (dataframe["Resource"] == resource)  # type: ignore
+        & (dataframe["Activity"] == activity)  # type: ignore
+        & (dataframe["Start Time"] >= start_time)  # type: ignore
+        & (dataframe["End Time"] <= end_time)  # type: ignore
+    )
+
+    average_case_duration = dataframe.loc[mask, "Duration"].mean()  # type: ignore
+    return average_case_duration
+
+
+def get_average_case_duration(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> float:
+    """Calculates the average case duration.
+
+    The average duration of cases completed during a given time slot
+    in which a given resource was involved.
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the average
+            case duration.
+
+    Returns:
+        A float indicating the average duration of cases completed
+        by the resource in the given time interval.
+    """
+    case_duration_query = {
+        "Case": '"ACTIVITIES"."case:concept:name"',
+        "Case Start": 'MIN("ACTIVITIES"."time:timestamp")',
+        "Case End": 'MAX("ACTIVITIES"."time:timestamp")',
+    }
+    case_df = celonis.get_dataframe_from_celonis(case_duration_query)  # type: ignore
+
+    resource_case_query = {
+        "Case": '"ACTIVITIES"."case:concept:name"',
+        "Resource": '"ACTIVITIES"."org:resource"',
+    }
+    resource_df = celonis.get_dataframe_from_celonis(resource_case_query)  # type: ignore
+
+    resource_cases = set(
+        resource_df[resource_df["Resource"] == resource]["Case"].unique()  # type: ignore
+    )
+
+    case_df["Case Start"] = pd.to_datetime(case_df["Case Start"])  # type: ignore
+    case_df["Case End"] = pd.to_datetime(case_df["Case End"])  # type: ignore
+
+    mask = (  # type: ignore
+        case_df["Case"].isin(resource_cases)  # type: ignore
+        & (case_df["Case End"] >= pd.to_datetime(start_time))  # type: ignore
+        & (case_df["Case End"] <= pd.to_datetime(end_time))  # type: ignore
+    )
+
+    durations = (
+        case_df.loc[mask, "Case End"] - case_df.loc[mask, "Case Start"]  # type: ignore
+    ).dt.total_seconds()
+
+    average_case_duration = durations.mean()  # type: ignore
+    return average_case_duration
+
+
+def get_interaction_two_resources(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource1: str,
+    resource2: str,
+) -> float:
+    """Calculates the interaction between two resources.
+
+    The number of cases completed during a given time slot in which
+    two given resources were involved.
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource1 (str): The first resource for which to calculate the
+            interaction.
+        resource2 (str): The second resource for which to calculate the
+            interaction.
+
+    Returns:
+        A float indicating the interaction between the two resources
+        in the given time interval.
+    """
+    case_query = {
+        "Case": '"ACTIVITIES"."case:concept:name"',
+        "Case End": 'MAX("ACTIVITIES"."time:timestamp")',
+    }
+    case_df = celonis.get_dataframe_from_celonis(case_query)  # type: ignore
+
+    resource_query = {
+        "Case": '"ACTIVITIES"."case:concept:name"',
+        "Resource": '"ACTIVITIES"."org:resource"',
+    }
+    resource_df = celonis.get_dataframe_from_celonis(resource_query)  # type: ignore
+
+    resource_set = resource_df.groupby("Case")["Resource"].apply(set).reset_index()  # type: ignore
+
+    merged_df = pd.merge(case_df, resource_set, on="Case", how="inner")  # type: ignore
+
+    merged_df["Case End"] = pd.to_datetime(merged_df["Case End"])  # type: ignore
+    mask = (
+        (merged_df["Case End"] >= pd.to_datetime(start_time))  # type: ignore
+        & (merged_df["Case End"] <= pd.to_datetime(end_time))  # type: ignore
+        & (merged_df["Resource"].apply(lambda x: resource1 in x and resource2 in x))  # type: ignore
+    )
+
+    interaction_count = merged_df.loc[mask, "Case"].nunique()
+    return float(interaction_count)
+
+
+def get_social_position(
+    celonis: CelonisConnectionManager,
+    start_time: str,
+    end_time: str,
+    resource: str,
+) -> float:
+    """Calculates the social position of a resource.
+
+    The social position is the fraction of resources that interacted
+    with a given resource during a given time slot with respect to
+    the total number of resources that were active during that time
+    slot.
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+        start_time (str): The start time of the interval.
+        end_time (str): The end time of the interval.
+        resource (str): The resource for which to calculate the social
+            position.
+
+    Returns:
+        A float indicating the social position of the resource in the
+        given time interval.
+    """
+    event_query = {
+        "Case": '"ACTIVITIES"."case:concept:name"',
+        "Resource": '"ACTIVITIES"."org:resource"',
+        "Timestamp": '"ACTIVITIES"."time:timestamp"',
+    }
+    dataframe = celonis.get_dataframe_from_celonis(event_query)  # type: ignore
+    dataframe["Timestamp"] = pd.to_datetime(dataframe["Timestamp"])  # type: ignore
+
+    dataframe = dataframe[  # type: ignore
+        (dataframe["Timestamp"] >= pd.to_datetime(start_time))  # type: ignore
+        & (dataframe["Timestamp"] <= pd.to_datetime(end_time))  # type: ignore
+    ]
+
+    all_active_resources = set(dataframe["Resource"].unique())  # type: ignore
+
+    target_cases = set(dataframe[dataframe["Resource"] == resource]["Case"].unique())  # type: ignore
+
+    resources_in_same_cases = set(  # type: ignore
+        dataframe[dataframe["Case"].isin(target_cases)]["Resource"].unique()  # type: ignore
+    )
+    resources_in_same_cases.discard(resource)  # type: ignore
+
+    if not all_active_resources:
+        return 0.0
+    social_position = round(len(resources_in_same_cases) / len(all_active_resources))  # type: ignore
+    return float(social_position)
