@@ -1,6 +1,7 @@
 """Queries that can be used to get resource related data from celonis."""
 
 from collections import Counter, defaultdict
+from itertools import product
 
 import numpy as np
 import pandas as pd
@@ -800,3 +801,218 @@ def get_social_position(
         return 0.0
     social_position = round(len(resources_in_same_cases) / len(all_active_resources))  # type: ignore
     return float(social_position)
+
+
+# ***************** Organizational Mining ****************
+
+
+def get_group_relative_focus(
+    celonis: CelonisConnectionManager,
+) -> DataFrame:
+    """Returns the Group Relative Focus.
+
+    The Group Relative Focus metric specifies for a given work how
+    much a resource group performed this type of work compared to
+    the overall workload of the group. It can be used to measure how
+    the workload of a resource group is distributed over different
+    types of work, i.e., work diversification of the group.
+
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+
+    Returns:
+        A DataFrame containing the Group Relative Focus for each group
+        and activity.
+    """
+    activity_query = {
+        "Group": '"ACTIVITIES"."org:group"',
+        "Activity": '"ACTIVITIES"."concept:name"',
+        "Activity Count": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    activity_df = celonis.get_dataframe_from_celonis(activity_query)  # type: ignore
+
+    total_per_activity_query = {
+        "Activity": '"ACTIVITIES"."concept:name"',
+        "Total Activity Count": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    total_per_activity_df = celonis.get_dataframe_from_celonis(total_per_activity_query)  # type: ignore
+
+    merged_df = activity_df.merge(total_per_activity_df, on="Activity")  # type: ignore
+    merged_df["Group Relative Focus"] = (
+        merged_df["Activity Count"] / merged_df["Total Activity Count"]
+    )
+
+    all_groups = merged_df["Group"].unique()  # type: ignore
+    all_activities = merged_df["Activity"].unique()  # type: ignore
+
+    all_combinations = pd.DataFrame(
+        list(product(all_groups, all_activities)),  # type: ignore
+        columns=["Group", "Activity"],  # type: ignore
+    )
+
+    result_df = all_combinations.merge(
+        merged_df[["Group", "Activity", "Group Relative Focus"]],
+        on=["Group", "Activity"],
+        how="left",
+    )
+
+    result_df["Group Relative Focus"] = result_df["Group Relative Focus"].fillna(0)  # type: ignore
+
+    return result_df.pivot(
+        index="Group", columns="Activity", values="Group Relative Focus"
+    )
+
+
+def get_group_relative_stake(
+    celonis: CelonisConnectionManager,
+) -> DataFrame:
+    """Returns" the Group Relative Stake.
+
+    The Group Relative Stake metric specifies for a given work how much
+    this type of work was performed by a certain resource group among
+    all groups. It can be used to measure how the workload devoted to
+    a certain type of work is distributed over resource groups in an
+    organizational model, i.e., work participation by different groups.
+
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+
+    Returns:
+        A DataFrame containing the Group Relative Stake for each group
+        and activity.
+    """
+    activity_query = {
+        "Group": '"ACTIVITIES"."org:group"',
+        "Activity": '"ACTIVITIES"."concept:name"',
+        "Activity Count": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    activity_df = celonis.get_dataframe_from_celonis(activity_query)  # type: ignore
+
+    total_per_group_query = {
+        "Group": '"ACTIVITIES"."org:group"',
+        "Total Group Activities": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    total_per_group_df = celonis.get_dataframe_from_celonis(total_per_group_query)  # type: ignore
+
+    merged_df = activity_df.merge(total_per_group_df, on="Group")  # type: ignore
+    merged_df["Group Relative Stake"] = (
+        merged_df["Activity Count"] / merged_df["Total Group Activities"]
+    )
+
+    all_groups = merged_df["Group"].unique()  # type: ignore
+    all_activities = merged_df["Activity"].unique()  # type: ignore
+
+    all_combinations = pd.DataFrame(
+        list(product(all_groups, all_activities)),  # type: ignore
+        columns=["Group", "Activity"],  # type: ignore
+    )
+
+    result_df = all_combinations.merge(
+        merged_df[["Group", "Activity", "Group Relative Stake"]],
+        on=["Group", "Activity"],
+        how="left",
+    )
+
+    result_df["Group Relative Stake"] = result_df["Group Relative Stake"].fillna(0)  # type: ignore
+
+    return result_df.pivot(
+        index="Group", columns="Activity", values="Group Relative Stake"
+    )
+
+
+def get_group_coverage(
+    celonis: CelonisConnectionManager,
+) -> DataFrame:
+    """Returns the Group Coverage metric.
+
+    The Group Coverage metric with respect to a given type of work,
+    specifies the proportion of members of a resource group that
+    performed this type of work.
+
+    Returns:
+        A dictionary where the keys are the names of the resources
+        and the values are dictionaries containing resources and the
+        Group Coverage metric.
+    """
+    resource_query = {
+        "Group": '"ACTIVITIES"."org:group"',
+        "Resource": '"ACTIVITIES"."org:resource"',
+        "Resource Activity Count": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    resource_df = celonis.get_dataframe_from_celonis(resource_query)  # type: ignore
+
+    total_per_group_query = {
+        "Group": '"ACTIVITIES"."org:group"',
+        "Total Group Activities": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    total_per_group_df = celonis.get_dataframe_from_celonis(total_per_group_query)  # type: ignore
+
+    merged_df = resource_df.merge(total_per_group_df, on="Group")  # type: ignore
+    merged_df["Group Coverage"] = (
+        merged_df["Resource Activity Count"] / merged_df["Total Group Activities"]
+    )
+
+    result_df = merged_df.pivot(
+        index="Resource", columns="Group", values="Group Coverage"
+    )
+
+    result_df = result_df.fillna(0)  # type: ignore
+
+    return result_df
+
+
+def get_group_member_interaction(
+    celonis: CelonisConnectionManager,
+) -> pd.DataFrame:
+    """Returns the Group Member Contribution metric.
+
+    The Group Member Contribution metric of a member of a resource group
+    with respect to a given type of work specifies how much of this type
+    of work by the group was performed by the member. It can be used to
+    measure how the workload of the entire group devoted to a certain
+    type of work is distributed over the group members.
+
+    Args:
+        celonis (CelonisConnectionManager): The Celonis connection
+    """
+    member_activity_query = {
+        "Group": '"ACTIVITIES"."org:group"',
+        "Resource": '"ACTIVITIES"."org:resource"',
+        "Activity": '"ACTIVITIES"."concept:name"',
+        "Activity Count": 'COUNT("ACTIVITIES"."case:concept:name")',
+    }
+    member_activity_df = celonis.get_dataframe_from_celonis(member_activity_query)  # type: ignore
+
+    all_resources = member_activity_df["Resource"].unique()  # type: ignore
+    all_activities = member_activity_df["Activity"].unique()  # type: ignore
+
+    all_combinations = pd.DataFrame(
+        list(product(all_resources, all_activities)),  # type: ignore
+        columns=["Resource", "Activity"],
+    )
+
+    aggregated_df = (
+        member_activity_df.groupby(["Resource", "Activity"])["Activity Count"]  # type: ignore
+        .sum()
+        .reset_index()
+    )
+
+    result_df = all_combinations.merge(
+        aggregated_df,
+        on=["Resource", "Activity"],
+        how="left",
+    )
+
+    result_df["Activity Count"] = result_df["Activity Count"].fillna(0)  # type: ignore
+
+    final_df = result_df.pivot(
+        index="Resource",
+        columns="Activity",
+        values="Activity Count",
+    )
+
+    final_df = final_df.fillna(0)  # type: ignore
+
+    return final_df
