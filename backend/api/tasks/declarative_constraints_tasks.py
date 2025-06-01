@@ -6,7 +6,7 @@ from backend.api.models.schemas.job_models import JobStatus
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
-from backend.conformance_checking.declarative_constraints import DeclerativeConstraints
+from backend.conformance_checking.declarative_constraints import DeclarativeConstraints
 
 
 def compute_and_store_declarative_constraints(
@@ -32,7 +32,7 @@ def compute_and_store_declarative_constraints(
             return
 
         # Compute the declarative constraints
-        dc = DeclerativeConstraints(df)
+        dc = DeclarativeConstraints(df)
         dc.run_model()
         rec.result = dc.run_all_rules()
         rec.status = "complete"
