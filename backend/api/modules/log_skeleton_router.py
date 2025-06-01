@@ -6,6 +6,7 @@ from typing import Dict, List
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
 from backend.api.celonis import get_celonis_connection
+from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
 from backend.api.tasks.log_skeleton_tasks import compute_and_store_log_skeleton
 from backend.celonis_connection.celonis_connection_manager import (
@@ -13,6 +14,7 @@ from backend.celonis_connection.celonis_connection_manager import (
 )
 
 router = APIRouter(prefix="/api/log-skeleton", tags=["Log Skeleton CC"])
+MODULE_NAME = "log_skeleton"
 
 
 @router.post("/compute-skeleton", status_code=202)
@@ -39,7 +41,7 @@ async def compute_log_skeleton(
     job_id = str(uuid.uuid4())
 
     # Intialize the record in the app state
-    request.app.state.jobs[job_id] = JobStatus(module="log_skeleton", status="pending")
+    request.app.state.jobs[job_id] = JobStatus(module=MODULE_NAME, status="pending")
 
     # Schedule the worker
     background_tasks.add_task(
@@ -62,10 +64,12 @@ async def compute_log_skeleton(
 #           application state via `request.app.state`.
 
 
+
 #     Returns:
 #         A list of lists containing the equivalence relations for the specified job.
 #     """
 #     return request.app.state.jobs[job_id].result.get("equivalence", [])
+
 
 # @router.get("/get_always_after/{job_id}", response_model=List[List[str]])
 # def get_always_after(job_id: str, request: Request) -> List[List[str]]:
@@ -81,9 +85,11 @@ async def compute_log_skeleton(
 #     """
 #     return request.app.state.jobs[job_id].result.get("always_after", [])
 
+
 # @router.get("/get_always_before/{job_id}", response_model=List[List[str]])
 # def get_always_before(job_id: str, request: Request) -> List[List[str]]:
 #     """Retrieves the always-before relations from the log skeleton.
+
 
 #     Args:
 #         job_id: The ID of the job for which to retrieve the always-before relations.
@@ -96,9 +102,10 @@ async def compute_log_skeleton(
 #     return request.app.state.jobs[job_id].result.get("always_before", [])
 
 
+
 # @router.get("/get_never_together/{job_id}", response_model=List[List[str]])
 # def get_never_together(job_id: str, request: Request) -> List[List[str]]:
-#     """Retrieves the never-together relations from the log skeleton.
+
 
 #     Args:
 #         job_id: The ID of the job for which to retrieve the never-together relations.
@@ -109,6 +116,7 @@ async def compute_log_skeleton(
 #         A list of lists containing the never-together relations for the specified job.
 #     """
 #     return request.app.state.jobs[job_id].result.get("never_together", [])
+
 
 
 # @router.get("/get_directly_follows/{job_id}", response_model=List[List[str]])
@@ -126,6 +134,7 @@ async def compute_log_skeleton(
 #     return request.app.state.jobs[job_id].result.get("directly_follows", [])
 
 
+
 # @router.get("/get_activity_frequencies/{job_id}", response_model=Dict[str, List[int]])
 # def get_activity_frequencies(job_id: str, request: Request) -> Dict[str, List[int]]:
 #     """Retrieves the activity frequencies from the log skeleton.
@@ -139,6 +148,7 @@ async def compute_log_skeleton(
 #         A dictionary containing the activity frequencies for the specified job.
 #     """
 #     return request.app.state.jobs[job_id].result.get("activ_freq", {})
+
 
 
 
@@ -273,4 +283,3 @@ def get_activity_frequencies(job_id: str, request: Request) -> dict:
         ],
         "graphs": []
     }
-
