@@ -1,6 +1,6 @@
 """Contains functionality for declarative conformance checking.
 
-This module defines the DeclerativeConstraints class which uses PM4Py to
+This module defines the DeclarativeConstraints class which uses PM4Py to
 discover declarative profiles from event logs and checks conformance based
 on the discovered declarative profiles.
 """
