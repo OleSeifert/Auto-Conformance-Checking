@@ -1,56 +1,83 @@
+
 // import React from 'react';
-//
-// const Table = ({ tableData }) => {
-//   if (!tableData?.length) return null;
-//
-//   const headers = Object.keys(tableData[0]);
-//
+// import {
+//   Table as MuiTable,
+//   TableHead,
+//   TableBody,
+//   TableRow,
+//   TableCell
+// } from '@mui/material';
+
+// const Table = ({ headers, rows }) => {
 //   return (
-//     <table border="1" style={{ marginTop: '2rem', width: '100%' }}>
-//       <thead>
-//         <tr>
-//           {headers.map((h, i) => <th key={i}>{h}</th>)}
-//         </tr>
-//       </thead>
-//       <tbody>
-//         {tableData.map((row, i) => (
-//           <tr key={i}>
-//             {headers.map((h, j) => <td key={j}>{row[h]}</td>)}
-//           </tr>
+//     <MuiTable>
+//       <TableHead>
+//         <TableRow>
+//           {headers.map((header, idx) => (
+//             <TableCell key={idx}><strong>{header}</strong></TableCell>
+//           ))}
+//         </TableRow>
+//       </TableHead>
+//       <TableBody>
+//         {rows.map((row, i) => (
+//           <TableRow key={i}>
+//             {row.map((cell, j) => (
+//               <TableCell key={j}>{cell}</TableCell>
+//             ))}
+//           </TableRow>
 //         ))}
-//       </tbody>
-//     </table>
+//       </TableBody>
+//     </MuiTable>
 //   );
 // };
-//
+
 // export default Table;
-
 import React from 'react';
+import {
+  Table as MuiTable,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  TableContainer
+} from '@mui/material';
 
-const Table = ({ tableData }) => {
-  if (!tableData || !tableData.length) return null;
-
-  const headers = Object.keys(tableData[0]);
-
+const Table = ({ headers, rows }) => {
   return (
-    <table border="1" style={{ marginTop: '1rem', width: '100%', borderCollapse: 'collapse' }}>
-      <thead>
-        <tr>
-          {headers.map((h, i) => (
-            <th key={i} style={{ padding: '8px', background: '#eee' }}>{h}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {tableData.map((row, i) => (
-          <tr key={i}>
-            {headers.map((h, j) => (
-              <td key={j} style={{ padding: '8px' }}>{row[h]}</td>
+    <TableContainer component={Paper} sx={{ my: 2, border: '1px solid #ccc' }}>
+      <MuiTable sx={{ minWidth: 650 }} size="small" aria-label="styled table">
+        <TableHead>
+          <TableRow sx={{ backgroundColor: '#e0f0ff' }}> {/* light blue background */}
+            {headers.map((header, idx) => (
+              <TableCell
+                key={idx}
+                sx={{
+                  borderRight: '1px solid #ccc',
+                  fontWeight: 'bold'
+                }}
+              >
+                {header}
+              </TableCell>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row, i) => (
+            <TableRow key={i}>
+              {row.map((cell, j) => (
+                <TableCell
+                  key={j}
+                  sx={{ borderRight: '1px solid #eee', borderTop: '1px solid #eee' }}
+                >
+                  {cell}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </MuiTable>
+    </TableContainer>
   );
 };
 

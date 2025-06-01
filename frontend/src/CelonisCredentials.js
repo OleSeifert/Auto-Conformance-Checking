@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CELONIS_CONNECTION } from "./config";
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Button, Card, CardContent, TextField, Typography, FormHelperText
+  Box, Button, Card, CardContent, TextField, Typography
 } from '@mui/material';
 
 const CelonisCredentials = () => {
@@ -10,7 +10,6 @@ const CelonisCredentials = () => {
   const [token, setToken] = useState('');
   const [dataPoolName, setDataPoolName] = useState('');
   const [dataModelName, setDataModelName] = useState('');
-  // const [dataTableName, setDataTableName] = useState('');
   const navigate = useNavigate();
   const handleSubmit = async () => {
   const payload = {
@@ -18,7 +17,6 @@ const CelonisCredentials = () => {
     celonis_data_pool_name: dataPoolName,
     celonis_data_model_name: dataModelName,
     api_token: token,
-    // data_table_name: dataTableName.trim() === "" ? "ACTIVITIES" : dataTableName
   };
 
   try {
@@ -58,10 +56,6 @@ const CelonisCredentials = () => {
           <TextField label="Celonis API Token" fullWidth type="password" value={token} onChange={e => setToken(e.target.value)} />
           <TextField label="Data Pool Name" fullWidth value={dataPoolName} onChange={e => setDataPoolName(e.target.value)} />
           <TextField label="Data Model Name" fullWidth value={dataModelName} onChange={e => setDataModelName(e.target.value)} />
-          {/* <Box>
-            <TextField label="Data Table Name (optional)" fullWidth value={dataTableName} onChange={e => setDataTableName(e.target.value)} />
-            <FormHelperText>Defaults to <strong>ACTIVITIES</strong></FormHelperText>
-          </Box> */}
           <Button variant="contained" onClick={handleSubmit} disabled={
               !apiUrl.trim() ||
               !token.trim() ||
