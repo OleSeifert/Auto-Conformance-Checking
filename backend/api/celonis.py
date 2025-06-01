@@ -7,6 +7,7 @@ in the FastAPI application.
 
 from typing import Union
 
+from dotenv import load_dotenv
 from fastapi import HTTPException, Request
 from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -63,6 +64,7 @@ def get_celonis_connection(request: Request) -> CelonisConnectionManager:
 
     # If it is not in the app state, create a new one
     try:
+        load_dotenv(".env", override=True)
         cfg = CelonisSettings()  # type: ignore
     except ValidationError:
         raise HTTPException(

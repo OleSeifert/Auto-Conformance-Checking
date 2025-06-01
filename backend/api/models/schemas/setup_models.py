@@ -19,7 +19,6 @@ class CelonisCredentials(BaseModel):
     celonis_data_pool_name: str
     celonis_data_model_name: str
     api_token: str
-    data_table_name: Optional[str] = None
 
 
 # **************** Column Mapping ****************
@@ -32,3 +31,4 @@ class ColumnMapping(BaseModel):
     activity_column: str
     timestamp_column: str
     resource_1_column: Optional[str] = None
+    group_column: Optional[str] = None

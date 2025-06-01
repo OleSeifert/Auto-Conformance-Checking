@@ -121,18 +121,22 @@ async def commit_log_to_celonis(
             status_code=400,
             detail=f"Error processing file: {str(e)}",
         )
-    # Rename the columns according to the mapping
+    # CSV files must enforce a mapping
     if ext == ".csv":
         if not payload:
             raise HTTPException(
                 status_code=400,
                 detail="Column mapping is required for CSV files.",
             )
+    # Rename the columns according to the mapping if specified
+    if payload:
         df = df.rename(
             columns={
                 payload.case_id_column: "case:concept:name",
                 payload.activity_column: "concept:name",
                 payload.timestamp_column: "time:timestamp",
+                payload.resource_1_column: "org:resource",
+                payload.group_column: "org:group",
             }
         )
         # Convert the timestamp column to datetime
