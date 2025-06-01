@@ -229,7 +229,8 @@ def test_get_social_position(resource_based):  # type: ignore
 
 def test_compute_organizational_diagnostics(resource_based):  # type: ignore
     """Test the compute_organizational_diagnostics method."""
-    resource_based.resource_col = "Resource"  # type: ignore
+    resource_based.resource_col = "org:resource"
+    resource_based.group_col = "Resource"
     resource_based.compute_organizational_diagnostics()  # type: ignore
 
     diagnostics = resource_based._organizational_diagnostics  # type: ignore
@@ -248,7 +249,8 @@ def test_compute_organizational_diagnostics(resource_based):  # type: ignore
 
 def test_get_group_relative_focus(resource_based):  # type: ignore
     """Test the get_group_relative_focus method."""
-    resource_based.resource_col = "Resource"  # type: ignore
+    resource_based.resource_col = "org:resource"
+    resource_based.group_col = "Resource"
     resource_based.compute_organizational_diagnostics()  # type: ignore
     group_relative_focus = resource_based.get_group_relative_focus()  # type: ignore
     assert isinstance(group_relative_focus, dict)
@@ -256,7 +258,8 @@ def test_get_group_relative_focus(resource_based):  # type: ignore
 
 def test_get_group_relative_stake(resource_based):  # type: ignore
     """Test the get_group_relative_stake method."""
-    resource_based.resource_col = "Resource"  # type: ignore
+    resource_based.resource_col = "org:resource"
+    resource_based.group_col = "Resource"
     resource_based.compute_organizational_diagnostics()  # type: ignore
     group_relative_stake = resource_based.get_group_relative_stake()  # type: ignore
     assert isinstance(group_relative_stake, dict)
@@ -264,7 +267,8 @@ def test_get_group_relative_stake(resource_based):  # type: ignore
 
 def test_get_group_coverage(resource_based):  # type: ignore
     """Test the get_group_coverage method."""
-    resource_based.resource_col = "Resource"  # type: ignore
+    resource_based.resource_col = "org:resource"
+    resource_based.group_col = "Resource"
     resource_based.compute_organizational_diagnostics()  # type: ignore
     group_coverage = resource_based.get_group_coverage()  # type: ignore
     assert isinstance(group_coverage, dict)
@@ -272,7 +276,8 @@ def test_get_group_coverage(resource_based):  # type: ignore
 
 def test_get_group_member_contribution(resource_based):  # type: ignore
     """Test the get_group_member_contribution method."""
-    resource_based.resource_col = "Resource"  # type: ignore
+    resource_based.resource_col = "org:resource"
+    resource_based.group_col = "Resource"
     resource_based.compute_organizational_diagnostics()  # type: ignore
     group_member_contribution = resource_based.get_group_member_contribution()  # type: ignore
     assert isinstance(group_member_contribution, dict)
