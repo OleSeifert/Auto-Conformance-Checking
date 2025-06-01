@@ -25,4 +25,10 @@ export const GET_ACTIVITY_FREQUENCIES = `${API_BASE}/api/log-skeleton/get_activi
 // Temporal Profile Endpoints
 export const TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/compute-result`;
 export const GET_RESULT_TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/get-result`;
+
 //Resource-Based Endpoints
+export const RESOURCE_BASED = `${API_BASE}/api/resource-based/compute`;
+export const HANDOVER_OF_WORK = `${API_BASE}/api/resource-based/sna/handover-of-work`;
+export const SUBCONTRACTING= `${API_BASE}/api/resource-based/sna/subcontracting`;
+export const WORKING_TOGETHER= `${API_BASE}/api/resource-based/sna/working-together`;
+export const SIMILAR_ACTIVITIES = `${API_BASE}/api/resource-based/sna/similar-activities`;

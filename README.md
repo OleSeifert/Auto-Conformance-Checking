@@ -71,8 +71,8 @@ Currently there exists only one endpoint to upload an event log, which you can a
 
 ## Starting the Frontend
 
-To start the frontend server, you have to checkout the `frontend` branch.
-The detailled startup is written in [this readme file](./frontend/README.md).
+To start the frontend server, you have to checkout the `frontend-integration` branch.
+The detailed startup is written in [this readme file](./frontend/README.md).
 
 ## Contribution Workflow
 

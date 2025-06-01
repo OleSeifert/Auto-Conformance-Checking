@@ -1,3 +1,4 @@
+
 // import React, { useState, useEffect } from 'react';
 // import {
 //   Box,
@@ -42,6 +43,39 @@
 // ];
 
 
+// // -------------------- Resource Options --------------------
+
+// const resourceOptions = {
+//   sna: [
+//     "Handover of Work",
+//     "Subcontracting",
+//     "Working together",
+//     "Similar Activities"
+//   ],
+//   role_discovery: [
+//     "Role Discovery"
+//   ],
+//   resource_profiles: [
+//     "Distinct Activities",
+//     "Activity Frequency",
+//     "Activity Completions",
+//     "Case-Completions",
+//     "Fraction-Case Completions",
+//     "Average workload",
+//     "Multitasking",
+//     "Average Activity Duration",
+//     "Average case duration",
+//     "Interaction Two Resources",
+//     "Social Position"
+//   ],
+//   organizational_mining: [
+//     "Group Relative Focus",
+//     "Group Relative Stake",
+//     "Group Coverage",
+//     "Group Member Contributions"
+//   ]
+// };
+
 
 // // -------------------- Main Component --------------------
 
@@ -61,6 +95,10 @@
 //   const [zeta, setZeta] = useState('');
 //   const [temporalJobId, setTemporalJobId] = useState(null);
 //   const [showResultLoading, setShowResultLoading] = useState(false);
+
+//   // Resource-based Conformance
+//   const [selectedResourceType, setSelectedResourceType] = useState('');
+//   const [selectedResourceOption, setSelectedResourceOption] = useState('');
 
 
 //   // -------------------- Log Skeleton: Fetch Job ID --------------------
@@ -288,6 +326,45 @@
 //               )}
 //             </Box>
 //           )}
+
+//           {/* -------- Resource-Based Section -------- */}
+//           {view === 'resource' && (
+//             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+//               {/* Primary Dropdown */}
+//               <FormControl fullWidth>
+//                 <InputLabel>Resource Perspective</InputLabel>
+//                 <Select
+//                   value={selectedResourceType}
+//                   label="Resource Perspective"
+//                   onChange={(e) => {
+//                     setSelectedResourceType(e.target.value);
+//                     setSelectedResourceOption('');
+//                   }}
+//                 >
+//                   <MenuItem value="sna">Social Network Analysis</MenuItem>
+//                   <MenuItem value="role_discovery">Role Discovery</MenuItem>
+//                   <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
+//                   <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
+//                 </Select>
+//               </FormControl>
+
+//               {/* Secondary Dropdown */}
+//               {selectedResourceType && (
+//                 <FormControl fullWidth>
+//                   <InputLabel>Resource Insight</InputLabel>
+//                   <Select
+//                     value={selectedResourceOption}
+//                     label="Resource Insight"
+//                     onChange={(e) => setSelectedResourceOption(e.target.value)}
+//                   >
+//                     {resourceOptions[selectedResourceType].map((opt) => (
+//                       <MenuItem key={opt} value={opt}>{opt}</MenuItem>
+//                     ))}
+//                   </Select>
+//                 </FormControl>
+//               )}
+//             </Box>
+//           )}
 //         </Box>
 //       </CardContent>
 //     </Card>
@@ -295,7 +372,6 @@
 // };
 
 // export default ResultsPage;
-
 
 
 import React, { useState, useEffect } from 'react';
@@ -326,7 +402,12 @@ import {
   GET_DIRECTLY_FOLLOWS,
   GET_ACTIVITY_FREQUENCIES,
   GET_RESULT_TEMPORAL_PROFILE,
-  TEMPORAL_PROFILE
+  TEMPORAL_PROFILE,
+  RESOURCE_BASED,
+  HANDOVER_OF_WORK,
+  SUBCONTRACTING,
+  WORKING_TOGETHER,
+  SIMILAR_ACTIVITIES
 } from './config';
 
 
@@ -398,6 +479,7 @@ const ResultsPage = () => {
   // Resource-based Conformance
   const [selectedResourceType, setSelectedResourceType] = useState('');
   const [selectedResourceOption, setSelectedResourceOption] = useState('');
+  const [resourceJobId, setResourceJobId] = useState(null);
 
 
   // -------------------- Log Skeleton: Fetch Job ID --------------------
@@ -414,6 +496,24 @@ const ResultsPage = () => {
     };
     computeJob();
   }, []);
+
+
+  // -------------------- Resource-Based: Fetch Job ID --------------------
+
+  useEffect(() => {
+    if (view === 'resource') {
+      const computeResourceJob = async () => {
+        try {
+          const res = await fetch(RESOURCE_BASED, { method: 'POST' });
+          const data = await res.json();
+          setResourceJobId(data.job_id);
+        } catch (err) {
+          alert("Error starting resource-based computation: " + err.message);
+        }
+      };
+      computeResourceJob();
+    }
+  }, [view]);
 
 
   // -------------------- Log Skeleton: Handle Option Selection --------------------
@@ -508,6 +608,41 @@ const ResultsPage = () => {
     }
   };
 
+
+  // -------------------- Resource-Based: Handle SNA Option Selection --------------------
+
+  const handleSNAOptionSelect = async (selected) => {
+    const endpointMap = {
+     "Handover of Work": HANDOVER_OF_WORK,
+      "Subcontracting": SUBCONTRACTING,
+     "Working together": WORKING_TOGETHER,
+      "Similar Activities": SIMILAR_ACTIVITIES
+    };
+
+  const endpoint = endpointMap[selected];
+  if (!endpoint || !resourceJobId) return;
+
+  setGraphData([]);
+  setTableData([]);
+  setLoading(true);
+
+  try {
+      const res = await fetch(`${endpoint}/${resourceJobId}`);
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(errorText);
+      }
+
+      const result = await res.json();
+      setGraphData(result.graphs || []);
+      setTableData(result.tables || []);
+    } catch (err) {
+      alert("Error fetching resource-based result: " + err.message);
+      console.error(err);
+    } finally {
+      setLoading(false);
+   }
+  };
 
   // -------------------- Render Graphs & Tables --------------------
 
@@ -654,13 +789,26 @@ const ResultsPage = () => {
                   <Select
                     value={selectedResourceOption}
                     label="Resource Insight"
-                    onChange={(e) => setSelectedResourceOption(e.target.value)}
+                    onChange={(e) => {
+                      setSelectedResourceOption(e.target.value);
+                      if (selectedResourceType === 'sna') {
+                        handleSNAOptionSelect(e.target.value);
+                      }
+                    }}
                   >
                     {resourceOptions[selectedResourceType].map((opt) => (
                       <MenuItem key={opt} value={opt}>{opt}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
+              )}
+
+              {loading ? (
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                  <CircularProgress />
+                </Box>
+              ) : (
+                renderGraphAndTable()
               )}
             </Box>
           )}
