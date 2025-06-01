@@ -71,7 +71,6 @@ def get_celonis_connection(request: Request) -> CelonisConnectionManager:
             status_code=400,
             detail="Celonis not configured. POST to /api/setup/celonis-credentials first.",
         )
-
     # Build the connection manager and cache it
     mgr = CelonisConnectionManager(
         base_url=cfg.CELONIS_BASE_URL,

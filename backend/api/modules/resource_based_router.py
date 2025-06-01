@@ -54,87 +54,81 @@ async def compute_sna_metrics(
 # **************** Social Network Analysis ****************
 
 
-@router.get("/sna/handover-of-work/{job_id}", response_model=List[SNAMetric])
-async def get_handover_of_work_metric(job_id: str, request: Request) -> List[SNAMetric]:
-    """Retrieves the computed Handover of Work SNA metric.
-
-    Args:
-        job_id: The ID of the job to retrieve the metric for.
-        request: The FastAPI request object.
-
-    Returns:
-        The Handover of Work metric.
-    """
+@router.get("/sna/handover-of-work/{job_id}")
+async def get_handover_of_work_metric(job_id: str, request: Request)->dict:
+    """Retrieves the computed Handover of Work SNA metric and returns it in frontend-compatible format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("handover_of_work", {})
         .get("values", [])
     )
 
+    # Convert dicts to list of lists
+    formatted_rows = [
+        [entry.get("source"), entry.get("target"), entry.get("value")]
+        for entry in raw_values
+        if "source" in entry and "target" in entry and "value" in entry
+    ]
 
-@router.get("/sna/subcontracting/{job_id}", response_model=List[SNAMetric])
-async def get_subcontracting_metric(job_id: str, request: Request) -> List[SNAMetric]:
-    """Retrieves the computed Subcontracting metric.
+    return {
+        "tables": [
+            {
+                "headers": ["Source", "Target", "Value"],
+                "rows": formatted_rows
+            }
+        ],
+        "graphs": []
+    }
 
-    Args:
-        job_id: The ID of the job to retrieve the metric for.
-        request: The FastAPI request object.
 
-    Returns:
-        The Subcontracting metric.
-    """
+@router.get("/sna/subcontracting/{job_id}")
+async def get_subcontracting_metric(job_id: str, request: Request)->dict:
+    """Returns subcontracting metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
+    raw = request.app.state.jobs[job_id].result.get("subcontracting", {}).get("values", [])
 
-    return (
-        request.app.state.jobs[job_id]
-        .result.get("subcontracting", {})
-        .get("values", [])
-    )
+    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    return {
+        "tables": [{
+            "headers": ["Source", "Target", "Value"],
+            "rows": rows
+        }],
+        "graphs": []
+    }
 
 
-@router.get("/sna/working-together/{job_id}", response_model=List[SNAMetric])
-async def get_working_together_metric(job_id: str, request: Request) -> List[SNAMetric]:
-    """Retrieves the computed Working Together metric.
-
-    Args:
-        job_id: The ID of the job to retrieve the metric for.
-        request: The FastAPI request object.
-
-    Returns:
-        The Working Together metric.
-    """
+@router.get("/sna/working-together/{job_id}")
+async def get_working_together_metric(job_id: str, request: Request)->dict:
+    """Returns working together metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
+    raw = request.app.state.jobs[job_id].result.get("working_together", {}).get("values", [])
 
-    return (
-        request.app.state.jobs[job_id]
-        .result.get("working_together", {})
-        .get("values", [])
-    )
+    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    return {
+        "tables": [{
+            "headers": ["Source", "Target", "Value"],
+            "rows": rows
+        }],
+        "graphs": []
+    }
 
 
-@router.get("/sna/similar-activities/{job_id}", response_model=List[SNAMetric])
-async def get_similar_activities_metric(
-    job_id: str, request: Request
-) -> List[SNAMetric]:
-    """Retrieves the computed Similar Activities metric.
-
-    Args:
-        job_id: The ID of the job to retrieve the metric for.
-        request: The FastAPI request object.
-
-    Returns:
-        The Similar Activities metric.
-    """
+@router.get("/sna/similar-activities/{job_id}")
+async def get_similar_activities_metric(job_id: str, request: Request)->dict:
+    """Returns similar activities metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
+    raw = request.app.state.jobs[job_id].result.get("similar_activities", {}).get("values", [])
 
-    return (
-        request.app.state.jobs[job_id]
-        .result.get("similar_activities", {})
-        .get("values", [])
-    )
-
+    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    return {
+        "tables": [{
+            "headers": ["Source", "Target", "Value"],
+            "rows": rows
+        }],
+        "graphs": []
+    }
 
 # **************** Role Discovery ****************
 

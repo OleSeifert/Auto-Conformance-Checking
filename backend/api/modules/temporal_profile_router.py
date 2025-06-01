@@ -53,12 +53,11 @@ async def compute_temporal_conformance_result(
     )
     return {"job_id": job_id}
 
-
-@router.get("/get-result/{job_id}", response_model=ConformanceResultType)
+@router.get("/get-result/{job_id}")
 async def get_temporal_conformance_result(
     job_id: str,
     request: Request,
-) -> ConformanceResultType:
+)-> dict:
     """Retrieves the temporal conformance result for a given job ID.
 
     This result is expected to be a list of lists of tuples, representing
@@ -92,5 +91,37 @@ async def get_temporal_conformance_result(
             status_code=404,
             detail=f"Temporal conformance result data not found for completed job '{job_id}'.",
         )
+    
+    if not data:
+        return {
+        "tables": [],
+        "graphs": []
+        }
 
-    return data
+    try:
+    # Flatten while skipping empty sublists
+        flattened = []
+        for sublist in data:
+            for tup in sublist:
+             if isinstance(tup, tuple) and len(tup) == 4:
+                flattened.append(list(tup))
+
+        return {
+        "tables": [
+            {
+                "headers": ["Activity A", "Activity B", "Mean", "Zeta"],
+                "rows": flattened
+            }
+        ],
+        "graphs": []
+    }
+
+    except Exception as e:
+        import traceback
+        print("Error formatting temporal result:", e)
+        traceback.print_exc()
+        raise HTTPException(
+        status_code=500,
+        detail="Error formatting temporal result. Check tuple structure."
+    )
+
