@@ -62,6 +62,9 @@ def get_resource_for_activity(celonis: CelonisConnectionManager) -> DataFrame:
     return celonis.get_dataframe_from_celonis(query)  # type: ignore
 
 
+# **************** Social Network Analysis ****************
+
+
 def get_handover_of_work_values(celonis: CelonisConnectionManager) -> DataFrame:
     """Returns the Handover of Work metric.
 
@@ -74,7 +77,7 @@ def get_handover_of_work_values(celonis: CelonisConnectionManager) -> DataFrame:
         celonis (CelonisConnectionManager): the celonis connection
 
     Returns:
-        The Handover of Work metric.
+        A DataFrame containing the Handover of Work metric.
     """
     handover_query = {
         "Resource 1": """ SOURCE("ACTIVITIES"."org:resource") """,
@@ -101,7 +104,7 @@ def get_subcontracting_values(celonis: CelonisConnectionManager) -> DataFrame:
         celonis (CelonisConnectionManager): the celonis connection
 
     Returns:
-         The Subcontracting metric.
+        A DataFrame containing the Subcontracting metric.
     """
     subcontracting_query = {
         "Case": """ "ACTIVITIES"."case:concept:name" """,
@@ -157,7 +160,7 @@ def get_working_together_values(celonis: CelonisConnectionManager) -> DataFrame:
         celonis (CelonisConnectionManager): the celonis connection
 
     Returns:
-        The Working Together metric.
+        A DataFrame containing the Working Together metric.
     """
     working_together_query = {
         "Case": """ "ACTIVITIES"."case:concept:name" """,
@@ -214,7 +217,7 @@ def get_similar_activities_values(celonis: CelonisConnectionManager) -> DataFram
         celonis (CelonisConnectionManager): the celonis connection
 
     Returns:
-        The Similar Activities metric.
+        A DataFrame containing the Similar Activities metric.
     """
     similar_activities_query = {
         "Activity": """ "ACTIVITIES"."concept:name" """,
@@ -263,4 +266,41 @@ def get_similar_activities_values(celonis: CelonisConnectionManager) -> DataFram
             )
 
     result_df = pd.DataFrame(records)
+    return result_df
+
+
+# **************** Role Discovery ****************
+
+
+def get_organizational_roles(celonis: CelonisConnectionManager) -> DataFrame:
+    """Returns the organizational roles.
+
+    The organizational roles are stored as a semi-structured list of
+    activity groups, where each group associates a list of activities
+    with a dictionary of originators and their corresponding
+    importance scores.
+
+    Args:
+        celonis (CelonisConnectionManager): the celonis connection
+
+    Returns:
+        A DataFrame containing the organizational roles.
+    """
+    organizational_roles_query = {
+        "Activity": """ "ACTIVITIES"."concept:name" """,
+        "Resource": """ "ACTIVITIES"."org:resource" """,
+    }
+    dataframe = celonis.get_dataframe_from_celonis(organizational_roles_query)  # type: ignore
+
+    df = dataframe.copy()  # type: ignore
+
+    grouped = df.groupby(["Activity", "Resource"]).size().reset_index(name="count")  # type: ignore
+
+    # Pivot to nested dict per activity
+    result_df = (
+        grouped.groupby("Activity")  # type: ignore
+        .apply(lambda g: dict(zip(g["Resource"], g["count"])))  # type: ignore
+        .reset_index(name="originators_importance")  # type: ignore
+    )
+
     return result_df
