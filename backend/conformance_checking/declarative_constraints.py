@@ -1,6 +1,6 @@
 """Contains functionality for declarative conformance checking.
 
-This module defines the DeclarativeConstraints class which uses PM4Py to
+This module defines the DeclerativeConstraints class which uses PM4Py to
 discover declarative profiles from event logs and checks conformance based
 on the discovered declarative profiles.
 """
@@ -90,7 +90,6 @@ class DeclarativeConstraints:
             min_support_ratio = self.min_support_ratio
         if min_confidence_ratio is None:
             min_confidence_ratio = self.min_confidence_ratio
-
         self.declare_model = pm4py.discover_declare(
             log,
             min_support_ratio=min_support_ratio,
@@ -132,20 +131,19 @@ class DeclarativeConstraints:
             declare_model = self.declare_model
         if log is None:
             log = self.log
-
         if str(rule_name) not in self.valid_rules:
             raise ValueError(
                 f"Unsupported rule: '{rule_name}'. Must be one of: {valid_rules}"
             )
+        rule_dict: Dict = declare_model.get(rule_name, {})
 
-        rule_dict : Dict = declare_model.get(rule_name, {})
-
-        output : Dict = {"graph": [],
-                         "table": {
-                                    "headers": ["First Activity", "Second Activity", "# Violations"],
-                                    "rows": []
-                                    }
-                        }
+        output: Dict = {
+            "graph": [],
+            "table": {
+                "headers": ["First Activity", "Second Activity", "# Violations"],
+                "rows": [],
+            },
+        }
 
         for rule_key, rule_info in rule_dict.items():
             if isinstance(rule_key, tuple):
@@ -158,7 +156,7 @@ class DeclarativeConstraints:
             violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
             violation_count = len(violated)
 
-            if B is not None : 
+            if B is not None:
                 output["graph"].append(
                     {
                         "nodes": [{"id": A}, {"id": B}],
@@ -166,7 +164,7 @@ class DeclarativeConstraints:
                     }
                 )
                 output["table"]["rows"].append([A, B, str(violation_count)])
-            else: 
+            else:
                 output["graph"].append(
                     {
                         "nodes": [{"id": A}],
@@ -197,7 +195,6 @@ class DeclarativeConstraints:
         rule_name = str(rule_name).lower()
         if rule_name not in self.valid_rules:
             raise ValueError(f"Unsupported rule: '{rule_name}'")
-
         if (self.conf_results_memory[rule_name] is None) or (run_from_scratch is True):
             self.conf_results_memory[rule_name] = self.rule_specific_violation_summary(
                 declare_model=self.declare_model, log=self.log, rule_name=rule_name
