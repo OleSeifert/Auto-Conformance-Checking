@@ -11,10 +11,9 @@ from pm4py.algo.conformance.declare import algorithm as declare_conformance
 from typing import Dict, Optional, Any
 
 
-class DeclerativeConstraints:
+class DeclarativeConstraints:
     """
-    A class to handle the conformance checking of declarative constraints
-    in an event log using the PM4Py library.
+    Represents the declarative constraints of an event log.
 
     Attributes :
         log : The main event log
@@ -32,7 +31,7 @@ class DeclerativeConstraints:
         timestamp_col: Optional[str] = None,
     ) -> None:
         """
-        Initializes the DeclerativeConstraints class with an event log.
+        Initializes the DeclarativeConstraints class with an event log.
         Also defines the model and the memory for all results
 
         Args:
@@ -70,7 +69,7 @@ class DeclerativeConstraints:
         ]
         self.conf_results_memory = {rule: None for rule in self.valid_rules}
 
-    # ************************* Runing Model *************************
+    # ************************* Running Model *************************
 
     def run_model(
         self,
@@ -78,6 +77,13 @@ class DeclerativeConstraints:
         min_support_ratio: Optional[float] = None,
         min_confidence_ratio: Optional[float] = None,
     ) -> None:
+        """
+        Runs the declarative model on the event log and stores the results in memory.
+        Args:
+            log (Optional[pd.DataFrame]) : The event log to use.
+            min_support_ratio (Optional[float]) : The minimum support ratio for discovering rules.
+            min_confidence_ratio (Optional[float]) : The minimum confidence ratio for discovering rules.
+        """
         if log is None:
             log = self.log
         if min_support_ratio is None:
@@ -132,11 +138,14 @@ class DeclerativeConstraints:
                 f"Unsupported rule: '{rule_name}'. Must be one of: {valid_rules}"
             )
 
-        rule_dict = declare_model.get(rule_name, {})
+        rule_dict : Dict = declare_model.get(rule_name, {})
 
-        output = {"graph": {"nodes": [], "edges": []}, "table": []}
-
-        nodes_set = list([])
+        output : Dict = {"graph": [],
+                         "table": {
+                                    "headers": ["First Activity", "Second Activity", "# Violations"],
+                                    "rows": []
+                                    }
+                        }
 
         for rule_key, rule_info in rule_dict.items():
             if isinstance(rule_key, tuple):
@@ -149,31 +158,22 @@ class DeclerativeConstraints:
             violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
             violation_count = len(violated)
 
-            nodes_set.append(A)
-            if B is not None:
-                output["table"].append(
+            if B is not None : 
+                output["graph"].append(
                     {
-                        "First Activity": A,
-                        "Second Activity": B,
-                        "# Violations": str(violation_count),
+                        "nodes": [{"id": A}, {"id": B}],
+                        "edges": [{"from": A, "to": B, "label": str(violation_count)}],
                     }
                 )
-                nodes_set.append(B)
-                output["graph"]["edges"].append(
-                    {"from": A, "to": B, "label": str(violation_count)}
-                )
-            else:
-                output["table"].append(
+                output["table"]["rows"].append([A, B, str(violation_count)])
+            else: 
+                output["graph"].append(
                     {
-                        "First Activity": A,
-                        "Second Activity": "-",
-                        "# Violations": str(violation_count),
+                        "nodes": [{"id": A}],
+                        "edges": [{"from": A, "to": A, "label": str(violation_count)}],
                     }
                 )
-                output["graph"]["edges"].append(
-                    {"from": A, "to": A, "label": str(violation_count)}
-                )
-        output["graph"]["nodes"] = list(set(list(nodes_set)))
+                output["table"]["rows"].append([A, "-", str(violation_count)])
         return output
 
     def get_declarative_conformance_diagnostics(
