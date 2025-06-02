@@ -1,6 +1,8 @@
 """Contains functionality for declarative conformance checking.
 
-This module defines the DeclerativeConstraints class which uses PM4Py to discover declarative profiles from event logs and checks conformance based on the discovered declarative profiles.
+This module defines the DeclerativeConstraints class which uses PM4Py to
+discover declarative profiles from event logs and checks conformance
+based on the discovered declarative profiles.
 """
 
 import pandas as pd
@@ -77,7 +79,8 @@ class DeclarativeConstraints:
         min_support_ratio: Optional[float] = None,
         min_confidence_ratio: Optional[float] = None,
     ) -> None:
-        """Runs the declarative model on the event log and stores the results in memory.
+        """Runs the declarative model on the event log and stores the results
+        in memory.
 
         Args:
             log (Optional[pd.DataFrame]) : The event log to use.
@@ -105,8 +108,9 @@ class DeclarativeConstraints:
         log: Optional[pd.DataFrame] = None,
         rule_name: Optional[str] = None,
     ) -> Dict:
-        """Summarizes number of violations in the event log for a specified declarative rule.
-        
+        """Summarizes number of violations in the event log for a specified
+        declarative rule.
+
         This function does not access memory variable, so it runs the rule from scratch even if results are pre-computed and stored.
 
         Args:
@@ -175,7 +179,8 @@ class DeclarativeConstraints:
     def get_declarative_conformance_diagnostics(
         self, rule_name: str, run_from_scratch: Optional[bool] = False
     ) -> Dict:
-        """The main function to get the conformance diagnostics for a specified declarative rule.
+        """The main function to get the conformance diagnostics for a specified
+        declarative rule.
 
         Check for results stored in memory and runs conformance checking of any rule only if results previously not stored in memory.
 
@@ -344,8 +349,9 @@ class DeclarativeConstraints:
         self,
         list_of_rules: Optional[list] = None,
         run_from_scratch: Optional[bool] = False,
-        ) -> Any :
-        """Runs conformance checking for all rules and stores results in memory.
+    ) -> Any:
+        """Runs conformance checking for all rules and stores results in
+        memory.
 
         Useful for poling when all rules need to be pre-computed in the background.
 
