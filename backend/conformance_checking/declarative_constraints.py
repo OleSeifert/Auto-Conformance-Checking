@@ -1,8 +1,6 @@
 """Contains functionality for declarative conformance checking.
 
-This module defines the DeclerativeConstraints class which uses PM4Py to
-discover declarative profiles from event logs and checks conformance based
-on the discovered declarative profiles.
+This module defines the DeclerativeConstraints class which uses PM4Py to discover declarative profiles from event logs and checks conformance based on the discovered declarative profiles.
 """
 
 import pandas as pd
@@ -12,13 +10,12 @@ from typing import Dict, Optional, Any
 
 
 class DeclarativeConstraints:
-    """
-    Represents the declarative constraints of an event log.
+    """Represents the declarative constraints of an event log.
 
     Attributes :
-        log : The main event log
-        min_support_ratio : The minimum support ratio for discovering rules
-        min_confidence_ratio : The minimum confidence ratio for discovering rules
+        log : The main event log.
+        min_support_ratio : The minimum support ratio for discovering rules.
+        min_confidence_ratio : The minimum confidence ratio for discovering rules.
     """
 
     def __init__(
@@ -30,16 +27,19 @@ class DeclarativeConstraints:
         activity_col: Optional[str] = None,
         timestamp_col: Optional[str] = None,
     ) -> None:
-        """
-        Initializes the DeclarativeConstraints class with an event log.
-        Also defines the model and the memory for all results
+        """Initializes the DeclarativeConstraints class with an event log.
+
+        Also defines the model and the memory for all results.
 
         Args:
             log : The main event log.
-            min_support_ratio : The minimum support ratio for discovering rules
-                                Defaults to 0.3
-            min_confidence_ratio :  The minimum confidence ratio for discovering rules
-                                    Defaults to 0.75
+            min_support_ratio : The minimum support ratio for discovering rules.
+                                Defaults to 0.3.
+            min_confidence_ratio :  The minimum confidence ratio for discovering rules.
+                                    Defaults to 0.75.
+            case_id_col : The name of the column containing case IDs.
+            activity_col : The name of the column containing activity names.
+            timestamp_col : The name of the column containing timestamps.
         """
         self.log = log
         self.min_support_ratio = min_support_ratio
@@ -77,8 +77,8 @@ class DeclarativeConstraints:
         min_support_ratio: Optional[float] = None,
         min_confidence_ratio: Optional[float] = None,
     ) -> None:
-        """
-        Runs the declarative model on the event log and stores the results in memory.
+        """Runs the declarative model on the event log and stores the results in memory.
+
         Args:
             log (Optional[pd.DataFrame]) : The event log to use.
             min_support_ratio (Optional[float]) : The minimum support ratio for discovering rules.
@@ -101,17 +101,16 @@ class DeclarativeConstraints:
 
     def rule_specific_violation_summary(
         self,
-        declare_model: Optional[Dict[str, Any]] = None,
+        declare_model: Optional[Dict] = None,
         log: Optional[pd.DataFrame] = None,
         rule_name: Optional[str] = None,
-        verbose: Optional[bool] = False,
-    ) -> Dict[str, Any]:
-        """
-        Summarizes number of violations in the event log for a specified declarative rule.
-        This function does not access memory variable, so it runs the rule from scratch even if results are pre-computed and stored
+    ) -> Dict:
+        """Summarizes number of violations in the event log for a specified declarative rule.
+        
+        This function does not access memory variable, so it runs the rule from scratch even if results are pre-computed and stored.
 
         Args:
-            declare_model (Optional[Dict[str, Any]]) :  The Declare model.
+            declare_model (Optional[Dict]) :  The Declare model.
                                                         If None, uses the default model.
             log (Optional[EventLog]) :  The event log.
                                         If None, uses the default log.
@@ -119,12 +118,11 @@ class DeclarativeConstraints:
             verbose (bool) : Whether to print details for debugging.
 
         Returns:
-            Dict[str, Any]: Summary with graph and table information of rule violations.
+            Dict: Summary with graph and table information of rule violations.
 
         Raises:
             ValueError: If an unsupported rule name is provided.
         """
-
         if self.declare_model is None:
             self.run_model()
         if declare_model is None:
@@ -133,7 +131,7 @@ class DeclarativeConstraints:
             log = self.log
         if str(rule_name) not in self.valid_rules:
             raise ValueError(
-                f"Unsupported rule: '{rule_name}'. Must be one of: {valid_rules}"
+                f"Unsupported rule: '{rule_name}'. Must be one of: {self.valid_rules}"
             )
         rule_dict: Dict = declare_model.get(rule_name, {})
 
@@ -176,9 +174,9 @@ class DeclarativeConstraints:
 
     def get_declarative_conformance_diagnostics(
         self, rule_name: str, run_from_scratch: Optional[bool] = False
-    ) -> Dict[str, Any]:
-        """
-        The main function to get the conformance diagnostics for a specified declarative rule.
+    ) -> Dict:
+        """The main function to get the conformance diagnostics for a specified declarative rule.
+
         Check for results stored in memory and runs conformance checking of any rule only if results previously not stored in memory.
 
         Args:
@@ -186,12 +184,11 @@ class DeclarativeConstraints:
             run_from_scratch (bool) : If True, re-evaluates the rule even if results stored.
 
         Returns:
-            Dict[str, Any]: Cached or newly generated rule violation summary.
+            Dict: Cached or newly generated rule violation summary.
 
         Raises:
             ValueError: If the rule name is not supported.
         """
-
         rule_name = str(rule_name).lower()
         if rule_name not in self.valid_rules:
             raise ValueError(f"Unsupported rule: '{rule_name}'")
@@ -203,158 +200,141 @@ class DeclarativeConstraints:
 
     # ************************* Getting Violations for All/Each Rule *************************
 
-    def declarative_conformance_for_existance(self) -> Dict[str, Any]:
-        """
-        The function to get results of existance rule
+    def declarative_conformance_for_existance(self) -> Dict:
+        """The function to get results of existance rule.
 
         Returns:
-            Dict[str, Any] : For existance rule
+            Dict: For existance rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="existence")
 
-    def declarative_conformance_for_absence(self) -> Dict[str, Any]:
-        """
-        The function to get results of absence rule
+    def declarative_conformance_for_absence(self) -> Dict:
+        """The function to get results of absence rule.
 
         Returns:
-            Dict[str, Any] : For absence rule
+            Dict: For absence rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="absence")
 
     def declarative_conformance_for_exactly_one(self) -> Dict[str, Any]:
-        """
-        The function to get results of exactly_one rule
+        """The function to get results of exactly_one rule.
 
         Returns:
-            Dict[str, Any] : For exactly_one rule
+            Dict: For exactly_one rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="exactly_one")
 
-    def declarative_conformance_for_init(self) -> Dict[str, Any]:
-        """
-        The function to get results of init rule
+    def declarative_conformance_for_init(self) -> Dict:
+        """The function to get results of init rule.
 
         Returns:
-            Dict[str, Any] : For init rule
+            Dict: For init rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="init")
 
     def declarative_conformance_for_responded_existence(self) -> Dict[str, Any]:
-        """
-        The function to get results of responded_existence rule
+        """The function to get results of responded_existence rule.
 
         Returns:
-            Dict[str, Any] : For responded_existence rule
+            Dict: For responded_existence rule.
         """
         return self.get_declarative_conformance_diagnostics(
             rule_name="responded_existence"
         )
 
-    def declarative_conformance_for_coexistence(self) -> Dict[str, Any]:
-        """
-        The function to get results of coexistence rule
+    def declarative_conformance_for_coexistence(self) -> Dict:
+        """The function to get results of coexistence rule.
 
         Returns:
-            Dict[str, Any] : For coexistence rule
+            Dict: For coexistence rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="coexistence")
 
-    def declarative_conformance_for_response(self) -> Dict[str, Any]:
-        """
-        The function to get results of response rule
+    def declarative_conformance_for_response(self) -> Dict:
+        """The function to get results of response rule.
 
         Returns:
-            Dict[str, Any] : For response rule
+            Dict: For response rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="response")
 
-    def declarative_conformance_for_precedence(self) -> Dict[str, Any]:
-        """
-        The function to get results of precedence rule
+    def declarative_conformance_for_precedence(self) -> Dict:
+        """The function to get results of precedence rule.
 
         Returns:
-            Dict[str, Any] : For precedence rule
+            Dict: For precedence rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="precedence")
 
-    def declarative_conformance_for_succession(self) -> Dict[str, Any]:
-        """
-        The function to get results of succession rule
+    def declarative_conformance_for_succession(self) -> Dict:
+        """The function to get results of succession rule.
 
         Returns:
-            Dict[str, Any] : For succession rule
+            Dict: For succession rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="succession")
 
-    def declarative_conformance_for_altprecedence(self) -> Dict[str, Any]:
-        """
-        The function to get results of altprecedence rule
+    def declarative_conformance_for_altprecedence(self) -> Dict:
+        """The function to get results of altprecedence rule.
 
         Returns:
-            Dict[str, Any] : For altprecedence rule
+            Dict: For altprecedence rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="altprecedence")
 
-    def declarative_conformance_for_altsuccession(self) -> Dict[str, Any]:
-        """
-        The function to get results of altsuccession rule
+    def declarative_conformance_for_altsuccession(self) -> Dict:
+        """The function to get results of altsuccession rule.
 
         Returns:
-            Dict[str, Any] : For altsuccession rule
+            Dict: For altsuccession rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="altsuccession")
 
-    def declarative_conformance_for_chainresponse(self) -> Dict[str, Any]:
-        """
-        The function to get results of chainresponse rule
+    def declarative_conformance_for_chainresponse(self) -> Dict:
+        """The function to get results of chainresponse rule.
 
         Returns:
-            Dict[str, Any] : For chainresponse rule
+            Dict: For chainresponse rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="chainresponse")
 
-    def declarative_conformance_for_chainprecedence(self) -> Dict[str, Any]:
-        """
-        The function to get results of chainprecedence rule
+    def declarative_conformance_for_chainprecedence(self) -> Dict:
+        """The function to get results of chainprecedence rule.
 
         Returns:
-            Dict[str, Any] : For chainprecedence rule
+            Dict: For chainprecedence rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="chainprecedence")
 
-    def declarative_conformance_for_chainsuccession(self) -> Dict[str, Any]:
-        """
-        The function to get results of chainsuccession rule
+    def declarative_conformance_for_chainsuccession(self) -> Dict:
+        """The function to get results of chainsuccession rule.
 
         Returns:
-            Dict[str, Any] : For chainsuccession rule
+            Dict: For chainsuccession rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="chainsuccession")
 
-    def declarative_conformance_for_noncoexistence(self) -> Dict[str, Any]:
-        """
-        The function to get results of noncoexistence rule
+    def declarative_conformance_for_noncoexistence(self) -> Dict:
+        """The function to get results of noncoexistence rule.
 
         Returns:
-            Dict[str, Any] : For noncoexistence rule
+            Dict: For noncoexistence rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="noncoexistence")
 
-    def declarative_conformance_for_nonsuccession(self) -> Dict[str, Any]:
-        """
-        The function to get results of nonsuccession rule
+    def declarative_conformance_for_nonsuccession(self) -> Dict:
+        """The function to get results of nonsuccession rule.
 
         Returns:
-            Dict[str, Any] : For nonsuccession rule
+            Dict: For nonsuccession rule.
         """
         return self.get_declarative_conformance_diagnostics(rule_name="nonsuccession")
 
-    def declarative_conformance_for_nonchainsuccession(self) -> Dict[str, Any]:
-        """
-        The function to get results of nonchainsuccession rule
+    def declarative_conformance_for_nonchainsuccession(self) -> Dict:
+        """The function to get results of nonchainsuccession rule.
 
         Returns:
-            Dict[str, Any] : For nonchainsuccession rule
+            Dict: For nonchainsuccession rule.
         """
         return self.get_declarative_conformance_diagnostics(
             rule_name="nonchainsuccession"
@@ -364,22 +344,22 @@ class DeclarativeConstraints:
         self,
         list_of_rules: Optional[list] = None,
         run_from_scratch: Optional[bool] = False,
-    ) -> Dict[str, Dict[str, Any]]:
-        """
-        Runs conformance checking for all rules and stores results in memory.
-        Useful for poling when all rules need to be pre-computed in the background
+        ) -> Any :
+        """Runs conformance checking for all rules and stores results in memory.
+
+        Useful for poling when all rules need to be pre-computed in the background.
 
         Args:
-            list_of_rules (Optional[list]) : List of rule names to check.
-                                             If None, runs for all valid rules.
+            list_of_rules (Optional[list]) : List of rule names to check. If None, runs for all valid rules.
+            run_from_scratch (Optional[bool]) : If True, re-evaluates all rules even if results stored.
 
         Returns:
-            Dictionary of all violations
+            Dictionary of all violations.
         """
         if list_of_rules is None:
             list_of_rules = self.valid_rules
         for rule in list_of_rules:
-            temp = self.get_declarative_conformance_diagnostics(
+            self.temp = self.get_declarative_conformance_diagnostics(
                 rule_name=rule, run_from_scratch=run_from_scratch
             )
         return self.conf_results_memory

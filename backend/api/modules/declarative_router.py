@@ -1,7 +1,7 @@
 """Contains the routes for handling declarative constraints and related operations."""
 
 import uuid
-from typing import Dict, List
+from typing import Dict
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
@@ -22,7 +22,7 @@ async def compute_declarative_constraints(
     background_tasks: BackgroundTasks,
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> Dict[str, str]:
+    ) -> Dict[str, str]:
     """Computes the declarative constraints and stores it.
 
     The declarative model is computed in the background and stored in the app state.
@@ -54,8 +54,8 @@ async def compute_declarative_constraints(
 # **************** Retrieving Declarative Model Attributes ****************
 
 
-@router.get("/get_existance_violations/{job_id}", response_model=List[List[str]])
-def get_existance_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_existance_violations/{job_id}")
+def get_existance_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the existance violations from the declarative model.
 
     Args:
@@ -72,8 +72,8 @@ def get_existance_violations (job_id: str, request: Request) -> List[List[str]]:
     return request.app.state.jobs[job_id].result.get("existance", [])
 
 
-@router.get("/get_absence_violations/{job_id}", response_model=List[List[str]])
-def get_absence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_absence_violations/{job_id}")
+def get_absence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the absence violations from the declarative model.
 
     Args:
@@ -89,8 +89,8 @@ def get_absence_violations (job_id: str, request: Request) -> List[List[str]]:
     return request.app.state.jobs[job_id].result.get("absence", [])
 
 
-@router.get("/get_exactly_one_violations/{job_id}", response_model=List[List[str]])
-def get_exactly_one_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_exactly_one_violations/{job_id}")
+def get_exactly_one_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the exactly_one violations from the declarative model.
 
     Args:
@@ -106,8 +106,8 @@ def get_exactly_one_violations (job_id: str, request: Request) -> List[List[str]
     return request.app.state.jobs[job_id].result.get("exactly_one", [])
 
 
-@router.get("/get_init_violations/{job_id}", response_model=List[List[str]])
-def get_init_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_init_violations/{job_id}")
+def get_init_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the init violations from the declarative model.
 
     Args:
@@ -123,8 +123,8 @@ def get_init_violations (job_id: str, request: Request) -> List[List[str]]:
     return request.app.state.jobs[job_id].result.get("init", [])
 
 
-@router.get("/get_responded_existence_violations/{job_id}", response_model=List[List[str]])
-def get_responded_existence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_responded_existence_violations/{job_id}")
+def get_responded_existence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the responded_existence violations from the declarative model.
 
     Args:
@@ -140,8 +140,8 @@ def get_responded_existence_violations (job_id: str, request: Request) -> List[L
     return request.app.state.jobs[job_id].result.get("responded_existence", [])
 
 
-@router.get("/get_coexistence_violations/{job_id}", response_model=List[List[str]])
-def get_coexistence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_coexistence_violations/{job_id}")
+def get_coexistence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the coexistence violations from the declarative model.
 
     Args:
@@ -157,8 +157,8 @@ def get_coexistence_violations (job_id: str, request: Request) -> List[List[str]
     return request.app.state.jobs[job_id].result.get("coexistence", [])
 
 
-@router.get("/get_response_violations/{job_id}", response_model=List[List[str]])
-def get_response_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_response_violations/{job_id}")
+def get_response_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the response violations from the declarative model.
 
     Args:
@@ -174,8 +174,8 @@ def get_response_violations (job_id: str, request: Request) -> List[List[str]]:
     return request.app.state.jobs[job_id].result.get("response", [])
 
 
-@router.get("/get_precedence_violations/{job_id}", response_model=List[List[str]])
-def get_precedence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_precedence_violations/{job_id}")
+def get_precedence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the precedence violations from the declarative model.
 
     Args:
@@ -191,8 +191,8 @@ def get_precedence_violations (job_id: str, request: Request) -> List[List[str]]
     return request.app.state.jobs[job_id].result.get("precedence", [])
 
 
-@router.get("/get_succession_violations/{job_id}", response_model=List[List[str]])
-def get_succession_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_succession_violations/{job_id}")
+def get_succession_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the succession violations from the declarative model.
 
     Args:
@@ -208,8 +208,8 @@ def get_succession_violations (job_id: str, request: Request) -> List[List[str]]
     return request.app.state.jobs[job_id].result.get("succession", [])
 
 
-@router.get("/get_altprecedence_violations/{job_id}", response_model=List[List[str]])
-def get_altprecedence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_altprecedence_violations/{job_id}")
+def get_altprecedence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the altprecedence violations from the declarative model.
 
     Args:
@@ -225,8 +225,8 @@ def get_altprecedence_violations (job_id: str, request: Request) -> List[List[st
     return request.app.state.jobs[job_id].result.get("altprecedence", [])
 
 
-@router.get("/get_altsuccession_violations/{job_id}", response_model=List[List[str]])
-def get_altsuccession_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_altsuccession_violations/{job_id}")
+def get_altsuccession_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the altsuccession violations from the declarative model.
 
     Args:
@@ -242,8 +242,8 @@ def get_altsuccession_violations (job_id: str, request: Request) -> List[List[st
     return request.app.state.jobs[job_id].result.get("altsuccession", [])
 
 
-@router.get("/get_chainresponse_violations/{job_id}", response_model=List[List[str]])
-def get_chainresponse_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_chainresponse_violations/{job_id}")
+def get_chainresponse_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the chainresponse violations from the declarative model.
 
     Args:
@@ -259,8 +259,8 @@ def get_chainresponse_violations (job_id: str, request: Request) -> List[List[st
     return request.app.state.jobs[job_id].result.get("chainresponse", [])
 
 
-@router.get("/get_chainprecedence_violations/{job_id}", response_model=List[List[str]])
-def get_chainprecedence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_chainprecedence_violations/{job_id}")
+def get_chainprecedence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the chainprecedence violations from the declarative model.
 
     Args:
@@ -276,8 +276,8 @@ def get_chainprecedence_violations (job_id: str, request: Request) -> List[List[
     return request.app.state.jobs[job_id].result.get("chainprecedence", [])
 
 
-@router.get("/get_chainsuccession_violations/{job_id}", response_model=List[List[str]])
-def get_chainsuccession_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_chainsuccession_violations/{job_id}")
+def get_chainsuccession_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the chainsuccession violations from the declarative model.
 
     Args:
@@ -293,8 +293,8 @@ def get_chainsuccession_violations (job_id: str, request: Request) -> List[List[
     return request.app.state.jobs[job_id].result.get("chainsuccession", [])
 
 
-@router.get("/get_noncoexistence_violations/{job_id}", response_model=List[List[str]])
-def get_noncoexistence_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_noncoexistence_violations/{job_id}")
+def get_noncoexistence_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the noncoexistence violations from the declarative model.
 
     Args:
@@ -310,8 +310,8 @@ def get_noncoexistence_violations (job_id: str, request: Request) -> List[List[s
     return request.app.state.jobs[job_id].result.get("noncoexistence", [])
 
 
-@router.get("/get_nonsuccession_violations/{job_id}", response_model=List[List[str]])
-def get_nonsuccession_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_nonsuccession_violations/{job_id}")
+def get_nonsuccession_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the nonsuccession violations from the declarative model.
 
     Args:
@@ -327,8 +327,8 @@ def get_nonsuccession_violations (job_id: str, request: Request) -> List[List[st
     return request.app.state.jobs[job_id].result.get("nonsuccession", [])
 
 
-@router.get("/get_nonchainsuccession_violations/{job_id}", response_model=List[List[str]])
-def get_nonchainsuccession_violations (job_id: str, request: Request) -> List[List[str]]:
+@router.get("/get_nonchainsuccession_violations/{job_id}")
+def get_nonchainsuccession_violations (job_id: str, request: Request) -> Dict:
     """Retrieves the nonchainsuccession violations from the declarative model.
 
     Args:
@@ -342,20 +342,3 @@ def get_nonchainsuccession_violations (job_id: str, request: Request) -> List[Li
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     return request.app.state.jobs[job_id].result.get("nonchainsuccession", [])
-
-
-# @router.get("/run_all_rules/{job_id}", response_model=List[List[str]])
-# def get_nonchainsuccession_violations (job_id: str, request: Request) -> None:
-#     """Runs all the violations from the declarative model.
-
-#     Args:
-#         job_id: The ID of the job for which to retrieve the  violations.
-#         request: The FastAPI request object. This is used to access the
-#             application state via `request.app.state`.
-
-#     Returns:
-#         None : Used for computing all rules and storing in the memory
-#     """
-#     verify_correct_job_module(job_id, request, MODULE_NAME)
-
-#     return request.app.state.jobs[job_id].result.get("run_all_rules", [])
