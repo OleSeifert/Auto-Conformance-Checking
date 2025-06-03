@@ -1,4 +1,6 @@
-"""Contains the routes for handling declarative constraints and related operations."""
+"""Contains the routes for handling declarative constraints and related
+operations.
+"""
 
 import uuid
 from typing import Dict
