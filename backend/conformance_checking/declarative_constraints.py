@@ -8,7 +8,7 @@ based on the discovered declarative profiles.
 import pandas as pd
 import pm4py
 from pm4py.algo.conformance.declare import algorithm as declare_conformance
-from typing import Dict, Optional, Any
+from typing import Dict, List, Optional, Any
 
 
 class DeclarativeConstraints:
@@ -79,8 +79,7 @@ class DeclarativeConstraints:
         min_support_ratio: Optional[float] = None,
         min_confidence_ratio: Optional[float] = None,
     ) -> None:
-        """Runs the declarative model on the event log and stores the results
-        in memory.
+        """Runs the declarative model on the event log and stores the result in memory.
 
         Args:
             log (Optional[pd.DataFrame]) : The event log to use.
@@ -107,9 +106,9 @@ class DeclarativeConstraints:
         declare_model: Optional[Dict] = None,
         log: Optional[pd.DataFrame] = None,
         rule_name: Optional[str] = None,
+        verbose: bool = False,
     ) -> Dict:
-        """Summarizes number of violations in the event log for a specified
-        declarative rule.
+        """Summarizes number of violations in the event log for a specified declarative rule.
 
         This function does not access memory variable, so it runs the rule from scratch even if results are pre-computed and stored.
 
@@ -133,54 +132,57 @@ class DeclarativeConstraints:
             declare_model = self.declare_model
         if log is None:
             log = self.log
+
         if str(rule_name) not in self.valid_rules:
             raise ValueError(
                 f"Unsupported rule: '{rule_name}'. Must be one of: {self.valid_rules}"
             )
-        rule_dict: Dict = declare_model.get(rule_name, {})
 
-        output: Dict = {
-            "graph": [],
-            "table": {
-                "headers": ["First Activity", "Second Activity", "# Violations"],
-                "rows": [],
-            },
-        }
+        rule_dict : Dict = declare_model.get(rule_name, {})
 
-        for rule_key, rule_info in rule_dict.items():
-            if isinstance(rule_key, tuple):
-                A, B = rule_key
-            else:
-                A, B = rule_key, None
-            diagnostics = declare_conformance.apply(
-                log, {rule_name: {(A, B): rule_info}}
-            )
-            violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
-            violation_count = len(violated)
+        graph_nodes : List = []
+        graph_edges : List = []
+        table_rows : List = []
+        table_headers : List = None
+        output : Dict = {"graphs": [], "tables": []}
 
-            if B is not None:
-                output["graph"].append(
-                    {
-                        "nodes": [{"id": A}, {"id": B}],
-                        "edges": [{"from": A, "to": B, "label": str(violation_count)}],
-                    }
+        try : 
+            for rule_key, rule_info in rule_dict.items():
+                if isinstance(rule_key, tuple):
+                    A, B = rule_key
+                else:
+                    A, B = rule_key, None
+                diagnostics = declare_conformance.apply(
+                    log, {rule_name: {(A, B): rule_info}}
                 )
-                output["table"]["rows"].append([A, B, str(violation_count)])
-            else:
-                output["graph"].append(
-                    {
-                        "nodes": [{"id": A}],
-                        "edges": [{"from": A, "to": A, "label": str(violation_count)}],
-                    }
-                )
-                output["table"]["rows"].append([A, "-", str(violation_count)])
-        return output
+                violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
+                violation_count = len(violated)
+
+                if B is not None : 
+                    table_headers = ["First Activity", "Second Activity", "# Violations"]
+                    graph_nodes.append(A)
+                    graph_nodes.append(B)
+                    graph_edges.append({"from": A, "to": B, "label": str(violation_count)})
+                    table_rows.append([A, B, str(violation_count)])
+                else: 
+                    table_headers = ["Activity", "# Violations"]
+                    table_rows.append([A, str(violation_count)])
+            graph_nodes = [{"id": node} for node in list(set(list(graph_nodes)))]
+
+            if table_headers is not None : 
+                output["tables"] = [{"headers": table_headers, "rows": table_rows}]
+            if len(graph_nodes) > 0 and len(graph_edges) > 0 :
+                output['graphs'] = [{"nodes": graph_nodes, "edges": graph_edges}]
+            return output
+
+        except Exception as e :
+            if verbose:
+                print(f"Error processing rule '{rule_name}': {e}")
 
     def get_declarative_conformance_diagnostics(
         self, rule_name: str, run_from_scratch: Optional[bool] = False
     ) -> Dict:
-        """The main function to get the conformance diagnostics for a specified
-        declarative rule.
+        """The main function to get the conformance diagnostics for a specified declarative rule.
 
         Check for results stored in memory and runs conformance checking of any rule only if results previously not stored in memory.
 
@@ -350,8 +352,7 @@ class DeclarativeConstraints:
         list_of_rules: Optional[list] = None,
         run_from_scratch: Optional[bool] = False,
     ) -> Any:
-        """Runs conformance checking for all rules and stores results in
-        memory.
+        """Runs conformance checking for all rules and stores results in memory.
 
         Useful for poling when all rules need to be pre-computed in the background.
 
