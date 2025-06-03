@@ -148,18 +148,26 @@ class DeclarativeConstraints:
             raise ValueError(
                 f"Unsupported rule: '{rule_name}'. Must be one of: {self.valid_rules}"
             )
+
+        rule_dict: Dict = declare_model.get(rule_name, {})
         if declare_model is None:
             raise ValueError("Declare model is stil None. Something has gone wrong.")
         rule_dict: Dict[str, Dict[str, int]] = (
             declare_model[rule_name] if rule_name in declare_model else {}
         )
 
+        graph_nodes: List = []
+        graph_edges: List = []
+        table_rows: List = []
+        table_headers: List = None
+        output: Dict = {"graphs": [], "tables": []}
         graph_nodes: List[Dict[str, str]] = []
         graph_edges: List[Dict[str, str]] = []
         table_rows: List[str] = []
         table_headers: List[str] = []
         output: ReturnGraphType = {"graphs": [], "tables": []}
 
+        try:
         try:
             for rule_key, rule_info in rule_dict.items():
                 if isinstance(rule_key, tuple):
@@ -170,6 +178,19 @@ class DeclarativeConstraints:
                 violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
                 violation_count = len(violated)
 
+                if B is not None:
+                    table_headers = [
+                        "First Activity",
+                        "Second Activity",
+                        "# Violations",
+                    ]
+                    graph_nodes.append(A)
+                    graph_nodes.append(B)
+                    graph_edges.append(
+                        {"from": A, "to": B, "label": str(violation_count)}
+                    )
+                    table_rows.append([A, B, str(violation_count)])
+                else:
                 if B != []:
                     table_headers = [
                         "First Activity",
@@ -187,6 +208,10 @@ class DeclarativeConstraints:
                     table_rows.append([A, str(violation_count)])  # type: ignore
             graph_nodes = [{"id": node} for node in list(set(list(graph_nodes)))]  # type: ignore
 
+            if table_headers is not None:
+                output["tables"] = [{"headers": table_headers, "rows": table_rows}]
+            if len(graph_nodes) > 0 and len(graph_edges) > 0:
+                output["graphs"] = [{"nodes": graph_nodes, "edges": graph_edges}]
             if table_headers != []:
                 output["tables"] = [{"headers": table_headers, "rows": table_rows}]  # type: ignore
             if len(graph_nodes) > 0 and len(graph_edges) > 0:
