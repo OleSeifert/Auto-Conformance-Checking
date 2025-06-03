@@ -1,7 +1,7 @@
-"""Contains the routes for handling declarative constraints and related operations."""
+"""Contains the routes for handling declarative constraints."""
 
 import uuid
-from typing import Dict
+from typing import Dict, List, TypeAlias, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
@@ -14,6 +14,12 @@ from backend.api.tasks.declarative_constraints_tasks import (
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
+
+# **************** Type Aliases ****************
+
+ReturnGraphType: TypeAlias = Dict[
+    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
+]
 
 router = APIRouter(
     prefix="/api/declarative-constraints", tags=["Declarative Constraints CC"]
@@ -59,7 +65,7 @@ async def compute_declarative_constraints(
 
 
 @router.get("/get_existance_violations/{job_id}")
-def get_existance_violations(job_id: str, request: Request) -> Dict:
+def get_existance_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the existance violations from the declarative model.
 
     Args:
@@ -77,7 +83,7 @@ def get_existance_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_absence_violations/{job_id}")
-def get_absence_violations(job_id: str, request: Request) -> Dict:
+def get_absence_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the absence violations from the declarative model.
 
     Args:
@@ -94,7 +100,7 @@ def get_absence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_exactly_one_violations/{job_id}")
-def get_exactly_one_violations(job_id: str, request: Request) -> Dict:
+def get_exactly_one_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the exactly_one violations from the declarative model.
 
     Args:
@@ -111,7 +117,7 @@ def get_exactly_one_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_init_violations/{job_id}")
-def get_init_violations(job_id: str, request: Request) -> Dict:
+def get_init_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the init violations from the declarative model.
 
     Args:
@@ -128,7 +134,9 @@ def get_init_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_responded_existence_violations/{job_id}")
-def get_responded_existence_violations(job_id: str, request: Request) -> Dict:
+def get_responded_existence_violations(
+    job_id: str, request: Request
+) -> ReturnGraphType:
     """Retrieves the responded_existence violations from the declarative model.
 
     Args:
@@ -145,7 +153,7 @@ def get_responded_existence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_coexistence_violations/{job_id}")
-def get_coexistence_violations(job_id: str, request: Request) -> Dict:
+def get_coexistence_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the coexistence violations from the declarative model.
 
     Args:
@@ -162,7 +170,7 @@ def get_coexistence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_response_violations/{job_id}")
-def get_response_violations(job_id: str, request: Request) -> Dict:
+def get_response_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the response violations from the declarative model.
 
     Args:
@@ -179,7 +187,7 @@ def get_response_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_precedence_violations/{job_id}")
-def get_precedence_violations(job_id: str, request: Request) -> Dict:
+def get_precedence_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the precedence violations from the declarative model.
 
     Args:
@@ -196,7 +204,7 @@ def get_precedence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_succession_violations/{job_id}")
-def get_succession_violations(job_id: str, request: Request) -> Dict:
+def get_succession_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the succession violations from the declarative model.
 
     Args:
@@ -213,7 +221,7 @@ def get_succession_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_altprecedence_violations/{job_id}")
-def get_altprecedence_violations(job_id: str, request: Request) -> Dict:
+def get_altprecedence_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the altprecedence violations from the declarative model.
 
     Args:
@@ -230,7 +238,7 @@ def get_altprecedence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_altsuccession_violations/{job_id}")
-def get_altsuccession_violations(job_id: str, request: Request) -> Dict:
+def get_altsuccession_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the altsuccession violations from the declarative model.
 
     Args:
@@ -247,7 +255,7 @@ def get_altsuccession_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_chainresponse_violations/{job_id}")
-def get_chainresponse_violations(job_id: str, request: Request) -> Dict:
+def get_chainresponse_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the chainresponse violations from the declarative model.
 
     Args:
@@ -264,7 +272,7 @@ def get_chainresponse_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_chainprecedence_violations/{job_id}")
-def get_chainprecedence_violations(job_id: str, request: Request) -> Dict:
+def get_chainprecedence_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the chainprecedence violations from the declarative model.
 
     Args:
@@ -281,7 +289,7 @@ def get_chainprecedence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_chainsuccession_violations/{job_id}")
-def get_chainsuccession_violations(job_id: str, request: Request) -> Dict:
+def get_chainsuccession_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the chainsuccession violations from the declarative model.
 
     Args:
@@ -298,7 +306,7 @@ def get_chainsuccession_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_noncoexistence_violations/{job_id}")
-def get_noncoexistence_violations(job_id: str, request: Request) -> Dict:
+def get_noncoexistence_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the noncoexistence violations from the declarative model.
 
     Args:
@@ -315,7 +323,7 @@ def get_noncoexistence_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_nonsuccession_violations/{job_id}")
-def get_nonsuccession_violations(job_id: str, request: Request) -> Dict:
+def get_nonsuccession_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the nonsuccession violations from the declarative model.
 
     Args:
@@ -332,7 +340,7 @@ def get_nonsuccession_violations(job_id: str, request: Request) -> Dict:
 
 
 @router.get("/get_nonchainsuccession_violations/{job_id}")
-def get_nonchainsuccession_violations(job_id: str, request: Request) -> Dict:
+def get_nonchainsuccession_violations(job_id: str, request: Request) -> ReturnGraphType:
     """Retrieves the nonchainsuccession violations from the declarative model.
 
     Args:

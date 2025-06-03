@@ -1,22 +1,23 @@
 """Tests the DeclerativeConstraints class."""
 
 import pm4py  # type: ignore
-from declarative_constraints import DeclarativeConstraints
+
+from backend.conformance_checking.declarative_constraints import DeclarativeConstraints
 
 
 def get_sample_log():
     """Fixture to read a sample event log."""
-    return pm4py.read_xes("tests/input_data/running-example.xes")
+    return pm4py.read_xes("tests/input_data/running-example.xes")  # type: ignore
 
 
 def get_declarative_constraints_obj():
-    """Fixture to create a DeclarativeConstraints instance based on the sample_log."""
+    """Fixture to create a DeclarativeConstraints."""
     sample_log = get_sample_log()
-    return DeclarativeConstraints(sample_log)
+    return DeclarativeConstraints(sample_log)  # type: ignore
 
 
 def test_get_declarative_conformance_diagnostics_for_response():
-    """Test the get_declarative_conformance_diagnostics method for response rules."""
+    """Tests for response rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_response()
     assert result is not None  # type: ignore
@@ -25,7 +26,7 @@ def test_get_declarative_conformance_diagnostics_for_response():
 
 
 def test_get_declarative_conformance_diagnostics_for_precedence():
-    """Test the get_declarative_conformance_diagnostics method for precedence rules."""
+    """Tests for precedence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_precedence()
     assert result is not None  # type: ignore
@@ -34,7 +35,7 @@ def test_get_declarative_conformance_diagnostics_for_precedence():
 
 
 def test_get_declarative_conformance_diagnostics_for_existence():
-    """Test the get_declarative_conformance_diagnostics method for existence rules."""
+    """Tests for existence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_existence()
     assert result is not None  # type: ignore
@@ -43,7 +44,7 @@ def test_get_declarative_conformance_diagnostics_for_existence():
 
 
 def test_get_declarative_conformance_diagnostics_for_absence():
-    """Test the get_declarative_conformance_diagnostics method for absence rules."""
+    """Tests for absence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_absence()
     assert result is not None  # type: ignore
@@ -52,7 +53,7 @@ def test_get_declarative_conformance_diagnostics_for_absence():
 
 
 def test_get_declarative_conformance_diagnostics_for_exactly_one():
-    """Test the get_declarative_conformance_diagnostics method for exactly_one rules."""
+    """Tests for exactly_one rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_exactly_one()
     assert result is not None  # type: ignore
@@ -61,7 +62,7 @@ def test_get_declarative_conformance_diagnostics_for_exactly_one():
 
 
 def test_get_declarative_conformance_diagnostics_for_init():
-    """Test the get_declarative_conformance_diagnostics method for init rules."""
+    """Tests for init rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_init()
     assert result is not None  # type: ignore
@@ -70,7 +71,7 @@ def test_get_declarative_conformance_diagnostics_for_init():
 
 
 def test_get_declarative_conformance_diagnostics_for_responded_existence():
-    """Test the get_declarative_conformance_diagnostics method for responded_existence rules."""
+    """Tests for responded_existence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_responded_existence()
     assert result is not None  # type: ignore
@@ -81,7 +82,7 @@ def test_get_declarative_conformance_diagnostics_for_responded_existence():
 
 
 def test_get_declarative_conformance_diagnostics_for_coexistence():
-    """Test the get_declarative_conformance_diagnostics method for coexistence rules."""
+    """Tests for coexistence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_coexistence()
     assert result is not None  # type: ignore
@@ -90,7 +91,7 @@ def test_get_declarative_conformance_diagnostics_for_coexistence():
 
 
 def test_get_declarative_conformance_diagnostics_for_succession():
-    """Test the get_declarative_conformance_diagnostics method for succession rules."""
+    """Tests for succession rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_succession()
     assert result is not None  # type: ignore
@@ -99,7 +100,7 @@ def test_get_declarative_conformance_diagnostics_for_succession():
 
 
 def test_get_declarative_conformance_diagnostics_for_altprecedence():
-    """Test the get_declarative_conformance_diagnostics method for altprecedence rules."""
+    """Tests for altprecedence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_altprecedence()
     assert result is not None  # type: ignore
@@ -108,7 +109,7 @@ def test_get_declarative_conformance_diagnostics_for_altprecedence():
 
 
 def test_get_declarative_conformance_diagnostics_for_altsuccession():
-    """Test the get_declarative_conformance_diagnostics method for altsuccession rules."""
+    """Tests for altsuccession rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_altsuccession()
     assert result is not None  # type: ignore
@@ -117,7 +118,7 @@ def test_get_declarative_conformance_diagnostics_for_altsuccession():
 
 
 def test_get_declarative_conformance_diagnostics_for_chainresponse():
-    """Test the get_declarative_conformance_diagnostics method for chainresponse rules."""
+    """Tests for chainresponse rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_chainresponse()
     assert result is not None  # type: ignore
@@ -126,7 +127,7 @@ def test_get_declarative_conformance_diagnostics_for_chainresponse():
 
 
 def test_get_declarative_conformance_diagnostics_for_chainprecedence():
-    """Test the get_declarative_conformance_diagnostics method for chainprecedence rules."""
+    """Tests for chainprecedence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_chainprecedence()
     assert result is not None  # type: ignore
@@ -135,7 +136,7 @@ def test_get_declarative_conformance_diagnostics_for_chainprecedence():
 
 
 def test_get_declarative_conformance_diagnostics_for_chainsuccession():
-    """Test the get_declarative_conformance_diagnostics method for chainsuccession rules."""
+    """Tests for chainsuccession rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_chainsuccession()
     assert result is not None  # type: ignore
@@ -144,7 +145,7 @@ def test_get_declarative_conformance_diagnostics_for_chainsuccession():
 
 
 def test_get_declarative_conformance_diagnostics_for_noncoexistence():
-    """Test the get_declarative_conformance_diagnostics method for noncoexistence rules."""
+    """Tests for noncoexistence rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_noncoexistence()
     assert result is not None  # type: ignore
@@ -153,7 +154,7 @@ def test_get_declarative_conformance_diagnostics_for_noncoexistence():
 
 
 def test_get_declarative_conformance_diagnostics_for_nonsuccession():
-    """Test the get_declarative_conformance_diagnostics method for nonsuccession rules."""
+    """Tests for nonsuccession rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_nonsuccession()
     assert result is not None  # type: ignore
@@ -162,7 +163,7 @@ def test_get_declarative_conformance_diagnostics_for_nonsuccession():
 
 
 def test_get_declarative_conformance_diagnostics_for_nonchainsuccession():
-    """Test the get_declarative_conformance_diagnostics method for nonchainsuccession rules."""
+    """Tests for nonchainsuccession rules."""
     declarative_profile = get_declarative_constraints_obj()
     result = declarative_profile.declarative_conformance_for_nonchainsuccession()
     assert result is not None  # type: ignore
