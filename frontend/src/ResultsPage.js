@@ -1,4 +1,3 @@
-
 // import React, { useState, useEffect } from 'react';
 // import {
 //   Box,
@@ -27,7 +26,16 @@
 //   GET_DIRECTLY_FOLLOWS,
 //   GET_ACTIVITY_FREQUENCIES,
 //   GET_RESULT_TEMPORAL_PROFILE,
-//   TEMPORAL_PROFILE
+//   TEMPORAL_PROFILE,
+//   RESOURCE_BASED,
+//   HANDOVER_OF_WORK,
+//   SUBCONTRACTING,
+//   WORKING_TOGETHER,
+//   SIMILAR_ACTIVITIES,
+//   GROUP_RELATIVE_FOCUS,
+//   GROUP_RELATIVE_STATE,
+//   GROUP_COVERAGE,
+//   GROUP_MEMBER_CONTRIBUTION
 // } from './config';
 
 
@@ -76,7 +84,6 @@
 //   ]
 // };
 
-
 // // -------------------- Main Component --------------------
 
 // const ResultsPage = () => {
@@ -85,18 +92,19 @@
 //   // Shared
 //   const [graphData, setGraphData] = useState([]);
 //   const [tableData, setTableData] = useState([]);
+//   const [loading, setLoading] = useState(false);
 
 //   // Log Skeleton
 //   const [jobId, setJobId] = useState(null);
 //   const [selectedOption, setSelectedOption] = useState('');
-//   const [loading, setLoading] = useState(false);
 
 //   // Temporal Profile
 //   const [zeta, setZeta] = useState('');
 //   const [temporalJobId, setTemporalJobId] = useState(null);
 //   const [showResultLoading, setShowResultLoading] = useState(false);
 
-//   // Resource-based Conformance
+//   // Resource-Based
+//   const [resourceJobId, setResourceJobId] = useState(null);
 //   const [selectedResourceType, setSelectedResourceType] = useState('');
 //   const [selectedResourceOption, setSelectedResourceOption] = useState('');
 
@@ -117,6 +125,24 @@
 //   }, []);
 
 
+//   // -------------------- Resource-Based: Fetch Job ID --------------------
+
+//   useEffect(() => {
+//     if (view === 'resource') {
+//       const computeJob = async () => {
+//         try {
+//           const res = await fetch(RESOURCE_BASED, { method: 'POST' });
+//           const data = await res.json();
+//           setResourceJobId(data.job_id);
+//         } catch (err) {
+//           alert("Error starting resource-based computation: " + err.message);
+//         }
+//       };
+//       computeJob();
+//     }
+//   }, [view]);
+
+
 //   // -------------------- Log Skeleton: Handle Option Selection --------------------
 
 //   const handleOptionSelect = async (option) => {
@@ -131,7 +157,7 @@
 //       setGraphData(result.graphs || []);
 //       setTableData(result.tables || []);
 //     } catch (err) {
-//       alert('Failed to fetch result: ' + err.message);
+//       alert("Failed to fetch result: " + err.message);
 //     } finally {
 //       setLoading(false);
 //     }
@@ -147,22 +173,14 @@
 //     }
 
 //     try {
-//       const computeRes = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
+//       const res = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
 //         method: 'POST'
 //       });
-
-//       if (!computeRes.ok) {
-//         const errorText = await computeRes.text();
-//         throw new Error(`Error computing job: ${errorText}`);
-//       }
-
-//       const computeData = await computeRes.json();
-//       setTemporalJobId(computeData.job_id);
-//       alert("Zeta submitted successfully. You can now click 'Show Temporal Results' to view the result.");
-
+//       const data = await res.json();
+//       setTemporalJobId(data.job_id);
+//       alert("Zeta submitted successfully. Now click 'Show Temporal Results'.");
 //     } catch (err) {
-//       alert("Error submitting zeta value: " + err.message);
-//       console.error(err);
+//       alert("Error computing temporal result: " + err.message);
 //     }
 //   };
 
@@ -171,7 +189,7 @@
 
 //   const handleFetchTemporalResults = async () => {
 //     if (!temporalJobId) {
-//       alert("Please submit zeta first.");
+//       alert("Please submit Zeta first.");
 //       return;
 //     }
 
@@ -181,31 +199,57 @@
 
 //     try {
 //       let attempts = 0;
-//       let resultData = null;
-
 //       while (attempts < 20) {
-//         const resultRes = await fetch(`${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`);
-//         if (resultRes.ok) {
-//           resultData = await resultRes.json();
+//         const res = await fetch(`${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`);
+//         if (res.ok) {
+//           const data = await res.json();
+//           setGraphData(data.graphs || []);
+//           setTableData(data.tables || []);
 //           break;
-//         } else {
-//           await new Promise(res => setTimeout(res, 500));
-//           attempts++;
 //         }
+//         await new Promise(res => setTimeout(res, 500));
+//         attempts++;
 //       }
-
-//       if (!resultData) {
-//         throw new Error("Timeout: backend did not return results in time.");
-//       }
-
-//       setGraphData(resultData.graphs || []);
-//       setTableData(resultData.tables || []);
-
 //     } catch (err) {
-//       alert("Error fetching temporal profile result: " + err.message);
-//       console.error("Detailed error:", err);
+//       alert("Error fetching result: " + err.message);
 //     } finally {
 //       setShowResultLoading(false);
+//     }
+//   };
+
+
+//   // -------------------- Resource-Based: Handle SNA and OrgMining --------------------
+
+//   const handleSNAOrOrgOption = async (selected) => {
+//     const endpointMap = {
+//       // SNA
+//       "Handover of Work": HANDOVER_OF_WORK,
+//       "Subcontracting": SUBCONTRACTING,
+//       "Working together": WORKING_TOGETHER,
+//       "Similar Activities": SIMILAR_ACTIVITIES,
+//       // Org Mining
+//       "Group Relative Focus": GROUP_RELATIVE_FOCUS,
+//       "Group Relative Stake": GROUP_RELATIVE_STATE,
+//       "Group Coverage": GROUP_COVERAGE,
+//       "Group Member Contributions": GROUP_MEMBER_CONTRIBUTION
+//     };
+
+//     const endpoint = endpointMap[selected];
+//     if (!endpoint || !resourceJobId) return;
+
+//     setGraphData([]);
+//     setTableData([]);
+//     setLoading(true);
+
+//     try {
+//       const res = await fetch(`${endpoint}/${resourceJobId}`);
+//       const result = await res.json();
+//       setGraphData(result.graphs || []);
+//       setTableData(result.tables || []);
+//     } catch (err) {
+//       alert("Error fetching resource-based result: " + err.message);
+//     } finally {
+//       setLoading(false);
 //     }
 //   };
 
@@ -224,14 +268,12 @@
 //             <Graph graphData={graph} />
 //           </Box>
 //         ))}
-
 //         {hasTables && tableData.map((table, idx) => (
 //           <Box key={idx} sx={{ mt: 4 }}>
 //             <Typography variant="h6">Table {idx + 1}</Typography>
 //             <Table headers={table.headers} rows={table.rows} />
 //           </Box>
 //         ))}
-
 //         {!hasGraphs && !hasTables && (
 //           <Typography color="text.secondary" sx={{ mt: 2 }}>
 //             No data to display.
@@ -269,103 +311,100 @@
 
 //         <Divider />
 
-//         <Box sx={{ mt: 3 }}>
-//           {/* -------- Log Skeleton Section -------- */}
-//           {view === 'log_skeleton' && (
-//             <>
-//               <FormControl fullWidth sx={{ mb: 2 }}>
-//                 <InputLabel>Select Log Skeleton Operation</InputLabel>
+//         {/* Log Skeleton */}
+//         {view === 'log_skeleton' && (
+//           <>
+//             <FormControl fullWidth sx={{ mb: 2 }}>
+//               <InputLabel>Select Log Skeleton Operation</InputLabel>
+//               <Select
+//                 value={selectedOption}
+//                 label="Select Log Skeleton Operation"
+//                 onChange={(e) => handleOptionSelect(
+//                   LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
+//                 )}
+//                 disabled={!jobId}
+//               >
+//                 {LOG_SKELETON_OPTIONS.map(opt => (
+//                   <MenuItem key={opt.value} value={opt.value}>
+//                     {opt.label}
+//                   </MenuItem>
+//                 ))}
+//               </Select>
+//             </FormControl>
+//             {loading ? (
+//               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+//                 <CircularProgress />
+//               </Box>
+//             ) : renderGraphAndTable()}
+//           </>
+//         )}
+
+//         {/* Temporal Profile */}
+//         {view === 'temporal' && (
+//           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+//             <TextField
+//               label="Zeta Value"
+//               variant="outlined"
+//               type="number"
+//               value={zeta}
+//               onChange={(e) => setZeta(e.target.value)}
+//               fullWidth
+//             />
+//             <Button variant="contained" onClick={handleComputeTemporal}>Submit Zeta</Button>
+//             <Button variant="outlined" onClick={handleFetchTemporalResults}>Show Temporal Results</Button>
+//             {showResultLoading ? (
+//               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+//                 <CircularProgress />
+//               </Box>
+//             ) : renderGraphAndTable()}
+//           </Box>
+//         )}
+
+//         {/* Resource-Based */}
+//         {view === 'resource' && (
+//           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+//             <FormControl fullWidth>
+//               <InputLabel>Resource Perspective</InputLabel>
+//               <Select
+//                 value={selectedResourceType}
+//                 label="Resource Perspective"
+//                 onChange={(e) => {
+//                   setSelectedResourceType(e.target.value);
+//                   setSelectedResourceOption('');
+//                 }}
+//               >
+//                 <MenuItem value="sna">Social Network Analysis</MenuItem>
+//                 <MenuItem value="role_discovery">Role Discovery</MenuItem>
+//                 <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
+//                 <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
+//               </Select>
+//             </FormControl>
+
+//             {selectedResourceType && (
+//               <FormControl fullWidth>
+//                 <InputLabel>Resource Insight</InputLabel>
 //                 <Select
-//                   value={selectedOption}
-//                   label="Select Log Skeleton Operation"
-//                   onChange={(e) =>
-//                     handleOptionSelect(
-//                       LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
-//                     )
-//                   }
-//                   disabled={!jobId}
+//                   value={selectedResourceOption}
+//                   label="Resource Insight"
+//                   onChange={(e) => {
+//                     setSelectedResourceOption(e.target.value);
+//                     handleSNAOrOrgOption(e.target.value);
+//                   }}
 //                 >
-//                   {LOG_SKELETON_OPTIONS.map((opt) => (
-//                     <MenuItem key={opt.value} value={opt.value}>
-//                       {opt.label}
-//                     </MenuItem>
+//                   {resourceOptions[selectedResourceType].map(opt => (
+//                     <MenuItem key={opt} value={opt}>{opt}</MenuItem>
 //                   ))}
 //                 </Select>
 //               </FormControl>
+//             )}
 
-//               {loading ? (
-//                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-//                   <CircularProgress />
-//                 </Box>
-//               ) : (
-//                 renderGraphAndTable()
-//               )}
-//             </>
-//           )}
-
-//           {/* -------- Temporal Profile Section -------- */}
-//           {view === 'temporal' && (
-//             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-//               <TextField
-//                 label="Zeta Value"
-//                 variant="outlined"
-//                 type="number"
-//                 value={zeta}
-//                 onChange={(e) => setZeta(e.target.value)}
-//                 fullWidth
-//               />
-//               <Button variant="contained" onClick={handleComputeTemporal}>Submit Zeta</Button>
-//               <Button variant="outlined" onClick={handleFetchTemporalResults}>Show Temporal Results</Button>
-
-//               {showResultLoading ? (
-//                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-//                   <CircularProgress />
-//                 </Box>
-//               ) : (
-//                 renderGraphAndTable()
-//               )}
-//             </Box>
-//           )}
-
-//           {/* -------- Resource-Based Section -------- */}
-//           {view === 'resource' && (
-//             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-//               {/* Primary Dropdown */}
-//               <FormControl fullWidth>
-//                 <InputLabel>Resource Perspective</InputLabel>
-//                 <Select
-//                   value={selectedResourceType}
-//                   label="Resource Perspective"
-//                   onChange={(e) => {
-//                     setSelectedResourceType(e.target.value);
-//                     setSelectedResourceOption('');
-//                   }}
-//                 >
-//                   <MenuItem value="sna">Social Network Analysis</MenuItem>
-//                   <MenuItem value="role_discovery">Role Discovery</MenuItem>
-//                   <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
-//                   <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
-//                 </Select>
-//               </FormControl>
-
-//               {/* Secondary Dropdown */}
-//               {selectedResourceType && (
-//                 <FormControl fullWidth>
-//                   <InputLabel>Resource Insight</InputLabel>
-//                   <Select
-//                     value={selectedResourceOption}
-//                     label="Resource Insight"
-//                     onChange={(e) => setSelectedResourceOption(e.target.value)}
-//                   >
-//                     {resourceOptions[selectedResourceType].map((opt) => (
-//                       <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-//                     ))}
-//                   </Select>
-//                 </FormControl>
-//               )}
-//             </Box>
-//           )}
-//         </Box>
+//             {loading ? (
+//               <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+//                 <CircularProgress />
+//               </Box>
+//             ) : renderGraphAndTable()}
+//           </Box>
+//         )}
 //       </CardContent>
 //     </Card>
 //   );
@@ -407,7 +446,11 @@ import {
   HANDOVER_OF_WORK,
   SUBCONTRACTING,
   WORKING_TOGETHER,
-  SIMILAR_ACTIVITIES
+  SIMILAR_ACTIVITIES,
+  GROUP_RELATIVE_FOCUS,
+  GROUP_RELATIVE_STATE,
+  GROUP_COVERAGE,
+  GROUP_MEMBER_CONTRIBUTION
 } from './config';
 
 
@@ -421,7 +464,6 @@ const LOG_SKELETON_OPTIONS = [
   { label: "Directly Follows", value: "get_directly_follows", endpoint: GET_DIRECTLY_FOLLOWS },
   { label: "Activity Frequencies", value: "get_activity_frequencies", endpoint: GET_ACTIVITY_FREQUENCIES }
 ];
-
 
 // -------------------- Resource Options --------------------
 
@@ -456,7 +498,6 @@ const resourceOptions = {
   ]
 };
 
-
 // -------------------- Main Component --------------------
 
 const ResultsPage = () => {
@@ -465,22 +506,23 @@ const ResultsPage = () => {
   // Shared
   const [graphData, setGraphData] = useState([]);
   const [tableData, setTableData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Log Skeleton
   const [jobId, setJobId] = useState(null);
   const [selectedOption, setSelectedOption] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [jobLoading, setJobLoading] = useState(false);
 
   // Temporal Profile
   const [zeta, setZeta] = useState('');
   const [temporalJobId, setTemporalJobId] = useState(null);
   const [showResultLoading, setShowResultLoading] = useState(false);
 
-  // Resource-based Conformance
+  // Resource-Based
+  const [resourceJobId, setResourceJobId] = useState(null);
   const [selectedResourceType, setSelectedResourceType] = useState('');
   const [selectedResourceOption, setSelectedResourceOption] = useState('');
-  const [resourceJobId, setResourceJobId] = useState(null);
-
+  const [resourceLoading, setResourceLoading] = useState(false);
 
   // -------------------- Log Skeleton: Fetch Job ID --------------------
 
@@ -497,12 +539,11 @@ const ResultsPage = () => {
     computeJob();
   }, []);
 
-
   // -------------------- Resource-Based: Fetch Job ID --------------------
 
   useEffect(() => {
     if (view === 'resource') {
-      const computeResourceJob = async () => {
+      const computeJob = async () => {
         try {
           const res = await fetch(RESOURCE_BASED, { method: 'POST' });
           const data = await res.json();
@@ -511,10 +552,9 @@ const ResultsPage = () => {
           alert("Error starting resource-based computation: " + err.message);
         }
       };
-      computeResourceJob();
+      computeJob();
     }
   }, [view]);
-
 
   // -------------------- Log Skeleton: Handle Option Selection --------------------
 
@@ -522,20 +562,34 @@ const ResultsPage = () => {
     setSelectedOption(option.value);
     setGraphData([]);
     setTableData([]);
-    setLoading(true);
+    setJobLoading(true);
 
     try {
-      const res = await fetch(`${option.endpoint}/${jobId}`);
-      const result = await res.json();
-      setGraphData(result.graphs || []);
-      setTableData(result.tables || []);
+      let attempts = 0;
+      let resultData = null;
+
+      while (attempts < 20) {
+        const res = await fetch(`${option.endpoint}/${jobId}`);
+        if (res.ok) {
+          resultData = await res.json();
+          break;
+        }
+        await new Promise(res => setTimeout(res, 500));
+        attempts++;
+      }
+
+      if (!resultData) {
+        throw new Error("Timeout: backend did not return results in time.");
+      }
+
+      setGraphData(resultData.graphs || []);
+      setTableData(resultData.tables || []);
     } catch (err) {
-      alert('Failed to fetch result: ' + err.message);
+      alert("Failed to fetch result: " + err.message);
     } finally {
-      setLoading(false);
+      setJobLoading(false);
     }
   };
-
 
   // -------------------- Temporal Profile: Submit Zeta --------------------
 
@@ -546,31 +600,22 @@ const ResultsPage = () => {
     }
 
     try {
-      const computeRes = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
+      const res = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
         method: 'POST'
       });
-
-      if (!computeRes.ok) {
-        const errorText = await computeRes.text();
-        throw new Error(`Error computing job: ${errorText}`);
-      }
-
-      const computeData = await computeRes.json();
-      setTemporalJobId(computeData.job_id);
-      alert("Zeta submitted successfully. You can now click 'Show Temporal Results' to view the result.");
-
+      const data = await res.json();
+      setTemporalJobId(data.job_id);
+      alert("Zeta submitted successfully. Now click 'Show Temporal Results'.");
     } catch (err) {
-      alert("Error submitting zeta value: " + err.message);
-      console.error(err);
+      alert("Error computing temporal result: " + err.message);
     }
   };
-
 
   // -------------------- Temporal Profile: Fetch Results --------------------
 
   const handleFetchTemporalResults = async () => {
     if (!temporalJobId) {
-      alert("Please submit zeta first.");
+      alert("Please submit Zeta first.");
       return;
     }
 
@@ -583,14 +628,13 @@ const ResultsPage = () => {
       let resultData = null;
 
       while (attempts < 20) {
-        const resultRes = await fetch(`${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`);
-        if (resultRes.ok) {
-          resultData = await resultRes.json();
+        const res = await fetch(`${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`);
+        if (res.ok) {
+          resultData = await res.json();
           break;
-        } else {
-          await new Promise(res => setTimeout(res, 500));
-          attempts++;
         }
+        await new Promise(res => setTimeout(res, 500));
+        attempts++;
       }
 
       if (!resultData) {
@@ -599,49 +643,61 @@ const ResultsPage = () => {
 
       setGraphData(resultData.graphs || []);
       setTableData(resultData.tables || []);
-
     } catch (err) {
-      alert("Error fetching temporal profile result: " + err.message);
-      console.error("Detailed error:", err);
+      alert("Error fetching result: " + err.message);
     } finally {
       setShowResultLoading(false);
     }
   };
 
+  // -------------------- Resource-Based: Handle SNA and OrgMining --------------------
 
-  // -------------------- Resource-Based: Handle SNA Option Selection --------------------
-
-  const handleSNAOptionSelect = async (selected) => {
+  const handleSNAOrOrgOption = async (selected) => {
     const endpointMap = {
-     "Handover of Work": HANDOVER_OF_WORK,
+      // SNA
+      "Handover of Work": HANDOVER_OF_WORK,
       "Subcontracting": SUBCONTRACTING,
-     "Working together": WORKING_TOGETHER,
-      "Similar Activities": SIMILAR_ACTIVITIES
+      "Working together": WORKING_TOGETHER,
+      "Similar Activities": SIMILAR_ACTIVITIES,
+      // Org Mining
+      "Group Relative Focus": GROUP_RELATIVE_FOCUS,
+      "Group Relative Stake": GROUP_RELATIVE_STATE,
+      "Group Coverage": GROUP_COVERAGE,
+      "Group Member Contributions": GROUP_MEMBER_CONTRIBUTION
     };
 
-  const endpoint = endpointMap[selected];
-  if (!endpoint || !resourceJobId) return;
+    const endpoint = endpointMap[selected];
+    if (!endpoint || !resourceJobId) return;
 
-  setGraphData([]);
-  setTableData([]);
-  setLoading(true);
+    setGraphData([]);
+    setTableData([]);
+    setResourceLoading(true);
 
-  try {
-      const res = await fetch(`${endpoint}/${resourceJobId}`);
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText);
+    try {
+      let attempts = 0;
+      let resultData = null;
+
+      while (attempts < 20) {
+        const res = await fetch(`${endpoint}/${resourceJobId}`);
+        if (res.ok) {
+          resultData = await res.json();
+          break;
+        }
+        await new Promise(res => setTimeout(res, 500));
+        attempts++;
       }
 
-      const result = await res.json();
-      setGraphData(result.graphs || []);
-      setTableData(result.tables || []);
+      if (!resultData) {
+        throw new Error("Timeout: backend did not return results in time.");
+      }
+
+      setGraphData(resultData.graphs || []);
+      setTableData(resultData.tables || []);
     } catch (err) {
       alert("Error fetching resource-based result: " + err.message);
-      console.error(err);
     } finally {
-      setLoading(false);
-   }
+      setResourceLoading(false);
+    }
   };
 
   // -------------------- Render Graphs & Tables --------------------
@@ -658,14 +714,12 @@ const ResultsPage = () => {
             <Graph graphData={graph} />
           </Box>
         ))}
-
         {hasTables && tableData.map((table, idx) => (
           <Box key={idx} sx={{ mt: 4 }}>
             <Typography variant="h6">Table {idx + 1}</Typography>
             <Table headers={table.headers} rows={table.rows} />
           </Box>
         ))}
-
         {!hasGraphs && !hasTables && (
           <Typography color="text.secondary" sx={{ mt: 2 }}>
             No data to display.
@@ -674,7 +728,6 @@ const ResultsPage = () => {
       </>
     );
   };
-
 
   // -------------------- UI --------------------
 
@@ -703,116 +756,100 @@ const ResultsPage = () => {
 
         <Divider />
 
-        <Box sx={{ mt: 3 }}>
-          {/* -------- Log Skeleton Section -------- */}
-          {view === 'log_skeleton' && (
-            <>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Select Log Skeleton Operation</InputLabel>
+        {/* Log Skeleton */}
+        {view === 'log_skeleton' && (
+          <>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Select Log Skeleton Operation</InputLabel>
+              <Select
+                value={selectedOption}
+                label="Select Log Skeleton Operation"
+                onChange={(e) => handleOptionSelect(
+                  LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
+                )}
+                disabled={!jobId}
+              >
+                {LOG_SKELETON_OPTIONS.map(opt => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {jobLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : renderGraphAndTable()}
+          </>
+        )}
+
+        {/* Temporal Profile */}
+        {view === 'temporal' && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              label="Zeta Value"
+              variant="outlined"
+              type="number"
+              value={zeta}
+              onChange={(e) => setZeta(e.target.value)}
+              fullWidth
+            />
+            <Button variant="contained" onClick={handleComputeTemporal}>Submit Zeta</Button>
+            <Button variant="outlined" onClick={handleFetchTemporalResults}>Show Temporal Results</Button>
+            {showResultLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : renderGraphAndTable()}
+          </Box>
+        )}
+
+        {/* Resource-Based */}
+        {view === 'resource' && (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <FormControl fullWidth>
+              <InputLabel>Resource Perspective</InputLabel>
+              <Select
+                value={selectedResourceType}
+                label="Resource Perspective"
+                onChange={(e) => {
+                  setSelectedResourceType(e.target.value);
+                  setSelectedResourceOption('');
+                }}
+              >
+                <MenuItem value="sna">Social Network Analysis</MenuItem>
+                <MenuItem value="role_discovery">Role Discovery</MenuItem>
+                <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
+                <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
+              </Select>
+            </FormControl>
+
+            {selectedResourceType && (
+              <FormControl fullWidth>
+                <InputLabel>Resource Insight</InputLabel>
                 <Select
-                  value={selectedOption}
-                  label="Select Log Skeleton Operation"
-                  onChange={(e) =>
-                    handleOptionSelect(
-                      LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
-                    )
-                  }
-                  disabled={!jobId}
+                  value={selectedResourceOption}
+                  label="Resource Insight"
+                  onChange={(e) => {
+                    setSelectedResourceOption(e.target.value);
+                    handleSNAOrOrgOption(e.target.value);
+                  }}
                 >
-                  {LOG_SKELETON_OPTIONS.map((opt) => (
-                    <MenuItem key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </MenuItem>
+                  {resourceOptions[selectedResourceType].map(opt => (
+                    <MenuItem key={opt} value={opt}>{opt}</MenuItem>
                   ))}
                 </Select>
               </FormControl>
+            )}
 
-              {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                renderGraphAndTable()
-              )}
-            </>
-          )}
-
-          {/* -------- Temporal Profile Section -------- */}
-          {view === 'temporal' && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                label="Zeta Value"
-                variant="outlined"
-                type="number"
-                value={zeta}
-                onChange={(e) => setZeta(e.target.value)}
-                fullWidth
-              />
-              <Button variant="contained" onClick={handleComputeTemporal}>Submit Zeta</Button>
-              <Button variant="outlined" onClick={handleFetchTemporalResults}>Show Temporal Results</Button>
-
-              {showResultLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                renderGraphAndTable()
-              )}
-            </Box>
-          )}
-
-          {/* -------- Resource-Based Section -------- */}
-          {view === 'resource' && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {/* Primary Dropdown */}
-              <FormControl fullWidth>
-                <InputLabel>Resource Perspective</InputLabel>
-                <Select
-                  value={selectedResourceType}
-                  label="Resource Perspective"
-                  onChange={(e) => {
-                    setSelectedResourceType(e.target.value);
-                    setSelectedResourceOption('');
-                  }}
-                >
-                  <MenuItem value="sna">Social Network Analysis</MenuItem>
-                  <MenuItem value="role_discovery">Role Discovery</MenuItem>
-                  <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
-                  <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* Secondary Dropdown */}
-              {selectedResourceType && (
-                <FormControl fullWidth>
-                  <InputLabel>Resource Insight</InputLabel>
-                  <Select
-                    value={selectedResourceOption}
-                    label="Resource Insight"
-                    onChange={(e) => {
-                      setSelectedResourceOption(e.target.value);
-                      if (selectedResourceType === 'sna') {
-                        handleSNAOptionSelect(e.target.value);
-                      }
-                    }}
-                  >
-                    {resourceOptions[selectedResourceType].map((opt) => (
-                      <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-
-              {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                renderGraphAndTable()
-              )}
-            </Box>
-          )}
-        </Box>
+            {resourceLoading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : renderGraphAndTable()}
+          </Box>
+        )}
       </CardContent>
     </Card>
   );
