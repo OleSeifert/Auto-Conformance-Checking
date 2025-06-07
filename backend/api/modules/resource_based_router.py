@@ -1,17 +1,14 @@
 """Contains the routes for handling resource-based conformance checking."""
 
 import uuid
-from typing import Dict, List
+from typing import Any, Dict, List, TypeAlias, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
 from backend.api.celonis import get_celonis_connection
 from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
-from backend.api.models.schemas.resource_based_models import (
-    OrganizationalRole,
-    SNAMetric,
-)
+from backend.api.models.schemas.resource_based_models import OrganizationalRole
 from backend.api.tasks.resource_based_tasks import (
     compute_and_store_resource_based_metrics,
 )
@@ -19,6 +16,12 @@ from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
 from backend.conformance_checking.resource_based import ResourceBased
+
+# **************** Type Aliases ****************
+
+ReturnGraphType: TypeAlias = Dict[
+    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
+]
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 MODULE_NAME = "resource_based"
@@ -55,8 +58,13 @@ async def compute_sna_metrics(
 
 
 @router.get("/sna/handover-of-work/{job_id}")
-async def get_handover_of_work_metric(job_id: str, request: Request)->dict:
-    """Retrieves the computed Handover of Work SNA metric and returns it in frontend-compatible format."""
+async def get_handover_of_work_metric(
+    job_id: str, request: Request
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the computed Handover of Work SNA metric and returns it.
+
+    In a frontend-compatible format.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     raw_values = (
@@ -73,62 +81,67 @@ async def get_handover_of_work_metric(job_id: str, request: Request)->dict:
     ]
 
     return {
-        "tables": [
-            {
-                "headers": ["Source", "Target", "Value"],
-                "rows": formatted_rows
-            }
-        ],
-        "graphs": []
+        "tables": [{"headers": ["Source", "Target", "Value"], "rows": formatted_rows}],
+        "graphs": [],
     }
 
 
 @router.get("/sna/subcontracting/{job_id}")
-async def get_subcontracting_metric(job_id: str, request: Request)->dict:
+async def get_subcontracting_metric(
+    job_id: str, request: Request
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns subcontracting metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = request.app.state.jobs[job_id].result.get("subcontracting", {}).get("values", [])
+    raw = (
+        request.app.state.jobs[job_id]
+        .result.get("subcontracting", {})
+        .get("values", [])
+    )
 
     rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
     return {
-        "tables": [{
-            "headers": ["Source", "Target", "Value"],
-            "rows": rows
-        }],
-        "graphs": []
+        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
+        "graphs": [],
     }
 
 
 @router.get("/sna/working-together/{job_id}")
-async def get_working_together_metric(job_id: str, request: Request)->dict:
+async def get_working_together_metric(
+    job_id: str, request: Request
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns working together metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = request.app.state.jobs[job_id].result.get("working_together", {}).get("values", [])
+    raw = (
+        request.app.state.jobs[job_id]
+        .result.get("working_together", {})
+        .get("values", [])
+    )
 
     rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
     return {
-        "tables": [{
-            "headers": ["Source", "Target", "Value"],
-            "rows": rows
-        }],
-        "graphs": []
+        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
+        "graphs": [],
     }
 
 
 @router.get("/sna/similar-activities/{job_id}")
-async def get_similar_activities_metric(job_id: str, request: Request)->dict:
+async def get_similar_activities_metric(
+    job_id: str, request: Request
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns similar activities metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = request.app.state.jobs[job_id].result.get("similar_activities", {}).get("values", [])
+    raw = (
+        request.app.state.jobs[job_id]
+        .result.get("similar_activities", {})
+        .get("values", [])
+    )
 
     rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
     return {
-        "tables": [{
-            "headers": ["Source", "Target", "Value"],
-            "rows": rows
-        }],
-        "graphs": []
+        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
+        "graphs": [],
     }
+
 
 # **************** Role Discovery ****************
 
