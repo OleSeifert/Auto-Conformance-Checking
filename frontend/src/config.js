@@ -27,6 +27,7 @@ export const TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/compute-result
 export const GET_RESULT_TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/get-result`;
 
 //Resource-Based Endpoints
+
 //# **************** SNA Endpoints ****************
 export const RESOURCE_BASED = `${API_BASE}/api/resource-based/compute`;
 export const HANDOVER_OF_WORK = `${API_BASE}/api/resource-based/sna/handover-of-work`;
@@ -34,6 +35,7 @@ export const SUBCONTRACTING= `${API_BASE}/api/resource-based/sna/subcontracting`
 export const WORKING_TOGETHER= `${API_BASE}/api/resource-based/sna/working-together`;
 export const SIMILAR_ACTIVITIES = `${API_BASE}/api/resource-based/sna/similar-activities`;
 // **************** Role Discovery Endpoints ****************
+export const ROLE_DISCOVERY = `${API_BASE}/api/resource-based/role-discovery`;
 // **************** Resource Profile Endpoints ****************
 // **************** Organizational Mining Endpoints****************
 export const GROUP_RELATIVE_FOCUS= `${API_BASE}/api/resource-based/organizational-mining/group-relative-focus`;
