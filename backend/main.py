@@ -57,7 +57,7 @@ async def lifespan(app: FastAPI):
 # **************** Create Application ****************
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, swagger_ui_parameters={"displayRequestDuration": True})
 
 # CORS and middleware
 app.add_middleware(

@@ -16,6 +16,7 @@ from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
 from backend.conformance_checking.resource_based import ResourceBased
+from backend.pql_queries import resource_based_queries
 
 # **************** Type Aliases ****************
 
@@ -199,6 +200,34 @@ async def get_distinct_activities(
         )
 
 
+@router.get("/pql/resource-profile/distinct-activities", response_model=int)
+async def get_distinct_activities_pql(
+    resource: str = Query(..., description="The resource identifier."),
+    start_time: str = Query(..., description="Start time."),
+    end_time: str = Query(..., description="End time."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> int:
+    """Retrieves the number of distinct activities via a pql query.
+
+    Args:
+        start_time: The start time of the range.
+        end_time: The end time of the range.
+        resource: The resource for which to calculate the number of
+                distinct activities.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        The number of distinct activities for the specified resource.
+    """
+    try:
+        result = resource_based_queries.get_number_of_distinct_activities(
+            celonis, start_time, end_time, resource
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    return result
+
+
 @router.get("/resource-profile/activity-frequency", response_model=float)
 async def get_resource_activity_frequency(
     resource: str = Query(..., description="The resource identifier."),
@@ -235,6 +264,38 @@ async def get_resource_activity_frequency(
         )
 
 
+@router.get("/pql/resource-profile/activity-frequency", response_model=float)
+async def get_resource_activity_frequency_pql(
+    resource: str = Query(..., description="The resource identifier."),
+    activity: str = Query(..., description="The specific activity name."),
+    start_time: str = Query(
+        ...,
+        description="Start time of the interval.",
+    ),
+    end_time: str = Query(..., description="End time of the interval."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> float:
+    """Retrieves the activity frequency for an activity via a PQL query.
+
+    Args:
+        resource: The resource for which to calculate the activity frequency.
+        activity: The activity for which to calculate the frequency.
+        start_time: The start time of the interval.
+        end_time: The end time of the interval.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        A float indicating the activity frequency.
+    """
+    try:
+        result = resource_based_queries.get_activity_frequency(
+            celonis, start_time, end_time, resource, activity
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    return result
+
+
 @router.get("/resource-profile/activity-completions", response_model=int)
 async def get_resource_activity_completions(
     resource: str = Query(..., description="The resource identifier."),
@@ -264,6 +325,33 @@ async def get_resource_activity_completions(
             status_code=500,
             detail="Internal server error calculating activity completions.",
         )
+
+
+@router.get("/pql/resource-profile/activity-completions", response_model=int)
+async def get_resource_activity_completions_pql(
+    resource: str = Query(..., description="The resource identifier."),
+    start_time: str = Query(..., description="Start time of the interval."),
+    end_time: str = Query(..., description="End time of the interval."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> int:
+    """Retrieves the number of activity instances completed via a PQL query.
+
+    Args:
+        resource: The resource for which to calculate activity completions.
+        start_time: The start time of the interval.
+        end_time: The end time of the interval.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        An integer indicating the number of activity completions.
+    """
+    try:
+        result = resource_based_queries.get_activity_completions(
+            celonis, start_time, end_time, resource
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    return result
 
 
 @router.get("/resource-profile/case-completions", response_model=int)
@@ -297,6 +385,33 @@ async def get_resource_case_completions(
         )
 
 
+@router.get("/pql/resource-profile/case-completions", response_model=int)
+async def get_resource_case_completions_pql(
+    resource: str = Query(..., description="The resource identifier."),
+    start_time: str = Query(..., description="Start time of the interval."),
+    end_time: str = Query(..., description="End time of the interval."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> int:
+    """Retrieves the number of cases completed by a resource via a PQL query.
+
+    Args:
+        resource: The resource for which to calculate case completions.
+        start_time: The start time of the interval.
+        end_time: The end time of the interval.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        An integer indicating the number of case completions involving the resource.
+    """
+    try:
+        result = resource_based_queries.get_case_completions(
+            celonis, start_time, end_time, resource
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail)
+    return result
+
+
 @router.get("/resource-profile/fraction-case-completions", response_model=float)
 async def get_resource_fraction_case_completions(
     resource: str = Query(..., description="The resource identifier."),
@@ -328,6 +443,33 @@ async def get_resource_fraction_case_completions(
         )
 
 
+@router.get("/pql/resource-profile/fraction-case-completions", response_model=float)
+async def get_resource_fraction_case_completions_pql(
+    resource: str = Query(..., description="The resource identifier."),
+    start_time: str = Query(..., description="Start time of the interval."),
+    end_time: str = Query(..., description="End time of the interval."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> float:
+    """Retrieves the fraction of cases completed by a resource via a PQL query.
+
+    Args:
+        resource: The resource for which to calculate the fraction of case completions.
+        start_time: The start time of the interval.
+        end_time: The end time of the interval.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        A float indicating the fraction of case completions involving the resource.
+    """
+    try:
+        result = resource_based_queries.get_fraction_case_completions(
+            celonis, start_time, end_time, resource
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    return result
+
+
 @router.get("/resource-profile/average-workload", response_model=float)
 async def get_resource_average_workload(
     resource: str = Query(..., description="The resource identifier."),
@@ -357,6 +499,33 @@ async def get_resource_average_workload(
             status_code=500,
             detail="Internal server error calculating average workload.",
         )
+
+
+@router.get("/pql/resource-profile/average-workload", response_model=float)
+async def get_resource_average_workload_pql(
+    resource: str = Query(..., description="The resource identifier."),
+    start_time: str = Query(..., description="Start time of the interval."),
+    end_time: str = Query(..., description="End time of the interval."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> float:
+    """Retrieves the average workload for a resource via a PQL query.
+
+    Args:
+        resource: The resource for which to calculate the average workload.
+        start_time: The start time of the interval.
+        end_time: The end time of the interval.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        A float indicating the average workload.
+    """
+    try:
+        result = resource_based_queries.get_average_workload(
+            celonis, start_time, end_time, resource
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    return result
 
 
 @router.get("/resource-profile/multitasking", response_model=float)
@@ -488,6 +657,35 @@ async def get_interaction_of_two_resources(
             status_code=500,
             detail="Internal server error calculating interaction between resources.",
         )
+
+
+@router.get("/pql/resource-profile/interaction-two-resources", response_model=float)
+async def get_interaction_of_two_resources_pql(
+    resource1: str = Query(..., description="The first resource identifier."),
+    resource2: str = Query(..., description="The second resource identifier."),
+    start_time: str = Query(..., description="Start time of the interval."),
+    end_time: str = Query(..., description="End time of the interval."),
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> float:
+    """Retrieves the interaction between two resources via a PQL query.
+
+    Args:
+        resource1: The first resource.
+        resource2: The second resource.
+        start_time: The start time of the interval.
+        end_time: The end time of the interval.
+        celonis: The Celonis connection manager instance.
+
+    Returns:
+        A float indicating the interaction (number of common cases) between the two resources.
+    """
+    try:
+        result = resource_based_queries.get_interaction_two_resources(
+            celonis, start_time, end_time, resource1, resource2
+        )
+    except HTTPException as e:
+        raise HTTPException(status_code=e.status_code, detail=e.detail) from e
+    return result
 
 
 @router.get("/resource-profile/social-position", response_model=float)
