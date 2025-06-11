@@ -7,7 +7,10 @@ from pandas import DataFrame
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
-from backend.pql_queries.general_queries import get_activities, get_cases
+from backend.pql_queries.general_queries import (
+    get_activities,
+    get_cases,
+)
 
 
 # Always before
@@ -23,15 +26,15 @@ def get_always_before_relation(celonis: CelonisConnectionManager) -> DataFrame:
     """
     target_df = DataFrame(columns=["Activity A", "Activity B", "Rel"])
     act_table = get_activities(celonis)
-    activitiy_pairs = list(combinations(act_table["Activities"].to_list(), 2))  # type: ignore
+    activitiy_pairs = list(combinations(act_table["Activity"].to_list(), 2))  # type: ignore
     i = 0
     for pair in activitiy_pairs:  # type: ignore
         # Returns 1 if a node eventually occurrs before another in a trace
         query = {
-            "A before B": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE [{pair[0]}] as src,
-                            NODE [{pair[1]}] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
-            "B before A": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE [{pair[1]}] as src,
-                            NODE [{pair[0]}] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
+            "A before B": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE ['{pair[0]}'] as src,
+                            NODE ['{pair[1]}'] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
+            "B before A": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE ['{pair[1]}'] as src,
+                            NODE ['{pair[0]}'] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
         }
         pair_df = celonis.get_dataframe_from_celonis(query)  # type: ignore
         if (pair_df["B before A"] == 1).any() and not (  # type: ignore
@@ -62,15 +65,15 @@ def get_always_after_relation(celonis: CelonisConnectionManager) -> DataFrame:
     """
     target_df = DataFrame(columns=["Activity A", "Activity B", "Rel"])
     act_table = get_activities(celonis)
-    activitiy_pairs = list(combinations(act_table["Activities"].to_list(), 2))  # type: ignore
+    activitiy_pairs = list(combinations(act_table["Activity"].to_list(), 2))  # type: ignore
     i = 0
     for pair in activitiy_pairs:  # type: ignore
         # Returns 1 if a node eventually occurrs after another in a trace
         query = {
-            "A after B": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE [{pair[1]}] as src,
-                            NODE [{pair[0]}] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
-            "B after A": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE [{pair[0]}] as src,
-                            NODE [{pair[1]}] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
+            "A after B": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE ['{pair[1]}'] as src,
+                            NODE ['{pair[0]}'] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
+            "B after A": f"""MATCH_PROCESS ("ACTIVITIES"."concept:name", NODE ['{pair[0]}'] as src,
+                            NODE ['{pair[1]}'] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
         }
         pair_df = celonis.get_dataframe_from_celonis(query)  # type: ignore
         if (pair_df["B after A"] == 1).any() and not (  # type: ignore
@@ -101,8 +104,9 @@ def get_equivalance_relation(celonis: CelonisConnectionManager) -> DataFrame:
     """
     target_df = DataFrame(columns=["Activity A", "Activity B", "Rel"])
     cases = get_cases(celonis)["Cases"].to_list()  # type: ignore
+    print(f"Cases: {cases}")
     act_table = get_activities(celonis)
-    activitiy_pairs = list(combinations(act_table["Activities"].to_list(), 2))  # type: ignore
+    activitiy_pairs = list(combinations(act_table["Activity"].to_list(), 2))  # type: ignore
     query = {
         "Case": """ "ACTIVITIES"."case:concept:name" """,
         "Activity": """  "ACTIVITIES"."concept:name" """,
@@ -121,12 +125,13 @@ def get_equivalance_relation(celonis: CelonisConnectionManager) -> DataFrame:
                     0
                 ]  # type: ignore
                 if occurrence_a != occurrence_b:
+                    print("Added false")
                     target_df.loc[i] = [pair[0], pair[1], "false"]
                     break
             except IndexError:
                 target_df.loc[i] = [pair[0], pair[1], "false"]
                 break
-        target_df.loc[i] = [pair[0], pair[1], "true"]
+            target_df.loc[i] = [pair[0], pair[1], "true"]
         i = i + 1
 
     return target_df

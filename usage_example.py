@@ -7,24 +7,19 @@ Celonis.
 
 import time
 
-from pandas import DataFrame as DF
-from pm4py.objects.conversion.log.variants import (  # type : ignore
-    to_data_frame as log_to_df,  # type: ignore
-)
-from pm4py.objects.log.importer.xes import importer as xes_importer  # type: ignore
 from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
-from backend.pql_queries import resource_based_queries
+from backend.pql_queries import log_skeleton_queries
 
-EVENT_LOG_LOC = "/home/rene/MyProjects/Auto_CC/conformance_checking_spp/tests/input_data/receipt.xes"
+EVENT_LOG_LOC = "/home/rene/MyProjects/Auto_CC/conformance_checking_spp/tests/input_data/running-example.xes"
 
 # Import the event log as a dataframe
-result = xes_importer.apply(EVENT_LOG_LOC)  # type: ignore
-result = log_to_df.apply(result)  # type: ignore
+# result = xes_importer.apply(EVENT_LOG_LOC)  # type: ignore
+# result = log_to_df.apply(result)  # type: ignore
 
 
 class CelonisSettings(BaseSettings):
@@ -59,9 +54,9 @@ my_celonis = CelonisConnectionManager(
     data_model_name=cfg.CELONIS_DATA_MODEL_NAME,
     api_token=cfg.API_TOKEN,
 )
-if isinstance(result, DF):
-    my_celonis.add_dataframe(result)
-    my_celonis.create_table()
+# if isinstance(result, DF):
+#    my_celonis.add_dataframe(result)
+#    my_celonis.create_table()
 
 
 # Example for a PQL query that counts the number of cases
@@ -92,6 +87,6 @@ if isinstance(result, DF):
 #    print(ls.get_activity_frequencies())
 print("Start query")
 starttime = time.time()
-result = resource_based_queries.get_group_member_interaction(my_celonis)
+result = log_skeleton_queries.get_directly_follows_relation_and_count(my_celonis)  # type: ignore
 print(f"Execution time: {time.time() - starttime:.2f} seconds")
 print(result)
