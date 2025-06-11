@@ -18,7 +18,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
-from backend.pql_queries import log_skeleton_queries
+from backend.pql_queries import resource_based_queries
 
 EVENT_LOG_LOC = "/home/rene/MyProjects/Auto_CC/conformance_checking_spp/tests/input_data/receipt.xes"
 
@@ -92,6 +92,6 @@ if isinstance(result, DF):
 #    print(ls.get_activity_frequencies())
 print("Start query")
 starttime = time.time()
-result = log_skeleton_queries.get_act_freq(my_celonis)
-print(result.head())
+result = resource_based_queries.get_group_member_interaction(my_celonis)
 print(f"Execution time: {time.time() - starttime:.2f} seconds")
+print(result)

@@ -400,7 +400,7 @@ def get_activity_frequency(
         """
     }
     dataframe = celonis.get_dataframe_from_celonis(activity_frequency_query)  # type: ignore
-    return float(dataframe["Distinct Activities Count"].iloc[0])  # type: ignore
+    return float(dataframe["Activity Frequency"].iloc[0])  # type: ignore
 
 
 def get_activity_completions(
