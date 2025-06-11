@@ -54,7 +54,7 @@ async def compute_log_skeleton(
 # **************** Retrieving Log Skeleton Attributes ****************
 
 
-@router.get("/get_equivalence/{job_id}")
+@router.get("/old/get_equivalence/{job_id}")
 def get_equivalence(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the equivalence relations from the log skeleton.
 
@@ -74,7 +74,7 @@ def get_equivalence(job_id: str, request: Request) -> dict:  # type: ignore
     }
 
 
-@router.get("/pql/get_equivalence/")
+@router.get("/get_equivalence/")
 def get_equivalence_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
@@ -122,7 +122,7 @@ def get_equivalence_pql(  # type: ignore
     }
 
 
-@router.get("/get_always_after/{job_id}")
+@router.get("/old/get_always_after/{job_id}")
 def get_always_after(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the always-after relations from the log skeleton.
 
@@ -140,7 +140,7 @@ def get_always_after(job_id: str, request: Request) -> dict:  # type: ignore
     }
 
 
-@router.get("/pql/get_always_after/")
+@router.get("/get_always_after/")
 def get_always_after_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
@@ -187,7 +187,7 @@ def get_always_after_pql(  # type: ignore
     }
 
 
-@router.get("/get_always_before/{job_id}")
+@router.get("/old/get_always_before/{job_id}")
 def get_always_before(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the always-before relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("always_before", [])
@@ -201,7 +201,7 @@ def get_always_before(job_id: str, request: Request) -> dict:  # type: ignore
     }
 
 
-@router.get("/pql/get_always_before/")
+@router.get("/get_always_before/")
 def get_always_before_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
@@ -248,7 +248,7 @@ def get_always_before_pql(  # type: ignore
     }
 
 
-@router.get("/get_never_together/{job_id}")
+@router.get("/old/get_never_together/{job_id}")
 def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the never-together relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("never_together", [])
@@ -262,7 +262,7 @@ def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
     }
 
 
-@router.get("/pql/get_never_together/")
+@router.get("/get_never_together/")
 def get_never_together_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
@@ -309,7 +309,7 @@ def get_never_together_pql(  # type: ignore
     }
 
 
-@router.get("/get_directly_follows/{job_id}")
+@router.get("/old/get_directly_follows/{job_id}")
 def get_directly_follows(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the directly-follows relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("directly_follows", [])
@@ -323,7 +323,7 @@ def get_directly_follows(job_id: str, request: Request) -> dict:  # type: ignore
     }
 
 
-@router.get("/pql/get_directly_follows_and_count/")
+@router.get("/get_directly_follows_and_count/")
 def get_directly_follows_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
@@ -371,7 +371,7 @@ def get_directly_follows_pql(  # type: ignore
     }
 
 
-@router.get("/get_activity_frequencies/{job_id}")
+@router.get("/old/get_activity_frequencies/{job_id}")
 def get_activity_frequencies(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the activity frequencies from the log skeleton."""
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
