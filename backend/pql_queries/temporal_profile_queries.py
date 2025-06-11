@@ -46,7 +46,7 @@ def get_temporal_conformance_result(
 
         for i in range(len(case_data) - 1):  # type: ignore
             act_i = case_data.iloc[i]["Activity"]  # type: ignore
-            time_i = case_data.iloc[i]["timestamp"]  # type: ignore
+            time_i = case_data.iloc[i]["Timestamp"]  # type: ignore
 
             for j in range(i + 1, len(case_data)):  # type: ignore
                 act_j = case_data.iloc[j]["Activity"]  # type: ignore
@@ -72,7 +72,7 @@ def get_temporal_conformance_result(
     )
 
     merged = pairs_df.merge(temporal_profile, on=["Source", "Target"], how="left")  # type: ignore
-    merged = merged[(merged["Time_Passed"] > 0) & (merged["Std_Time"] > 0)]
+    merged = merged[(merged["Time Passed"] > 0) & (merged["Std Time"] > 0)]
 
     lower_bound = merged["Mean Time"] - zeta * merged["Std Time"]  # type: ignore
     upper_bound = merged["Mean Time"] + zeta * merged["Std Time"]  # type: ignore

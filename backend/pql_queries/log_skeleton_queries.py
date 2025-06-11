@@ -112,10 +112,18 @@ def get_equivalance_relation(celonis: CelonisConnectionManager) -> DataFrame:
     i = 0
     for pair in activitiy_pairs:  # type: ignore
         for case in cases:  # type: ignore
-            case_df = df[df["Case"] == case]  # type: ignore
-            occurrence_a = case_df[case_df["Activity"] == pair[0]]["Count"].values[0]  # type: ignore
-            occurrence_b = case_df[case_df["Activity"] == pair[1]]["Count"].values[0]  # type: ignore
-            if occurrence_a != occurrence_b:
+            try:
+                case_df = df[df["Case"] == case]  # type: ignore
+                occurrence_a = case_df[case_df["Activity"] == pair[0]]["Count"].values[  # type: ignore
+                    0
+                ]  # type: ignore
+                occurrence_b = case_df[case_df["Activity"] == pair[1]]["Count"].values[  # type: ignore
+                    0
+                ]  # type: ignore
+                if occurrence_a != occurrence_b:
+                    target_df.loc[i] = [pair[0], pair[1], "false"]
+                    break
+            except IndexError:
                 target_df.loc[i] = [pair[0], pair[1], "false"]
                 break
         target_df.loc[i] = [pair[0], pair[1], "true"]
@@ -215,3 +223,21 @@ def get_directly_follows_relation_and_count(
     }
 
     return celonis.get_dataframe_from_celonis(dfg_query)  # type: ignore
+
+
+def get_act_freq(
+    celonis: CelonisConnectionManager,
+) -> DataFrame:
+    """Gets the activity frequencies.
+
+    Args:
+        celonis (CelonisConnectionManager): the celonis connection
+
+    Returns:
+        A pandas dataframe that contains the activity frequencies
+    """
+    act_freq_query = {
+        "Activity": """ "ACTIVITIES"."concept:name" """,
+        "Frequency": """ COUNT ( "ACTIVITIES"."concept:name" ) """,
+    }
+    return celonis.get_dataframe_from_celonis(act_freq_query)  # type: ignore

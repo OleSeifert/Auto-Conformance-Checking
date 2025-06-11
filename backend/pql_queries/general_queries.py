@@ -33,7 +33,7 @@ def get_cases(celonis: CelonisConnectionManager) -> DataFrame:
     Returns:
         a pandas Dataframe that contains the cases
     """
-    case_query = {"Case Count": """ DISTINCT "ACTIVITIES"."case:concept:name" """}
+    case_query = {"Cases": """ "ACTIVITIES"."case:concept:name" """}
     return celonis.get_dataframe_from_celonis(case_query)  # type: ignore
 
 
@@ -61,7 +61,7 @@ def get_activities(celonis: CelonisConnectionManager) -> DataFrame:
     Returns:
         a pandas Dataframe that contains the count of cases
     """
-    activity_query = {"Activities": """ DISTINCT "ACTIVITIES"."concept:name" """}
+    activity_query = {"Activities": """ 'DISTINCT "ACTIVITIES"."concept:name"' """}
     return celonis.get_dataframe_from_celonis(activity_query)  # type: ignore
 
 

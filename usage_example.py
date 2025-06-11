@@ -5,18 +5,22 @@ dataframe to the data model, create a table, and get a dataframe from
 Celonis.
 """
 
-from celonis_connection.celonis_connection_manager import CelonisConnectionManager
-from conformance_checking.log_skeleton import LogSkeleton
+import time
+
 from pandas import DataFrame as DF
 from pm4py.objects.conversion.log.variants import (  # type : ignore
     to_data_frame as log_to_df,  # type: ignore
 )
 from pm4py.objects.log.importer.xes import importer as xes_importer  # type: ignore
-from pycelonis_core.utils.errors import PyCelonisNotFoundError
 from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-EVENT_LOG_LOC = "tests/input_data/running-example.xes"
+from backend.celonis_connection.celonis_connection_manager import (
+    CelonisConnectionManager,
+)
+from backend.pql_queries import log_skeleton_queries
+
+EVENT_LOG_LOC = "/home/rene/MyProjects/Auto_CC/conformance_checking_spp/tests/input_data/receipt.xes"
 
 # Import the event log as a dataframe
 result = xes_importer.apply(EVENT_LOG_LOC)  # type: ignore
@@ -60,40 +64,34 @@ if isinstance(result, DF):
     my_celonis.create_table()
 
 
-# Example for a PQL query that maps Patients to their Blood Groups
-table_columns = my_celonis.get_table_columns()
-if table_columns is not None:
-    try:
-        my_pql_query = {
-            "Patient": table_columns.find("case:concept:name"),
-            "Blood Group": table_columns.find("org:resource"),
-        }
-    except PyCelonisNotFoundError:
-        print("Table columns not found in data model.")
-
 # Example for a PQL query that counts the number of cases
-my_2_pql_query = {
-    "Case Count": """ COUNT (DISTINCT "ACTIVITIES"."case:concept:name" )"""
-}
+# my_2_pql_query = {
+#    "Case Count": """ COUNT (DISTINCT "ACTIVITIES"."case:concept:name" )"""
+# }
 # Example for a PQL query for a table representation of the DFG
-my_3_pql_query = {
-    "Source": """ SOURCE("ACTIVITIES"."concept:name")""",
-    "Target": """ TARGET("ACTIVITIES"."concept:name")""",
-    "Path": """ COUNT(SOURCE("ACTIVITIES"."concept:name"))""",
-}
+# my_3_pql_query = {
+#    "Source": """ SOURCE("ACTIVITIES"."concept:name")""",
+#    "Target": """ TARGET("ACTIVITIES"."concept:name")""",
+#    "Path": """ COUNT(SOURCE("ACTIVITIES"."concept:name"))""",
+# }
 
 
 # Example for getting a dataframe from Celonis with a generated PQL query
-dataframe = my_celonis.get_dataframe_from_celonis(my_pql_query)  # type: ignore
+# dataframe = my_celonis.get_dataframe_from_celonis(my_pql_query)  # type: ignore
 
 # Example for getting a dataframe from Celonis with a default PQL query
 # Resulting in a "classic" event log with the columns "Case_ID", "Activity", and "Timestamp"
 # dataframe = my_celonis.get_basic_dataframe_from_celonis()
 
-dataframe = my_celonis.get_basic_dataframe_from_celonis()
-if dataframe is not None:
-    ls = LogSkeleton(
-        dataframe,
-    )
-    ls.compute_skeleton()
-    print(ls.get_activity_frequencies())
+# dataframe = my_celonis.get_basic_dataframe_from_celonis()
+# if dataframe is not None:
+#    ls = LogSkeleton(
+#       dataframe,
+#    )
+#    ls.compute_skeleton()
+#    print(ls.get_activity_frequencies())
+print("Start query")
+starttime = time.time()
+result = log_skeleton_queries.get_act_freq(my_celonis)
+print(result.head())
+print(f"Execution time: {time.time() - starttime:.2f} seconds")
