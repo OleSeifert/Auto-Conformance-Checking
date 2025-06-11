@@ -87,6 +87,6 @@ my_celonis = CelonisConnectionManager(
 #    print(ls.get_activity_frequencies())
 print("Start query")
 starttime = time.time()
-result = log_skeleton_queries.get_directly_follows_relation_and_count(my_celonis)  # type: ignore
+result = log_skeleton_queries.get_never_together_relation(my_celonis)  # type: ignore
 print(f"Execution time: {time.time() - starttime:.2f} seconds")
 print(result)

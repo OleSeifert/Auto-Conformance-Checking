@@ -187,12 +187,12 @@ def get_never_together_relation(celonis: CelonisConnectionManager) -> DataFrame:
     """
     target_df = DataFrame(columns=["Activity A", "Activity B", "Rel"])
     act_table = get_activities(celonis)
-    activitiy_pairs = list(combinations(act_table["Activities"].to_list(), 2))  # type: ignore
+    activitiy_pairs = list(combinations(act_table["Activity"].to_list(), 2))  # type: ignore
     i = 0
     for pair in activitiy_pairs:  # type: ignore
         # Returns 1 if both acts are in case, 0 if not
         query = {
-            "Count": f"""MATCH_ACTIVITIES ("ACTIVITIES"."concept:name", NODE [{pair[0]}, {pair[1]}])"""
+            "Count": f"""MATCH_ACTIVITIES ("ACTIVITIES"."concept:name", NODE ['{pair[0]}', '{pair[1]}'])"""
         }
         pair_df = celonis.get_dataframe_from_celonis(query)  # type: ignore
         if (pair_df["Count"] == 1).any():  # type: ignore
