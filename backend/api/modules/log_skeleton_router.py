@@ -194,7 +194,7 @@ def get_always_after_pql(  # type: ignore
 
 
 @router.get("/old/get_always_before/{job_id}")
-def get_always_before(job_id: str, request: Request) -> dict:  # type: ignore
+def get_always_before(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the always-before relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("always_before", [])
     if not result:
