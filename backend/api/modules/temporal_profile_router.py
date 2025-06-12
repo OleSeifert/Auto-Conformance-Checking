@@ -106,7 +106,7 @@ async def get_temporal_conformance_result(
         return {
             "tables": [
                 {
-                    "headers": ["Activity A", "Activity B", "Mean", "Zeta"],
+                    "headers": ["Activity A", "Activity B", "Time Passed", "Zeta"],
                     "rows": flattened,
                 }
             ],
