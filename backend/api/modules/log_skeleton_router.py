@@ -137,7 +137,7 @@ def get_always_after(job_id: str, request: Request) -> dict:  # type: ignore
     """
     result = request.app.state.jobs[job_id].result.get("always_after", [])
     if not result:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
     return {
         "tables": [
             {"headers": ["Activity A", "Always After Activity B"], "rows": result}  # type: ignore
