@@ -255,7 +255,7 @@ def get_always_before_pql(  # type: ignore
 
 
 @router.get("/old/get_never_together/{job_id}")
-def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
+def get_never_together(job_id: str, request: Request) -> EndpointReturnType:  # type: ignore
     """Retrieves the never-together relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("never_together", [])
     if not result:
@@ -383,7 +383,9 @@ def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnTyp
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
 
     # Format the frequencies into rows for the table
-    rows = [[activity, ", ".join(map(str, count))] for activity, count in freq_dict.items()]
+    rows = [
+        [activity, ", ".join(map(str, count))] for activity, count in freq_dict.items()
+    ]
     if not rows:
         return {"tables": [], "graphs": []}
     return {
