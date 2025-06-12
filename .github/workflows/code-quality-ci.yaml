@@ -1,0 +1,45 @@
+name: Python Code Quality
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+
+jobs:
+  lock_file:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: uv lock --locked
+
+  linting:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lock_file]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: uv run ruff check .
+
+  formatting:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lock_file]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: uv run ruff format --check
+
+  type_checking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [lock_file]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: uv run mypy .

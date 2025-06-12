@@ -63,7 +63,7 @@
 #         and env_vars.get("API_TOKEN") == credentials.api_token
 #         and env_vars.get("CELONIS_DATA_POOL_NAME") == credentials.celonis_data_pool_name
 #         and env_vars.get("CELONIS_DATA_MODEL_NAME")== credentials.celonis_data_model_name
-        
+
 #     ):
 #         return {"message": "Credentials already exist and match."}
 
@@ -88,7 +88,7 @@
 #         set_key(
 #             ".env", "DATA_TABLE_NAME", credentials.data_table_name, quote_mode="never"
 #         )
-    
+
 #     return {"message": "Credentials saved to .env"}
 
 
@@ -135,8 +135,6 @@
 #     return {
 #         "columns": request.app.state.current_log_columns,
 #     }
-
-
 """Contains a router for the setup of the application.
 
 It contains several 'utility' endpoints that are used in the setup of
