@@ -140,7 +140,7 @@ def get_always_after(job_id: str, request: Request) -> EndpointReturnType:
         return {"tables": [], "graphs": []}
     return {
         "tables": [
-            {"headers": ["Activity A", "Always After Activity B"], "rows": result}  # type: ignore
+            {"headers": ["Activity A", "Always After Activity B"], "rows": result}
         ],
         "graphs": [],
     }
