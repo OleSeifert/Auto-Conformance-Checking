@@ -129,7 +129,7 @@ def get_equivalence_pql(
 
 
 @router.get("/old/get_always_after/{job_id}")
-def get_always_after(job_id: str, request: Request) -> dict:  # type: ignore
+def get_always_after(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the always-after relations from the log skeleton.
 
     Returns:
