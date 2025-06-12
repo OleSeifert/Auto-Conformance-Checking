@@ -323,7 +323,7 @@ def get_directly_follows(job_id: str, request: Request) -> EndpointReturnType:
         return {"tables": [], "graphs": []}  # type: ignore
     return {
         "tables": [
-            {"headers": ["Preceding Activity", "Following Activity"], "rows": result}  # type: ignore
+            {"headers": ["Preceding Activity", "Following Activity"], "rows": result}
         ],
         "graphs": [],
     }
