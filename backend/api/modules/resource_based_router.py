@@ -189,16 +189,37 @@ async def get_similar_activities_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns similar activities metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("similar_activities", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": row[2]} for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
