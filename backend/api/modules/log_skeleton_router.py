@@ -366,8 +366,8 @@ def get_directly_follows_pql(  # type: ignore
             )
 
     return {
-        "tables": [tables],  # type: ignore
-        "graphs": [graphs],  # type: ignore
+        "tables": [tables],
+        "graphs": [graphs],
     }
 
 
