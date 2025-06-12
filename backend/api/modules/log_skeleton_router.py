@@ -117,8 +117,8 @@ def get_equivalence_pql(
             )
 
     return {
-        "tables": [tables],  # type: ignore
-        "graphs": [graphs],  # type: ignore
+        "tables": [tables],
+        "graphs": [graphs],
     }
 
 
