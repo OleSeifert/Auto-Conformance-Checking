@@ -320,7 +320,7 @@ def get_directly_follows(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the directly-follows relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("directly_follows", [])
     if not result:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
     return {
         "tables": [
             {"headers": ["Preceding Activity", "Following Activity"], "rows": result}
