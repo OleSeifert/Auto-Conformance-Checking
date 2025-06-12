@@ -3,7 +3,7 @@
 import uuid
 from typing import Dict, List, TypeAlias, Union
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Request, Query
 
 from backend.api.celonis import get_celonis_connection
 from backend.api.jobs import verify_correct_job_module
@@ -27,10 +27,12 @@ router = APIRouter(
 MODULE_NAME = "declarative_constraints"
 
 
-@router.post("/compute-constraints", status_code=202)
+@router.get("/compute-constraints", status_code=202)
 async def compute_declarative_constraints(
     background_tasks: BackgroundTasks,
     request: Request,
+    min_support: float = Query(..., description="Minimum support ratio"),
+    min_confidence: float = Query(..., description="Minimum confidence ratio"),
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
     """Computes the declarative constraints and stores it.
@@ -44,6 +46,8 @@ async def compute_declarative_constraints(
           application state via `request.app.state`.
         celonis (optional): The CelonisManager dependency injection.
           Defaults to Depends(get_celonis_connection).
+        min_support: The minimum support ratio for the constraints.
+        min_confidence: The minimum confidence ratio for the constraints.
 
     Returns:
         A dictionary containing the job ID of the scheduled task.
@@ -55,7 +59,12 @@ async def compute_declarative_constraints(
 
     # Schedule the worker
     background_tasks.add_task(
-        compute_and_store_declarative_constraints, request.app, job_id, celonis
+        compute_and_store_declarative_constraints,
+        request.app,
+        job_id,
+        celonis,
+        min_support,
+        min_confidence,
     )
 
     return {"job_id": job_id}
