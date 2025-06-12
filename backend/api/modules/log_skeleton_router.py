@@ -316,7 +316,7 @@ def get_never_together_pql(  # type: ignore
 
 
 @router.get("/old/get_directly_follows/{job_id}")
-def get_directly_follows(job_id: str, request: Request) -> dict:  # type: ignore
+def get_directly_follows(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the directly-follows relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("directly_follows", [])
     if not result:
