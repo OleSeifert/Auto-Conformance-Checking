@@ -75,10 +75,10 @@ def get_equivalence(job_id: str, request: Request) -> EndpointReturnType:  # typ
 
 
 @router.get("/get_equivalence/")
-def get_equivalence_pql(  # type: ignore
+def get_equivalence_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> dict:  # type: ignore
+) -> EndpointReturnType:
     """Retrieves the equivalence relations from the log skeleton via PQL.
 
     Args:
