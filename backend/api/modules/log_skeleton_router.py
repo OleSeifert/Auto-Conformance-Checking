@@ -262,7 +262,7 @@ def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
         return {"tables": [], "graphs": []}
     return {
         "tables": [
-            {"headers": ["Activity A", "Activity B (Never Together)"], "rows": result}  # type: ignore
+            {"headers": ["Activity A", "Activity B (Never Together)"], "rows": result}
         ],
         "graphs": [],
     }
