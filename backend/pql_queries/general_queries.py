@@ -96,7 +96,25 @@ def get_traces_with_count(celonis: CelonisConnectionManager) -> DataFrame:
         a pandas Dataframe that contains the traces and their count
     """
     trace_query = {
-        "Trace": """DISTINCT VARIANT ("ACTIVITIES"."concept:name")""",
+        "Trace": """ VARIANT ("ACTIVITIES"."concept:name")""",
         "Count": """COUNT (VARIANT ("ACTIVITIES"."concept:name"))""",
     }
     return celonis.get_dataframe_from_celonis(trace_query)  # type: ignore
+
+
+def get_general_information(celonis: CelonisConnectionManager) -> DataFrame:
+    """Fetches number of cases, activities, and trace variants from Celonis.
+
+    Args:
+        celonis: The CelonisConnectionManager instance to interact with Celonis.
+
+    Returns:
+        A pandas DataFrame containing the counts of cases, activities, and trace
+        variants.
+    """
+    query = {
+        "CaseCount": """COUNT(DISTINCT "ACTIVITIES"."case:concept:name")""",
+        "ActivityCount": """COUNT(DISTINCT "ACTIVITIES"."concept:name")""",
+        "TraceVariants": """COUNT(DISTINCT VARIANT("ACTIVITIES"."concept:name"))""",
+    }
+    return celonis.get_dataframe_from_celonis(query)  # type: ignore

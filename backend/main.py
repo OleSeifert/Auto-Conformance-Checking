@@ -14,6 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.api.jobs import router as jobs_router
 from backend.api.log import router as log_router
 from backend.api.modules.declarative_router import router as declarative_router
+from backend.api.modules.general_router import router as general_router
 from backend.api.modules.log_skeleton_router import router as log_skeleton_router
 from backend.api.modules.resource_based_router import router as resource_based_router
 from backend.api.modules.temporal_profile_router import (
@@ -83,6 +84,7 @@ app.include_router(jobs_router)
 app.include_router(setup_router)
 app.include_router(log_router)
 
+app.include_router(general_router)
 app.include_router(declarative_router)
 app.include_router(log_skeleton_router)
 app.include_router(resource_based_router)
