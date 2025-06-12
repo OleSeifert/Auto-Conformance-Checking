@@ -73,7 +73,7 @@ async def get_temporal_conformance_result(
         request: The FastAPI request object.
 
     Returns:
-        The temporal conformance result as a list of lists of tuples.
+        The temporal conformance result in the form of table and graph data.
 
     Raises:
         HTTPException: If the job is not found or if the result is not available.
