@@ -372,7 +372,7 @@ def get_directly_follows_pql(  # type: ignore
 
 
 @router.get("/old/get_activity_frequencies/{job_id}")
-def get_activity_frequencies(job_id: str, request: Request) -> dict:  # type: ignore
+def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the activity frequencies from the log skeleton."""
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
 
