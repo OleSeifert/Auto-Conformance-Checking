@@ -198,7 +198,7 @@ def get_always_before(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the always-before relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("always_before", [])
     if not result:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
     return {
         "tables": [
             {"headers": ["Activity A", "Always Before Activity B"], "rows": result}
