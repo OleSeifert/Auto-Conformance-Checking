@@ -259,7 +259,7 @@ def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
     """Retrieves the never-together relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("never_together", [])
     if not result:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
     return {
         "tables": [
             {"headers": ["Activity A", "Activity B (Never Together)"], "rows": result}  # type: ignore
