@@ -147,10 +147,10 @@ async def get_similar_activities_metric(
 # **************** Role Discovery ****************
 
 
-@router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
+@router.get("/role-discovery/{job_id}")
 async def get_organizational_roles_result(
     job_id: str, request: Request
-) -> List[OrganizationalRole]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the computed organizational roles.
 
     Args:
@@ -162,7 +162,22 @@ async def get_organizational_roles_result(
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return request.app.state.jobs[job_id].result.get("organizational_roles", [])
+    # return request.app.state.jobs[job_id].result.get("organizational_roles", [])
+    roles_data = request.app.state.jobs[job_id].result.get("organizational_roles", [])
+
+    rows: List[List[str]] = []
+    for role in roles_data:
+        activities = role.get("activities", [])
+        originators = role.get("originators_importance", {})
+        for activity in activities:
+            for originator, importance in originators.items():
+                rows.append([activity, originator, str(importance)])
+
+    return {
+        "tables": [{"headers": ["Activity", "Originator", "Importance"],"rows": rows}],
+        "graphs": [],
+    }
+
 
 
 # **************** Resource Profiles ****************

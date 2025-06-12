@@ -382,8 +382,8 @@ def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnTyp
     """Retrieves the activity frequencies from the log skeleton."""
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
 
-    # Convert to table: [{"headers": [...], "rows": [...]}]
-    rows = [[activity, count] for activity, count in freq_dict.items()]
+    # Format the frequencies into rows for the table
+    rows = [[activity, ", ".join(map(str, count))] for activity, count in freq_dict.items()]
     if not rows:
         return {"tables": [], "graphs": []}
     return {
