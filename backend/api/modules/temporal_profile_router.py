@@ -1,7 +1,7 @@
 """Contains the routes for temporal conformance checking."""
 
 import uuid
-from typing import Any, Dict, List, TypeAlias
+from typing import Any, Dict, List, TypeAlias, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
@@ -15,7 +15,9 @@ from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
 
-GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[Any]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, Any]]]
+EndpointReturnType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 
 router = APIRouter(prefix="/api/temporal-profile", tags=["Temporal Profile CC"])
@@ -60,7 +62,7 @@ async def compute_temporal_conformance_result(
 async def get_temporal_conformance_result(
     job_id: str,
     request: Request,
-) -> dict:
+) -> EndpointReturnType:
     """Retrieves the temporal conformance result for a given job ID.
 
     This result is expected to be a list of lists of tuples, representing
@@ -103,17 +105,20 @@ async def get_temporal_conformance_result(
         flattened = []
         for sublist in data:
             for tup in sublist:
-                if isinstance(tup, tuple) and len(tup) == 4:
-                    flattened.append(list(tup))
+                if isinstance(tup, tuple) and len(tup) == 4:  # type: ignore
+                    flattened.append(list(tup))  # type: ignore
 
         graph_data: GraphType = {}
+        table_data: TableType = {}
 
         nodes = set[str]()
         edges = list[Dict[str, Any]]()
 
-        for item in flattened:
-            print(f"{item=}")
-            nodes.update([item[0], item[1]])
+        table_data["headers"] = ["Activity A", "Activity B", "Time Passed", "Zeta"]
+        table_data["rows"] = flattened
+
+        for item in flattened:  # type: ignore
+            nodes.update([item[0], item[1]])  # type: ignore
 
             edges.append({"from": item[0], "to": item[1], "label": item[3]})
 
@@ -121,12 +126,7 @@ async def get_temporal_conformance_result(
         graph_data["edges"] = edges
 
         return {
-            "tables": [
-                {
-                    "headers": ["Activity A", "Activity B", "Time Passed", "Zeta"],
-                    "rows": flattened,
-                }
-            ],
+            "tables": [table_data],
             "graphs": [graph_data],
         }
 
