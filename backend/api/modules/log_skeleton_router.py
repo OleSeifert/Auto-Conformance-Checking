@@ -67,7 +67,7 @@ def get_equivalence(job_id: str, request: Request) -> EndpointReturnType:  # typ
     """
     result = request.app.state.jobs[job_id].result.get("equivalence", [])
     if not result:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
     return {
         "tables": [{"headers": ["Activity A", "Activity B"], "rows": result}],  # type: ignore
         "graphs": [],
