@@ -104,7 +104,7 @@ class DeclarativeConstraints:
             min_support_ratio = self.min_support_ratio
         if min_confidence_ratio is None:
             min_confidence_ratio = self.min_confidence_ratio
-        self.declare_model = pm4py.discover_declare(
+        self.declare_model = pm4py.discover_declare(  # type: ignore
             log,
             min_support_ratio=min_support_ratio,
             min_confidence_ratio=min_confidence_ratio,
@@ -168,8 +168,8 @@ class DeclarativeConstraints:
                 else:
                     A, B = rule_key, None  # type: ignore
                 diagnostics = decl_conf.apply(log, {rule_name: {(A, B): rule_info}})  # type: ignore
-                violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]
-                violation_count = len(violated)
+                violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]  # type: ignore
+                violation_count = len(violated)  # type: ignore
 
                 if B != []:
                     table_headers = [
@@ -395,6 +395,48 @@ class DeclarativeConstraints:
         """
         if list_of_rules is None:
             list_of_rules = self.valid_rules
+        for rule in list_of_rules:
+            self.temp = self.get_declarative_conformance_diagnostics(
+                rule_name=rule, run_from_scratch=run_from_scratch
+            )
+        return self.conf_results_memory
+
+    def update_model_and_run_all_rules(
+        self,
+        log: Optional[pd.DataFrame] = None,
+        min_support_ratio: Optional[float] = None,
+        min_confidence_ratio: Optional[float] = None,
+        list_of_rules: Optional[List[str]] = None,
+        run_from_scratch: Optional[bool] = False,
+    ) -> Any:
+        """Updates the model and runs all rules.
+
+        Args:
+            log: The event log to use.
+            min_support_ratio: The minimum support ratio for discovering rules.
+            min_confidence_ratio: The minimum confidence ratio for discovering rules.
+            list_of_rules: List of rule names to check. If None, runs for all
+              valid rules.
+            run_from_scratch: If True, re-evaluates all rules even if results
+              stored.
+
+        Returns:
+            Dictionary of all violations.
+        """
+        if log is None:
+            log = self.log
+        if min_support_ratio is None:
+            min_support_ratio = self.min_support_ratio
+        if min_confidence_ratio is None:
+            min_confidence_ratio = self.min_confidence_ratio
+        if list_of_rules is None:
+            list_of_rules = self.valid_rules
+
+        self.run_model(
+            log=log,
+            min_support_ratio=min_support_ratio,
+            min_confidence_ratio=min_confidence_ratio,
+        )
         for rule in list_of_rules:
             self.temp = self.get_declarative_conformance_diagnostics(
                 rule_name=rule, run_from_scratch=run_from_scratch
