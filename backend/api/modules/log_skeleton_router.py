@@ -55,7 +55,7 @@ async def compute_log_skeleton(
 
 
 @router.get("/old/get_equivalence/{job_id}")
-def get_equivalence(job_id: str, request: Request) -> dict:  # type: ignore
+def get_equivalence(job_id: str, request: Request) -> EndpointReturnType:  # type: ignore
     """Retrieves the equivalence relations from the log skeleton.
 
     Args:
