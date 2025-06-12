@@ -34,7 +34,7 @@ async def compute_resource_based_metrics(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
-    """Computes the SNA metrics and stores it.
+    """Computes the resource-based metrics and stores it.
 
     Args:
         background_tasks: The background tasks manager.
@@ -62,9 +62,14 @@ async def compute_resource_based_metrics(
 async def get_handover_of_work_metric(
     job_id: str, request: Request
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Retrieves the computed Handover of Work SNA metric and returns it.
+    """Returns the handover of work values in table/graph format.
 
-    In a frontend-compatible format.
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the handover of work metric.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
@@ -107,7 +112,15 @@ async def get_handover_of_work_metric(
 async def get_subcontracting_metric(
     job_id: str, request: Request
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Returns subcontracting metric in table/graph format."""
+    """Returns the subcontracting values in table/graph format.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the subcontracting metric.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     raw_values = (
@@ -147,7 +160,15 @@ async def get_subcontracting_metric(
 async def get_working_together_metric(
     job_id: str, request: Request
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Returns working together metric in table/graph format."""
+    """Returns the working together metric in table/graph format.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the working together metric.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     raw_values = (
@@ -187,7 +208,15 @@ async def get_working_together_metric(
 async def get_similar_activities_metric(
     job_id: str, request: Request
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Returns similar activities metric in table/graph format."""
+    """Returns the similar activities metric in table/graph format.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the similar activities metric.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     raw_values = (
