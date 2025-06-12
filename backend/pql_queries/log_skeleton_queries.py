@@ -218,8 +218,8 @@ def get_directly_follows_relation_and_count(
         dirctly follows relation is true and the count for each
     """
     dfg_query = {
-        "Source": """ SOURCE("ACTIVITIES"."concept:name")""",
-        "Target": """ TARGET("ACTIVITIES"."concept:name")""",
+        "Activity A": """ SOURCE("ACTIVITIES"."concept:name")""",
+        "Activity B": """ TARGET("ACTIVITIES"."concept:name")""",
         "Rel": """  CASE WHEN
                     COUNT(SOURCE ("ACTIVITIES"."concept:name")) > 0
                     THEN 'true' ELSE 'false'
