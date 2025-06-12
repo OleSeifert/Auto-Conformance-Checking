@@ -1,7 +1,7 @@
 """Contains the routes for handling log skeletons and related operations."""
 
 import uuid
-from typing import Dict
+from typing import Dict, List, TypeAlias, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
@@ -15,6 +15,12 @@ from backend.pql_queries import general_queries, log_skeleton_queries
 
 router = APIRouter(prefix="/api/log-skeleton", tags=["Log Skeleton CC"])
 MODULE_NAME = "log_skeleton"
+
+# **************** Type Aliases ****************
+
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+EndpointReturnType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 
 @router.post("/compute-skeleton", status_code=202)
@@ -55,7 +61,7 @@ async def compute_log_skeleton(
 
 
 @router.get("/old/get_equivalence/{job_id}")
-def get_equivalence(job_id: str, request: Request) -> EndpointReturnType:  # type: ignore
+def get_equivalence(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the equivalence relations from the log skeleton.
 
     Args:
@@ -90,30 +96,30 @@ def get_equivalence_pql(
     """
     result_df = log_skeleton_queries.get_equivalance_relation(celonis)
     if result_df.empty:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
 
     # Create tables sub-structure
-    tables = {}
+    tables: TableType = {}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs = {}  # type: ignore
-    graphs["nodes"] = []  # type: ignore
-    graphs["edges"] = []  # type: ignore
+    graphs: GraphType = {}
+    graphs["nodes"] = []
+    graphs["edges"] = []
 
     activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
     for act in activities:  # type: ignore
-        graphs["nodes"].append({"id": act})  # type: ignore
+        graphs["nodes"].append({"id": act})
 
     for _, row in result_df.iterrows():  # type: ignore
-        if row["Rel"] == "true":  # type: ignore
-            graphs["edges"].append(  # type: ignore
+        if row["Rel"] == "true":
+            graphs["edges"].append(
                 {
                     "from": row["Activity A"],
                     "to": row["Activity B"],
                     "label": "equals_to",
-                }  # type: ignore
+                }
             )
 
     return {
@@ -144,7 +150,7 @@ def get_always_after(job_id: str, request: Request) -> dict:  # type: ignore
 def get_always_after_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> dict:  # type: ignore
+) -> EndpointReturnType:
     """Retrieves the always-after relations from the log skeleton via PQL.
 
     Args:
@@ -158,32 +164,32 @@ def get_always_after_pql(  # type: ignore
     if result_df.empty:
         return {"tables": [], "graphs": []}  # type: ignore
     # Create tables sub-structure
-    tables = {}
+    tables: TableType = {}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs = {}  # type: ignore
-    graphs["nodes"] = []  # type: ignore
-    graphs["edges"] = []  # type: ignore
+    graphs: GraphType = {}
+    graphs["nodes"] = []
+    graphs["edges"] = []
 
     activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
     for act in activities:  # type: ignore
-        graphs["nodes"].append({"id": act})  # type: ignore
+        graphs["nodes"].append({"id": act})
 
     for _, row in result_df.iterrows():  # type: ignore
-        if row["Rel"] == "true":  # type: ignore
-            graphs["edges"].append(  # type: ignore
+        if row["Rel"] == "true":
+            graphs["edges"].append(
                 {
                     "from": row["Activity A"],
                     "to": row["Activity B"],
                     "label": "always_after",
-                }  # type: ignore
+                }
             )
 
     return {
-        "tables": [tables],  # type: ignore
-        "graphs": [graphs],  # type: ignore
+        "tables": [tables],
+        "graphs": [graphs],
     }
 
 
@@ -205,7 +211,7 @@ def get_always_before(job_id: str, request: Request) -> dict:  # type: ignore
 def get_always_before_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> dict:  # type: ignore
+) -> EndpointReturnType:
     """Retrieves the always-before relations from the log skeleton via PQL.
 
     Args:
@@ -219,32 +225,32 @@ def get_always_before_pql(  # type: ignore
     if result_df.empty:
         return {"tables": [], "graphs": []}  # type: ignore
     # Create tables sub-structure
-    tables = {}
+    tables: TableType = {}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs = {}  # type: ignore
-    graphs["nodes"] = []  # type: ignore
-    graphs["edges"] = []  # type: ignore
+    graphs: GraphType = {}
+    graphs["nodes"] = []
+    graphs["edges"] = []
 
     activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
     for act in activities:  # type: ignore
-        graphs["nodes"].append({"id": act})  # type: ignore
+        graphs["nodes"].append({"id": act})
 
     for _, row in result_df.iterrows():  # type: ignore
-        if row["Rel"] == "true":  # type: ignore
-            graphs["edges"].append(  # type: ignore
+        if row["Rel"] == "true":
+            graphs["edges"].append(
                 {
                     "from": row["Activity A"],
                     "to": row["Activity B"],
-                    "label": "never_together",
-                }  # type: ignore
+                    "label": "always_before",
+                }
             )
 
     return {
-        "tables": [tables],  # type: ignore
-        "graphs": [graphs],  # type: ignore
+        "tables": [tables],
+        "graphs": [graphs],
     }
 
 
@@ -266,7 +272,7 @@ def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
 def get_never_together_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> dict:  # type: ignore
+) -> EndpointReturnType:
     """Retrieves the never-together relations from the log skeleton via PQL.
 
     Args:
@@ -280,32 +286,32 @@ def get_never_together_pql(  # type: ignore
     if result_df.empty:
         return {"tables": [], "graphs": []}  # type: ignore
     # Create tables sub-structure
-    tables = {}
+    tables: TableType = {}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs = {}  # type: ignore
-    graphs["nodes"] = []  # type: ignore
-    graphs["edges"] = []  # type: ignore
+    graphs: GraphType = {}
+    graphs["nodes"] = []
+    graphs["edges"] = []
 
     activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
     for act in activities:  # type: ignore
-        graphs["nodes"].append({"id": act})  # type: ignore
+        graphs["nodes"].append({"id": act})
 
     for _, row in result_df.iterrows():  # type: ignore
-        if row["Rel"] == "true":  # type: ignore
-            graphs["edges"].append(  # type: ignore
+        if row["Rel"] == "true":
+            graphs["edges"].append(
                 {
                     "from": row["Activity A"],
                     "to": row["Activity B"],
                     "label": "never_together",
-                }  # type: ignore
+                }
             )
 
     return {
-        "tables": [tables],  # type: ignore
-        "graphs": [graphs],  # type: ignore
+        "tables": [tables],
+        "graphs": [graphs],
     }
 
 
@@ -327,7 +333,7 @@ def get_directly_follows(job_id: str, request: Request) -> dict:  # type: ignore
 def get_directly_follows_pql(  # type: ignore
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> dict:  # type:ignore
+) -> EndpointReturnType:
     """Retrieves the directly-follows relations from the log skeleton via PQL.
 
     Args:
@@ -342,27 +348,27 @@ def get_directly_follows_pql(  # type: ignore
         return {"tables": [], "graphs": []}  # type: ignore
 
     # Create tables sub-structure
-    tables = {}
+    tables: TableType = {}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs = {}  # type: ignore
-    graphs["nodes"] = []  # type: ignore
-    graphs["edges"] = []  # type: ignore
+    graphs: GraphType = {}
+    graphs["nodes"] = []
+    graphs["edges"] = []
 
     activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
     for act in activities:  # type: ignore
-        graphs["nodes"].append({"id": act})  # type: ignore
+        graphs["nodes"].append({"id": act})
 
     for _, row in result_df.iterrows():  # type: ignore
-        if row["Rel"] == "true":  # type: ignore
-            graphs["edges"].append(  # type: ignore
+        if row["Rel"] == "true":
+            graphs["edges"].append(
                 {
                     "from": row["Activity A"],
                     "to": row["Activity B"],
-                    "label": row["Count"],  # type: ignore
-                }  # type: ignore
+                    "label": row["Count"],
+                }
             )
 
     return {
