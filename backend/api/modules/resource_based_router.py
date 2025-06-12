@@ -20,16 +20,16 @@ from backend.pql_queries import resource_based_queries
 
 # **************** Type Aliases ****************
 
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[Any]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, Any]]]
+
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 MODULE_NAME = "resource_based"
 
 
 @router.post("/compute", status_code=202)
-async def compute_sna_metrics(
+async def compute_resource_based_metrics(
     background_tasks: BackgroundTasks,
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
@@ -81,9 +81,25 @@ async def get_handover_of_work_metric(
         if "source" in entry and "target" in entry and "value" in entry
     ]
 
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": row[2]} for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": formatted_rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
