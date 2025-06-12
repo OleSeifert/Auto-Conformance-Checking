@@ -202,7 +202,7 @@ def get_always_before(job_id: str, request: Request) -> EndpointReturnType:
     return {
         "tables": [
             {"headers": ["Activity A", "Always Before Activity B"], "rows": result}
-        ],  # type: ignore
+        ],
         "graphs": [],
     }
 
