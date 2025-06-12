@@ -1,7 +1,7 @@
 """Contains the routes for temporal conformance checking."""
 
 import uuid
-from typing import Dict
+from typing import Any, Dict, List, TypeAlias
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
@@ -14,6 +14,9 @@ from backend.api.tasks.temporal_profile_tasks import (
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
+
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+
 
 router = APIRouter(prefix="/api/temporal-profile", tags=["Temporal Profile CC"])
 MODULE_NAME = "temporal"
@@ -103,6 +106,20 @@ async def get_temporal_conformance_result(
                 if isinstance(tup, tuple) and len(tup) == 4:
                     flattened.append(list(tup))
 
+        graph_data: GraphType = {}
+
+        nodes = set[str]()
+        edges = list[Dict[str, Any]]()
+
+        for item in flattened:
+            print(f"{item=}")
+            nodes.update([item[0], item[1]])
+
+            edges.append({"from": item[0], "to": item[1], "label": item[3]})
+
+        graph_data["nodes"] = [{"id": node} for node in nodes]
+        graph_data["edges"] = edges
+
         return {
             "tables": [
                 {
@@ -110,7 +127,7 @@ async def get_temporal_conformance_result(
                     "rows": flattened,
                 }
             ],
-            "graphs": [],
+            "graphs": [graph_data],
         }
 
     except Exception as e:
