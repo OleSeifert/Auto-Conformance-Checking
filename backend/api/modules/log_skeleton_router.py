@@ -379,7 +379,7 @@ def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnTyp
     # Convert to table: [{"headers": [...], "rows": [...]}]
     rows = [[activity, count] for activity, count in freq_dict.items()]
     if not rows:
-        return {"tables": [], "graphs": []}  # type: ignore
+        return {"tables": [], "graphs": []}
     return {
         "tables": [{"headers": ["Activity", "Frequency"], "rows": rows}],  # type: ignore
         "graphs": [],
