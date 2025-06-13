@@ -98,7 +98,8 @@ async def get_handover_of_work_metric(
     graph: GraphType = {
         "nodes": [{"id": node_name} for node_name in nodes],
         "edges": [
-            {"from": row[0], "to": row[1], "label": row[2]} for row in formatted_rows
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
         ],
     }
 
@@ -146,7 +147,8 @@ async def get_subcontracting_metric(
     graph: GraphType = {
         "nodes": [{"id": node_name} for node_name in nodes],
         "edges": [
-            {"from": row[0], "to": row[1], "label": row[2]} for row in formatted_rows
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
         ],
     }
 
@@ -194,7 +196,8 @@ async def get_working_together_metric(
     graph: GraphType = {
         "nodes": [{"id": node_name} for node_name in nodes],
         "edges": [
-            {"from": row[0], "to": row[1], "label": row[2]} for row in formatted_rows
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
         ],
     }
 
@@ -242,7 +245,8 @@ async def get_similar_activities_metric(
     graph: GraphType = {
         "nodes": [{"id": node_name} for node_name in nodes],
         "edges": [
-            {"from": row[0], "to": row[1], "label": row[2]} for row in formatted_rows
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
         ],
     }
 
