@@ -20,9 +20,9 @@ from backend.pql_queries import resource_based_queries
 
 # **************** Type Aliases ****************
 
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[Any]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, Any]]]
+
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 MODULE_NAME = "resource_based"
@@ -81,9 +81,26 @@ async def get_handover_of_work_metric(
         if "source" in entry and "target" in entry and "value" in entry
     ]
 
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": formatted_rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
@@ -93,17 +110,39 @@ async def get_subcontracting_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns subcontracting metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("subcontracting", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
-    return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
     }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
+    return {
+        "tables": [table],
+        "graphs": [graph],
+    }
+
 
 
 @router.get("/sna/working-together/{job_id}")
@@ -112,16 +151,37 @@ async def get_working_together_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns working together metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("working_together", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
@@ -131,16 +191,37 @@ async def get_similar_activities_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns similar activities metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("similar_activities", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
@@ -185,7 +266,6 @@ async def get_organizational_roles_result(
         ],
         graphs=[],
     )
-
 
 
 # **************** Resource Profiles ****************
