@@ -12,8 +12,6 @@ from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
 from backend.pql_queries import general_queries, log_skeleton_queries
-from pydantic import BaseModel
-from typing import Dict, List, Optional
 
 router = APIRouter(prefix="/api/log-skeleton", tags=["Log Skeleton CC"])
 MODULE_NAME = "log_skeleton"
@@ -24,37 +22,6 @@ TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
 GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
 EndpointReturnType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
-
-
-# **************** Response Schema ****************
-class TableModel(BaseModel):
-    headers: List[str]
-    rows: List[List[str]]
-
-
-class GraphNode(BaseModel):
-    id: str
-
-
-class GraphEdge(BaseModel):
-    from_: str  # `from` is a reserved keyword
-    to: str
-    label: str
-
-    class Config:
-        fields = {
-            'from_': 'from',
-        }
-
-
-class GraphModel(BaseModel):
-    nodes: List[GraphNode]
-    edges: List[GraphEdge]
-
-
-class ResponseSchema(BaseModel):
-    tables: Optional[List[TableModel]] = []
-    graphs: Optional[List[GraphModel]] = []
 
 @router.post("/compute-skeleton", status_code=202)
 async def compute_log_skeleton(
@@ -180,7 +147,7 @@ def get_always_after(job_id: str, request: Request) -> EndpointReturnType:
 
 
 @router.get("/get_always_after/")
-def get_always_after_pql(  # type: ignore
+def get_always_after_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -241,7 +208,7 @@ def get_always_before(job_id: str, request: Request) -> EndpointReturnType:
 
 
 @router.get("/get_always_before/")
-def get_always_before_pql(  # type: ignore
+def get_always_before_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -302,7 +269,7 @@ def get_never_together(job_id: str, request: Request) -> EndpointReturnType:  # 
 
 
 @router.get("/get_never_together/")
-def get_never_together_pql(  # type: ignore
+def get_never_together_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -362,103 +329,61 @@ def get_directly_follows(job_id: str, request: Request) -> EndpointReturnType:
     }
 
 
-# @router.get("/get_directly_follows_and_count/")
-# def get_directly_follows_pql(  # type: ignore
-#     request: Request,
-#     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-# ) -> EndpointReturnType:
-#     """Retrieves the directly-follows relations from the log skeleton via PQL.
-
-#     Args:
-#         request: The FastAPI request object.
-#         celonis: The CelonisManager dependency injection.
-
-#     Returns:
-#         A JSON object with "tables" and "graphs" keys.
-#     """
-#     result_df = log_skeleton_queries.get_directly_follows_relation_and_count(celonis)
-#     if result_df.empty:
-#         return {"tables": [], "graphs": []}  # type: ignore
-
-#     # Create tables sub-structure
-#     tables: TableType = {}
-#     tables["headers"] = result_df.columns.tolist()
-#     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
-
-#     # Create graphs sub-structure
-#     graphs: GraphType = {}
-#     graphs["nodes"] = []
-#     graphs["edges"] = []
-
-#     activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
-#     for act in activities:  # type: ignore
-#         graphs["nodes"].append({"id": act})
-
-#     for _, row in result_df.iterrows():  # type: ignore
-#         if row["Rel"] == "true":
-#             graphs["edges"].append(
-#                 {
-#                     "from": row["Activity A"],
-#                     "to": row["Activity B"],
-#                     "label": row["Count"],
-#                 }
-#             )
-
-#     return {
-#         "tables": [tables],
-#         "graphs": [graphs],
-#     }
-@router.get("/get_directly_follows_and_count/", response_model=ResponseSchema)
+@router.get("/get_directly_follows_and_count/")
 def get_directly_follows_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> ResponseSchema:
-    """Retrieves the directly-follows relations from the log skeleton via PQL."""
+) -> EndpointReturnType:
+    """Retrieves the directly-follows relations from the log skeleton via PQL.
 
+    Args:
+        request: The FastAPI request object.
+        celonis: The CelonisManager dependency injection.
+
+    Returns:
+        A JSON object with "tables" and "graphs" keys.
+    """
     result_df = log_skeleton_queries.get_directly_follows_relation_and_count(celonis)
     if result_df.empty:
-        return ResponseSchema(tables=[], graphs=[])
+        return {"tables": [], "graphs": []}  # type: ignore
 
-    # Clean and prepare columns
-    result_df.columns = result_df.columns.str.strip()
-    filtered_df = result_df[result_df["Rel"] == "true"]
+    # Create tables sub-structure
+    tables: TableType = {}
+    tables["headers"] = result_df.columns.tolist()
+    tables["rows"] = result_df[result_df["Rel"] == "true"].astype(str).values.tolist()  # type: ignore
 
-    # Prepare table
-    table = TableModel(
-        headers=result_df.columns.tolist(),
-        rows=filtered_df.astype(str).values.tolist()
-    )
+    # Create graphs sub-structure
+    graphs: GraphType = {}
+    graphs["nodes"] = []
+    graphs["edges"] = []
 
-    # Nodes
-    activities_df = general_queries.get_activities(celonis)
-    activity_list = activities_df["Activity"].dropna().astype(str).tolist()
-    nodes = [GraphNode(id=act) for act in activity_list]
+    activities = general_queries.get_activities(celonis)["Activity"].tolist()  # type: ignore
+    for act in activities:  # type: ignore
+        graphs["nodes"].append({"id": act})
 
-    # Edges with clean string values
-    edges = []
-    for _, row in filtered_df.iterrows():
-        source = str(row.get("Activity A", "")).strip()
-        target = str(row.get("Activity B", "")).strip()
-        label_val = str(row.get("Count", "")).strip()
+    for _, row in result_df.iterrows():  # type: ignore
+        if row["Rel"] == "true":
+            graphs["edges"].append(
+                {
+                    "from": row["Activity A"],
+                    "to": row["Activity B"],
+                    "label": str(row["Count"]),  # type: ignore
+                }
+            )
 
-        # Only add edge if source, target, and label are valid
-        if source and target and label_val:
-            edges.append(GraphEdge(from_=source, to=target, label=label_val))
+    return {
+        "tables": [tables],
+        "graphs": [graphs],
+    }
 
-    return ResponseSchema(
-        tables=[table],
-        graphs=[GraphModel(nodes=nodes, edges=edges)]
-    )
 
 @router.get("/old/get_activity_frequencies/{job_id}")
 def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnType:
     """Retrieves the activity frequencies from the log skeleton."""
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
 
-    # Format the frequencies into rows for the table
-    rows = [
-        [activity, ", ".join(map(str, count))] for activity, count in freq_dict.items()
-    ]
+    # Convert to table: [{"headers": [...], "rows": [...]}]
+    rows = [[activity, count] for activity, count in freq_dict.items()]
     if not rows:
         return {"tables": [], "graphs": []}
     return {
