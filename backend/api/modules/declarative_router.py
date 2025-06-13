@@ -17,9 +17,9 @@ from backend.celonis_connection.celonis_connection_manager import (
 
 # **************** Type Aliases ****************
 
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 router = APIRouter(
     prefix="/api/declarative-constraints", tags=["Declarative Constraints CC"]
@@ -31,8 +31,8 @@ MODULE_NAME = "declarative_constraints"
 async def compute_declarative_constraints(
     background_tasks: BackgroundTasks,
     request: Request,
-    min_support: float = Query(..., description="Minimum support ratio"),
-    min_confidence: float = Query(..., description="Minimum confidence ratio"),
+    min_support: float = Query(0.3, description="Minimum support ratio"),
+    min_confidence: float = Query(0.75, description="Minimum confidence ratio"),
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
     """Computes the declarative constraints and stores it.
