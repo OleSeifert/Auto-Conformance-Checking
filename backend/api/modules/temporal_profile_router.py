@@ -120,7 +120,7 @@ async def get_temporal_conformance_result(
         for item in flattened:  # type: ignore
             nodes.update([item[0], item[1]])  # type: ignore
 
-            edges.append({"from": item[0], "to": item[1], "label": item[3]})
+            edges.append({"from": item[0], "to": item[1], "label": round(item[3], 3)})  # type: ignore
 
         graph_data["nodes"] = [{"id": node} for node in nodes]
         graph_data["edges"] = edges
