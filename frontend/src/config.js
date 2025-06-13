@@ -6,7 +6,7 @@
  */
 
 //Configuration to celonis endpoints
-export const API_BASE= "http://localhost:8000";
+export const API_BASE = "http://localhost:8000";
 // export const API_BASE = "http://backend:8000/api";
 export const CELONIS_CONNECTION = `${API_BASE}/api/setup/celonis-credentials`;
 export const CELONIS_LOG_UPLOAD = `${API_BASE}/api/logs/upload-log`;
@@ -34,13 +34,12 @@ export const GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL = `${API_BASE}/api/log-skeleton/
 export const TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/compute-result`;
 export const GET_RESULT_TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/get-result`;
 
-
 //Resource-Based Endpoints
 //# **************** SNA Endpoints ****************
 export const RESOURCE_BASED = `${API_BASE}/api/resource-based/compute`;
 export const HANDOVER_OF_WORK = `${API_BASE}/api/resource-based/sna/handover-of-work`;
-export const SUBCONTRACTING= `${API_BASE}/api/resource-based/sna/subcontracting`;
-export const WORKING_TOGETHER= `${API_BASE}/api/resource-based/sna/working-together`;
+export const SUBCONTRACTING = `${API_BASE}/api/resource-based/sna/subcontracting`;
+export const WORKING_TOGETHER = `${API_BASE}/api/resource-based/sna/working-together`;
 export const SIMILAR_ACTIVITIES = `${API_BASE}/api/resource-based/sna/similar-activities`;
 
 // **************** Role Discovery Endpoints ****************
@@ -67,7 +66,7 @@ export const INTERACTION_TWO_RESOURCES_PQL = `${API_BASE}/api/resource-based/pql
 export const SOCIAL_POSITION = `${API_BASE}/api/resource-based/resource-profile/social-position`;
 
 // **************** Organizational Mining Endpoints****************
-export const GROUP_RELATIVE_FOCUS= `${API_BASE}/api/resource-based/organizational-mining/group-relative-focus`;
-export const GROUP_RELATIVE_STATE= `${API_BASE}/api/resource-based/organizational-mining/group-relative-stake`;
-export const GROUP_COVERAGE= `${API_BASE}/api/resource-based/organizational-mining/group-coverage`;
-export const GROUP_MEMBER_CONTRIBUTION= `${API_BASE}/api/resource-based/organizational-mining/group-member-contribution`;
+export const GROUP_RELATIVE_FOCUS = `${API_BASE}/api/resource-based/organizational-mining/group-relative-focus`;
+export const GROUP_RELATIVE_STATE = `${API_BASE}/api/resource-based/organizational-mining/group-relative-stake`;
+export const GROUP_COVERAGE = `${API_BASE}/api/resource-based/organizational-mining/group-coverage`;
+export const GROUP_MEMBER_CONTRIBUTION = `${API_BASE}/api/resource-based/organizational-mining/group-member-contribution`;
