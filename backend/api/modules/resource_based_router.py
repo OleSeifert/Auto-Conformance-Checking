@@ -8,7 +8,6 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, R
 from backend.api.celonis import get_celonis_connection
 from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
-from backend.api.models.schemas.resource_based_models import OrganizationalRole, ResponseSchema
 from backend.api.tasks.resource_based_tasks import (
     compute_and_store_resource_based_metrics,
 )
@@ -20,9 +19,9 @@ from backend.pql_queries import resource_based_queries
 
 # **************** Type Aliases ****************
 
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 MODULE_NAME = "resource_based"
@@ -146,15 +145,14 @@ async def get_similar_activities_metric(
 
 # **************** Role Discovery ****************
 
+
 @router.get(
     "/role-discovery/{job_id}",
-    response_model=ResponseSchema,
 )
 async def get_organizational_roles_result(
     job_id: str, request: Request
-) -> ResponseSchema:
-    """
-    Retrieves the computed organizational roles and returns them as a table.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the computed organizational roles and returns them as a table.
 
     Args:
         job_id: The ID of the job to retrieve the organizational roles for.
@@ -176,16 +174,15 @@ async def get_organizational_roles_result(
             for originator, importance in originators.items():
                 rows.append([activity, originator, str(importance)])
 
-    return ResponseSchema(
-        tables=[
+    return {
+        "tables": [
             {
                 "headers": ["Activity", "Originator", "Importance"],
                 "rows": rows,
             }
         ],
-        graphs=[],
-    )
-
+        "graphs": [],
+    }
 
 
 # **************** Resource Profiles ****************
@@ -740,18 +737,19 @@ async def get_resource_social_position(
             status_code=500, detail="Internal server error calculating social position."
         )
 
+
 # **************** Organizational Mining ****************
 
 
 @router.get(
     "/organizational-mining/group-relative-focus/{job_id}",
-    response_model=ResponseSchema,
 )
 async def get_group_relative_focus_metric(
     job_id: str, request: Request
-) -> ResponseSchema:
-    """
-    Retrieves the Group Relative Focus metric formatted as a table with headers and rows.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the Group Relative Focus metric.
+
+    Formatted as a table with headers and rows.
 
     Returns:
         ResponseSchema with a single table, no graph.
@@ -770,26 +768,26 @@ async def get_group_relative_focus_metric(
         for activity, score in activity_scores.items()
     ]
 
-    return ResponseSchema(
-        tables=[
+    return {
+        "tables": [
             {
                 "headers": ["Group", "Activity", "Relative Focus"],
                 "rows": rows,
             }
         ],
-        graphs=[],
-    )
+        "graphs": [],
+    }
 
 
 @router.get(
     "/organizational-mining/group-relative-stake/{job_id}",
-    response_model=ResponseSchema,
 )
 async def get_group_relative_stake_metric(
     job_id: str, request: Request
-) -> ResponseSchema:
-    """
-    Retrieves the Group Relative Stake metric formatted as a table with headers and rows.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the Group Relative Stake metric.
+
+    Formatted as a table with headers and rows.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
@@ -812,25 +810,26 @@ async def get_group_relative_stake_metric(
         for activity, score in activity_scores.items()
     ]
 
-    return ResponseSchema(
-        tables=[
+    return {
+        "tables": [
             {
                 "headers": ["Group", "Activity", "Relative Stake"],
                 "rows": rows,
             }
         ],
-        graphs=[],
-    )
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-coverage/{job_id}",
-    response_model=ResponseSchema,
 )
 async def get_group_coverage_metric(
     job_id: str, request: Request
-) -> ResponseSchema:
-    """
-    Retrieves the Group Coverage metric formatted as a table with headers and rows.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the Group Coverage metric.
+
+    Formatted as a table with headers and rows.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
@@ -853,25 +852,24 @@ async def get_group_coverage_metric(
         for resource, score in resource_scores.items()
     ]
 
-    return ResponseSchema(
-        tables=[
+    return {
+        "tables": [
             {
                 "headers": ["Group", "Resource", "Coverage"],
                 "rows": rows,
             }
         ],
-        graphs=[],
-    )
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-member-contribution/{job_id}",
-    response_model=ResponseSchema,
 )
 async def get_group_member_contribution_metric(
     job_id: str, request: Request
-) -> ResponseSchema:
-    """
-    Retrieves the Group Member Contribution metric formatted as a table.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the Group Member Contribution metric formatted as a table.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
@@ -894,12 +892,12 @@ async def get_group_member_contribution_metric(
             for activity, count in activity_dict.items():
                 rows.append([group, member, activity, str(count)])
 
-    return ResponseSchema(
-        tables=[
+    return {
+        "tables": [
             {
                 "headers": ["Group", "Member", "Activity", "Count"],
                 "rows": rows,
             }
         ],
-        graphs=[],
-    )
+        "graphs": [],
+    }

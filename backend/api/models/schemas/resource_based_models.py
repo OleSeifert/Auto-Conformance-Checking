@@ -1,6 +1,6 @@
 """Contains the Pydantic models for resource-based conformance checking."""
 
-from typing import Dict, List, Optional
+from typing import Dict, List
 
 from pydantic import BaseModel
 
@@ -18,33 +18,3 @@ class OrganizationalRole(BaseModel):
 
     activities: List[str]
     originators_importance: Dict[str, float]
-
-
-class TableModel(BaseModel):
-    headers: List[str]
-    rows: List[List[str]]
-
-
-class GraphNode(BaseModel):
-    id: str
-
-
-class GraphEdge(BaseModel):
-    from_: str  # `from` is a reserved keyword
-    to: str
-    label: str
-
-    class Config:
-        fields = {
-            'from_': 'from',
-        }
-
-
-class GraphModel(BaseModel):
-    nodes: List[GraphNode]
-    edges: List[GraphEdge]
-
-
-class ResponseSchema(BaseModel):
-    tables: Optional[List[TableModel]] = []
-    graphs: Optional[List[GraphModel]] = []
