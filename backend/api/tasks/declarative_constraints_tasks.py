@@ -39,11 +39,10 @@ def compute_and_store_declarative_constraints(
 
         # Compute the declarative constraints
         dc = DeclarativeConstraints(df)
-        dc.run_model(
+        rec.result = dc.update_model_and_run_all_rules(
             min_support_ratio=min_support_ratio,
             min_confidence_ratio=min_confidence_ratio,
         )
-        rec.result = dc.run_all_rules()
         rec.status = "complete"
 
     except Exception as e:
