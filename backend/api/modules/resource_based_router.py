@@ -146,23 +146,26 @@ async def get_similar_activities_metric(
 
 # **************** Role Discovery ****************
 
-
-@router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
+@router.get(
+    "/role-discovery/{job_id}",
+    response_model=ResponseSchema,
+)
 async def get_organizational_roles_result(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Retrieves the computed organizational roles.
+) -> ResponseSchema:
+    """
+    Retrieves the computed organizational roles and returns them as a table.
 
     Args:
         job_id: The ID of the job to retrieve the organizational roles for.
         request: The FastAPI request object.
 
     Returns:
-        A list of OrganizationalRole objects representing the discovered roles.
+        A ResponseSchema object with a table:
+        Headers: ["Activity", "Originator", "Importance"]
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    # return request.app.state.jobs[job_id].result.get("organizational_roles", [])
     roles_data = request.app.state.jobs[job_id].result.get("organizational_roles", [])
 
     rows: List[List[str]] = []
@@ -173,10 +176,15 @@ async def get_organizational_roles_result(
             for originator, importance in originators.items():
                 rows.append([activity, originator, str(importance)])
 
-    return {
-        "tables": [{"headers": ["Activity", "Originator", "Importance"],"rows": rows}],
-        "graphs": [],
-    }
+    return ResponseSchema(
+        tables=[
+            {
+                "headers": ["Activity", "Originator", "Importance"],
+                "rows": rows,
+            }
+        ],
+        graphs=[],
+    )
 
 
 

@@ -18,13 +18,19 @@ import Graph from "./Graph";
 import Table from "./Table";
 
 import {
+  GET_GENERAL_INSIGHTS,
   COMPUTE_SKELETON,
-  GET_EQUVALENCE,
+  GET_EQUIVALENCE,
+  GET_EQUIVALENCE_PQL,
   GET_ALWAYS_BEFORE,
+  GET_ALWAYS_BEFORE_PQL,
   GET_ALWAYS_AFTER,
+  GET_ALWAYS_AFTER_PQL,
   GET_NEVER_TOGETHER,
+  GET_NEVER_TOGETHER_PQL,
   GET_DIRECTLY_FOLLOWS,
   GET_ACTIVITY_FREQUENCIES,
+  GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
   GET_RESULT_TEMPORAL_PROFILE,
   TEMPORAL_PROFILE,
   RESOURCE_BASED,
@@ -38,15 +44,22 @@ import {
   GROUP_MEMBER_CONTRIBUTION,
   ROLE_DISCOVERY,
   DISTINCT_ACTIVITIES,
+  DISTINCT_ACTIVITIES_PQL,
   ACTIVITY_FREQUENCY,
+  ACTIVITY_FREQUENCY_PQL,
   ACTIVITY_COMPLETIONS,
+  ACTIVITY_COMPLETIONS_PQL,
   CASE_COMPLETIONS,
+  CASE_COMPLETIONS_PQL,
   FRACTION_CASE_COMPLETIONS,
+  FRACTION_CASE_COMPLETIONS_PQL,
   AVERAGE_WORKLOAD,
+  AVERAGE_WORKLOAD_PQL,
   MULTITASKING,
   AVERAGE_ACTIVITY_DURATION,
   AVERAGE_CASE_DURATION,
   INTERACTION_TWO_RESOURCES,
+  INTERACTION_TWO_RESOURCES_PQL,
   SOCIAL_POSITION,
 } from "./config";
 
@@ -56,7 +69,12 @@ const LOG_SKELETON_OPTIONS = [
   {
     label: "Get Equivalence",
     value: "get_equivalence",
-    endpoint: GET_EQUVALENCE,
+    endpoint: GET_EQUIVALENCE,
+  },
+  {
+    label: "Get Equivalence (PQL)",
+    value: "get_equivalence_pql",
+    endpoint: GET_EQUIVALENCE_PQL,
   },
   {
     label: "Always Before",
@@ -64,14 +82,29 @@ const LOG_SKELETON_OPTIONS = [
     endpoint: GET_ALWAYS_BEFORE,
   },
   {
+    label: "Always Before (PQL)",
+    value: "get_always_before_pql",
+    endpoint: GET_ALWAYS_BEFORE_PQL,
+  },
+  {
     label: "Always After",
     value: "get_always_after",
     endpoint: GET_ALWAYS_AFTER,
   },
   {
+    label: "Always After (PQL)",
+    value: "get_always_after_pql",
+    endpoint: GET_ALWAYS_AFTER_PQL,
+  },
+  {
     label: "Never Together",
     value: "get_never_together",
     endpoint: GET_NEVER_TOGETHER,
+  },
+  {
+    label: "Never Together (PQL)",
+    value: "get_never_together_pql",
+    endpoint: GET_NEVER_TOGETHER_PQL,
   },
   {
     label: "Directly Follows",
@@ -82,6 +115,11 @@ const LOG_SKELETON_OPTIONS = [
     label: "Activity Frequencies",
     value: "get_activity_frequencies",
     endpoint: GET_ACTIVITY_FREQUENCIES,
+  },
+  {
+    label: "Directly Follows and Count (PQL)",
+    value: "get_directly_follows_and_count",
+    endpoint: GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
   },
 ];
 
@@ -97,15 +135,22 @@ const resourceOptions = {
   role_discovery: ["Role Discovery"],
   resource_profiles: [
     "Distinct Activities",
+    "Distinct Activities (using PQL)",
     "Activity Frequency",
+    "Activity Frequency (using PQL)",
     "Activity Completions",
+    "Activity Completions (using PQL)",
     "Case-Completions",
+    "Case-Completions (using PQL)",
     "Fraction-Case Completions",
+    "Fraction-Case Completions (using PQL)",
     "Average workload",
+    "Average workload (using PQL)",
     "Multitasking",
     "Average Activity Duration",
     "Average case duration",
     "Interaction Two Resources",
+    "Interaction Two Resources (using PQL)",
     "Social Position",
   ],
   organizational_mining: [
@@ -119,7 +164,12 @@ const resourceOptions = {
 // -------------------- Main Component --------------------
 
 const ResultsPage = () => {
-  const [view, setView] = useState("log_skeleton");
+  // const [view, setView] = useState("log_skeleton");
+  const [view, setView] = useState("general"); // Default view
+
+  //general insights
+  const [generalInsightsTables, setGeneralInsightsTables] = useState([]);
+  const [generalLoading, setGeneralLoading] = useState(false);
 
   // Shared
   const [graphData, setGraphData] = useState([]);
@@ -152,20 +202,42 @@ const ResultsPage = () => {
     end_time: "",
   });
 
+  // -------------------- General Insights: Fetch Data --------------------
+  useEffect(() => {
+    const fetchGeneralInsights = async () => {
+      setGeneralLoading(true);
+      try {
+        const res = await fetch(GET_GENERAL_INSIGHTS);
+        const data = await res.json();
+        setGeneralInsightsTables(data.tables || []);
+      } catch (err) {
+        alert("Failed to fetch general insights: " + err.message);
+      } finally {
+        setGeneralLoading(false);
+      }
+    };
+
+    if (view === "general") {
+      fetchGeneralInsights();
+    }
+  }, [view]);
+
   // -------------------- Log Skeleton: Fetch Job ID --------------------
 
   useEffect(() => {
-    const computeJob = async () => {
-      try {
-        const res = await fetch(COMPUTE_SKELETON, { method: "POST" });
-        const data = await res.json();
-        setJobId(data.job_id);
-      } catch (err) {
-        alert("Error starting log skeleton computation: " + err.message);
-      }
-    };
-    computeJob();
-  }, []);
+    if (view === "log_skeleton") {
+      const computeJob = async () => {
+        try {
+          const res = await fetch(COMPUTE_SKELETON, { method: "POST" });
+          const data = await res.json();
+          setJobId(data.job_id);
+        } catch (err) {
+          alert("Error starting log skeleton computation: " + err.message);
+        }
+      };
+      computeJob();
+    }
+  }, [view]);
 
   // -------------------- Resource-Based: Fetch Job ID --------------------
 
@@ -184,6 +256,23 @@ const ResultsPage = () => {
     }
   }, [view]);
 
+  // -------------------- Clear old outputs when view changes --------------------
+  useEffect(() => {
+    setGraphData([]);
+    setTableData([]);
+    setFloatResult(null);
+    setSelectedOption("");
+    setSelectedResourceOption("");
+    setZeta("");
+    setResourceInputs({
+      resource1: "",
+      resource2: "",
+      activity: "",
+      start_time: "",
+      end_time: "",
+    });
+  }, [view]);
+
   // -------------------- Log Skeleton: Handle Option Selection --------------------
 
   const handleOptionSelect = async (option) => {
@@ -192,12 +281,16 @@ const ResultsPage = () => {
     setTableData([]);
     setJobLoading(true);
 
-    //polling mechanism implementation
+    // Check if it's a PQL option
+    const isPQL = option.label.endsWith("(PQL)");
+    const endpoint = option.endpoint;
+
     try {
       let attempts = 0;
       let resultData = null;
+
       while (attempts < 20) {
-        const res = await fetch(`${option.endpoint}/${jobId}`);
+        const res = await fetch(isPQL ? endpoint : `${endpoint}/${jobId}`);
         if (res.ok) {
           resultData = await res.json();
           break;
@@ -205,9 +298,11 @@ const ResultsPage = () => {
         await new Promise((res) => setTimeout(res, 500));
         attempts++;
       }
+
       if (!resultData) {
         throw new Error("Timeout: backend did not return results in time.");
       }
+
       setGraphData(resultData.graphs || []);
       setTableData(resultData.tables || []);
     } catch (err) {
@@ -217,6 +312,7 @@ const ResultsPage = () => {
     }
   };
 
+  // -------------------- TEMPORAL PROFILE--------------------
   // -------------------- Temporal Profile: Submit Zeta --------------------
 
   const handleComputeTemporal = async () => {
@@ -276,6 +372,7 @@ const ResultsPage = () => {
     }
   };
 
+  // ----------------------------------- RESOURCE BASED ---------------------------------------
   // -------------------- Resource-Based: Handle SNA, Org, Role Discovery --------------------
 
   const handleSNAOrOrgOption = async (selected) => {
@@ -341,10 +438,15 @@ const ResultsPage = () => {
 
     switch (option) {
       case "Distinct Activities":
+      case "Distinct Activities (using PQL)":
       case "Activity Completions":
+      case "Activity Completions (using PQL)":
       case "Case-Completions":
+      case "Case-Completions (using PQL)":
       case "Fraction-Case Completions":
+      case "Fraction-Case Completions (using PQL)":
       case "Average workload":
+      case "Average workload (using PQL)":
       case "Multitasking":
       case "Average case duration":
       case "Social Position":
@@ -362,6 +464,7 @@ const ResultsPage = () => {
         break;
 
       case "Interaction Two Resources":
+      case "Interaction Two Resources (using PQL)":
         queryParams.append("resource1", resource1);
         queryParams.append("resource2", resource2);
         queryParams.append("start_time", start_time);
@@ -374,15 +477,22 @@ const ResultsPage = () => {
 
     const endpointMap = {
       "Distinct Activities": DISTINCT_ACTIVITIES,
+      "Distinct Activities (using PQL)": DISTINCT_ACTIVITIES_PQL,
       "Activity Frequency": ACTIVITY_FREQUENCY,
+      "Activity Frequency (using PQL)": ACTIVITY_FREQUENCY_PQL,
       "Activity Completions": ACTIVITY_COMPLETIONS,
+      "Activity Completions (using PQL)": ACTIVITY_COMPLETIONS_PQL,
       "Case-Completions": CASE_COMPLETIONS,
+      "Case-Completions (using PQL)": CASE_COMPLETIONS_PQL,
       "Fraction-Case Completions": FRACTION_CASE_COMPLETIONS,
+      "Fraction-Case Completions (using PQL)": FRACTION_CASE_COMPLETIONS_PQL,
       "Average workload": AVERAGE_WORKLOAD,
+      "Average workload (using PQL)": AVERAGE_WORKLOAD_PQL,
       Multitasking: MULTITASKING,
       "Average Activity Duration": AVERAGE_ACTIVITY_DURATION,
       "Average case duration": AVERAGE_CASE_DURATION,
       "Interaction Two Resources": INTERACTION_TWO_RESOURCES,
+      "Interaction Two Resources (using PQL)": INTERACTION_TWO_RESOURCES_PQL,
       "Social Position": SOCIAL_POSITION,
     };
 
@@ -426,7 +536,7 @@ const ResultsPage = () => {
       {floatResult !== null && (
         <Box sx={{ mt: 4 }}>
           <Typography variant="h6">Result</Typography>
-          <Typography variant="body1"> 
+          <Typography variant="body1">
             {selectedResourceOption
               ? `${selectedResourceOption}: ${floatResult.replace(
                   "Output: ",
@@ -455,6 +565,12 @@ const ResultsPage = () => {
         {/* -------- View Selector -------- */}
         <Box sx={{ display: "flex", gap: 2, my: 2 }}>
           <Button
+            variant={view === "general" ? "contained" : "outlined"}
+            onClick={() => setView("general")}
+          >
+            General Insights
+          </Button>
+          <Button
             variant={view === "log_skeleton" ? "contained" : "outlined"}
             onClick={() => setView("log_skeleton")}
           >
@@ -482,6 +598,30 @@ const ResultsPage = () => {
 
         <Divider />
 
+        {/* -------- General Insights Section -------- */}
+        {view === "general" && (
+          <>
+            {generalLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <>
+                {generalInsightsTables.map((table, idx) => (
+                  <Box key={idx} sx={{ mt: 4 }}>
+                    <Typography variant="h6">Table {idx + 1}</Typography>
+                    <Table headers={table.headers} rows={table.rows} />
+                  </Box>
+                ))}
+                {!generalInsightsTables.length && (
+                  <Typography color="text.secondary" sx={{ mt: 2 }}>
+                    No general insights available.
+                  </Typography>
+                )}
+              </>
+            )}
+          </>
+        )}
         {/* -------- Log Skeleton Section -------- */}
         {view === "log_skeleton" && (
           <>
