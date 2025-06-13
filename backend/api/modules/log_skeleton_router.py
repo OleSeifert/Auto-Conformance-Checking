@@ -147,7 +147,7 @@ def get_always_after(job_id: str, request: Request) -> EndpointReturnType:
 
 
 @router.get("/get_always_after/")
-def get_always_after_pql(  # type: ignore
+def get_always_after_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -208,7 +208,7 @@ def get_always_before(job_id: str, request: Request) -> EndpointReturnType:
 
 
 @router.get("/get_always_before/")
-def get_always_before_pql(  # type: ignore
+def get_always_before_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -255,7 +255,7 @@ def get_always_before_pql(  # type: ignore
 
 
 @router.get("/old/get_never_together/{job_id}")
-def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
+def get_never_together(job_id: str, request: Request) -> EndpointReturnType:  # type: ignore
     """Retrieves the never-together relations from the log skeleton."""
     result = request.app.state.jobs[job_id].result.get("never_together", [])
     if not result:
@@ -269,7 +269,7 @@ def get_never_together(job_id: str, request: Request) -> dict:  # type: ignore
 
 
 @router.get("/get_never_together/")
-def get_never_together_pql(  # type: ignore
+def get_never_together_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -330,7 +330,7 @@ def get_directly_follows(job_id: str, request: Request) -> EndpointReturnType:
 
 
 @router.get("/get_directly_follows_and_count/")
-def get_directly_follows_pql(  # type: ignore
+def get_directly_follows_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> EndpointReturnType:
@@ -350,7 +350,7 @@ def get_directly_follows_pql(  # type: ignore
     # Create tables sub-structure
     tables: TableType = {}
     tables["headers"] = result_df.columns.tolist()
-    tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
+    tables["rows"] = result_df[result_df["Rel"] == "true"].astype(str).values.tolist()  # type: ignore
 
     # Create graphs sub-structure
     graphs: GraphType = {}
@@ -367,7 +367,7 @@ def get_directly_follows_pql(  # type: ignore
                 {
                     "from": row["Activity A"],
                     "to": row["Activity B"],
-                    "label": row["Count"],
+                    "label": str(row["Count"]),  # type: ignore
                 }
             )
 

@@ -8,7 +8,6 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, R
 from backend.api.celonis import get_celonis_connection
 from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
-from backend.api.models.schemas.resource_based_models import OrganizationalRole
 from backend.api.tasks.resource_based_tasks import (
     compute_and_store_resource_based_metrics,
 )
@@ -20,9 +19,9 @@ from backend.pql_queries import resource_based_queries
 
 # **************** Type Aliases ****************
 
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 MODULE_NAME = "resource_based"
@@ -81,9 +80,26 @@ async def get_handover_of_work_metric(
         if "source" in entry and "target" in entry and "value" in entry
     ]
 
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": formatted_rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
@@ -93,16 +109,37 @@ async def get_subcontracting_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns subcontracting metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("subcontracting", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
@@ -112,16 +149,37 @@ async def get_working_together_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns working together metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("working_together", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
@@ -131,38 +189,80 @@ async def get_similar_activities_metric(
 ) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Returns similar activities metric in table/graph format."""
     verify_correct_job_module(job_id, request, MODULE_NAME)
-    raw = (
+    raw_values = (
         request.app.state.jobs[job_id]
         .result.get("similar_activities", {})
         .get("values", [])
     )
 
-    rows = [[item.get("source"), item.get("target"), item.get("value")] for item in raw]
+    formatted_rows = [
+        [item.get("source"), item.get("target"), item.get("value")]
+        for item in raw_values
+    ]
+
+    table: TableType = {
+        "headers": ["Source", "Target", "Value"],
+        "rows": formatted_rows,
+    }
+
+    nodes = set[str]()
+    for row in formatted_rows:
+        nodes.update([row[0], row[1]])
+
+    graph: GraphType = {
+        "nodes": [{"id": node_name} for node_name in nodes],
+        "edges": [
+            {"from": row[0], "to": row[1], "label": round(row[2], 3)}
+            for row in formatted_rows
+        ],
+    }
+
     return {
-        "tables": [{"headers": ["Source", "Target", "Value"], "rows": rows}],
-        "graphs": [],
+        "tables": [table],
+        "graphs": [graph],
     }
 
 
 # **************** Role Discovery ****************
 
 
-@router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
+@router.get(
+    "/role-discovery/{job_id}",
+)
 async def get_organizational_roles_result(
     job_id: str, request: Request
-) -> List[OrganizationalRole]:
-    """Retrieves the computed organizational roles.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the computed organizational roles and returns them as a table.
 
     Args:
         job_id: The ID of the job to retrieve the organizational roles for.
         request: The FastAPI request object.
 
     Returns:
-        A list of OrganizationalRole objects representing the discovered roles.
+        A ResponseSchema object with a table:
+        Headers: ["Activity", "Originator", "Importance"]
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return request.app.state.jobs[job_id].result.get("organizational_roles", [])
+    roles_data = request.app.state.jobs[job_id].result.get("organizational_roles", [])
+
+    rows: List[List[str]] = []
+    for role in roles_data:
+        activities = role.get("activities", [])
+        originators = role.get("originators_importance", {})
+        for activity in activities:
+            for originator, importance in originators.items():
+                rows.append([activity, originator, str(importance)])
+
+    return {
+        "tables": [
+            {
+                "headers": ["Activity", "Originator", "Importance"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
 
 
 # **************** Resource Profiles ****************
@@ -723,99 +823,161 @@ async def get_resource_social_position(
 
 @router.get(
     "/organizational-mining/group-relative-focus/{job_id}",
-    response_model=Dict[str, Dict[str, float]],
 )
 async def get_group_relative_focus_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the Group Relative Focus metric.
 
-    Args:
-        job_id: The ID of the job to retrieve the metric for.
-        request: The FastAPI request object.
+    Formatted as a table with headers and rows.
 
     Returns:
-        A dictionary containing the Group Relative Focus metric.
+        ResponseSchema with a single table, no graph.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    focus_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_relative_focus", {})
     )
 
+    rows: List[List[Any]] = [
+        [group, activity, f"{score:.4f}"]
+        for group, activity_scores in focus_data.items()
+        for activity, score in activity_scores.items()
+    ]
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Activity", "Relative Focus"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-relative-stake/{job_id}",
-    response_model=Dict[str, Dict[str, float]],
 )
 async def get_group_relative_stake_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the Group Relative Stake metric.
+
+    Formatted as a table with headers and rows.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
         request: The FastAPI request object.
 
     Returns:
-        A dictionary containing the Group Relative Stake metric.
+        A ResponseSchema containing the Group Relative Stake table.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    stake_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_relative_stake", {})
     )
 
+    rows: List[List[str]] = [
+        [group, activity, f"{score:.4f}"]
+        for group, activity_scores in stake_data.items()
+        for activity, score in activity_scores.items()
+    ]
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Activity", "Relative Stake"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-coverage/{job_id}",
-    response_model=Dict[str, Dict[str, float]],
 )
 async def get_group_coverage_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the Group Coverage metric.
+
+    Formatted as a table with headers and rows.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
         request: The FastAPI request object.
 
     Returns:
-        A dictionary containing the Group Coverage metric.
+        A ResponseSchema containing the Group Coverage table.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    coverage_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_coverage", {})
     )
 
+    rows: List[List[str]] = [
+        [group, resource, f"{score:.4f}"]
+        for group, resource_scores in coverage_data.items()
+        for resource, score in resource_scores.items()
+    ]
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Resource", "Coverage"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-member-contribution/{job_id}",
-    response_model=Dict[str, Dict[str, Dict[str, int]]],
 )
 async def get_group_member_contribution_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, Dict[str, int]]]:
-    """Retrieves the Group Member Contribution metric.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the Group Member Contribution metric formatted as a table.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
         request: The FastAPI request object.
 
     Returns:
-        A dictionary containing the Group Member Contribution metric.
+        A ResponseSchema containing the Group Member Contribution table.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    contribution_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_member_contribution", {})
     )
+
+    rows: List[List[str]] = []
+    for group, member_dict in contribution_data.items():
+        for member, activity_dict in member_dict.items():
+            for activity, count in activity_dict.items():
+                rows.append([group, member, activity, str(count)])
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Member", "Activity", "Count"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }

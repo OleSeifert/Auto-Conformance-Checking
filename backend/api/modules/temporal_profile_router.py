@@ -1,7 +1,7 @@
 """Contains the routes for temporal conformance checking."""
 
 import uuid
-from typing import Dict
+from typing import Any, Dict, List, TypeAlias, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 
@@ -14,6 +14,11 @@ from backend.api.tasks.temporal_profile_tasks import (
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
+
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[Any]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, Any]]]
+EndpointReturnType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
+
 
 router = APIRouter(prefix="/api/temporal-profile", tags=["Temporal Profile CC"])
 MODULE_NAME = "temporal"
@@ -57,7 +62,7 @@ async def compute_temporal_conformance_result(
 async def get_temporal_conformance_result(
     job_id: str,
     request: Request,
-) -> dict:
+) -> EndpointReturnType:
     """Retrieves the temporal conformance result for a given job ID.
 
     This result is expected to be a list of lists of tuples, representing
@@ -68,7 +73,7 @@ async def get_temporal_conformance_result(
         request: The FastAPI request object.
 
     Returns:
-        The temporal conformance result as a list of lists of tuples.
+        The temporal conformance result in the form of table and graph data.
 
     Raises:
         HTTPException: If the job is not found or if the result is not available.
@@ -100,17 +105,29 @@ async def get_temporal_conformance_result(
         flattened = []
         for sublist in data:
             for tup in sublist:
-                if isinstance(tup, tuple) and len(tup) == 4:
-                    flattened.append(list(tup))
+                if isinstance(tup, tuple) and len(tup) == 4:  # type: ignore
+                    flattened.append(list(tup))  # type: ignore
+
+        graph_data: GraphType = {}
+        table_data: TableType = {}
+
+        nodes = set[str]()
+        edges = list[Dict[str, Any]]()
+
+        table_data["headers"] = ["Activity A", "Activity B", "Time Passed", "Zeta"]
+        table_data["rows"] = flattened
+
+        for item in flattened:  # type: ignore
+            nodes.update([item[0], item[1]])  # type: ignore
+
+            edges.append({"from": item[0], "to": item[1], "label": round(item[3], 3)})  # type: ignore
+
+        graph_data["nodes"] = [{"id": node} for node in nodes]
+        graph_data["edges"] = edges
 
         return {
-            "tables": [
-                {
-                    "headers": ["Activity A", "Activity B", "Mean", "Zeta"],
-                    "rows": flattened,
-                }
-            ],
-            "graphs": [],
+            "tables": [table_data],
+            "graphs": [graph_data],
         }
 
     except Exception as e:

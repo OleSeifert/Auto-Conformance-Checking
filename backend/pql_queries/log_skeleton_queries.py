@@ -7,10 +7,7 @@ from pandas import DataFrame
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
-from backend.pql_queries.general_queries import (
-    get_activities,
-    get_cases,
-)
+from backend.pql_queries.general_queries import get_activities, get_cases
 
 
 # Always before
