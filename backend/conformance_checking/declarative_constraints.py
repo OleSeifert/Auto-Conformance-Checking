@@ -7,16 +7,17 @@ based on the discovered declarative profiles.
 
 from typing import Any, Dict, List, Optional, TypeAlias, Union
 
-import pandas as pd
+import pandas as pd  # type: ignore
 import pm4py  # type: ignore
 from pm4py.algo.conformance.declare import algorithm as decl_conf  # type: ignore
 
 # **************** Type Aliases ****************
 
 DeclareModelType: TypeAlias = Dict[str, Dict[Any, Dict[str, int]]]
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 
 class DeclarativeConstraints:
@@ -58,25 +59,25 @@ class DeclarativeConstraints:
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
-        self.valid_rules = [
-            "existence",
-            "absence",
-            "exactly_one",
-            "init",
-            "responded_existence",
-            "coexistence",
-            "response",
-            "precedence",
-            "succession",
-            "altprecedence",
-            "altsuccession",
-            "chainresponse",
-            "chainprecedence",
-            "chainsuccession",
-            "noncoexistence",
-            "nonsuccession",
-            "nonchainsuccession",
-        ]
+        self.valid_rules = list({
+            "Existence" : "existance", 
+            "Never" : "absence", 
+            "Exactly Once" : "exactly_one", 
+            "Initially" : "init", 
+            "Responded Existence" : "responded_existence",
+            "Co-Existence" : "coexistence",
+            "Always After" : "response",
+            "Always Before" : "precedence",
+            "Succession" : "succession",
+            "Alternate Precedence" : "altprecedence",
+            "Alternate Succession" : "altsuccession",
+            "Immediately After" : "chainresponse",
+            "Immediately Before" : "chainprecedence",
+            "Chain Succession" : "chainsuccession",
+            "Non Co-Existence" : "noncoexistence",
+            "Not Succession" : "nonsuccession",
+            "Not Chain Succession" : "nonchainsuccession",
+        }.values())
         self.conf_results_memory: Dict[str, None] = {
             rule: None for rule in self.valid_rules
         }
@@ -171,21 +172,22 @@ class DeclarativeConstraints:
                 violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]  # type: ignore
                 violation_count = len(violated)  # type: ignore
 
-                if B != []:
-                    table_headers = [
-                        "First Activity",
-                        "Second Activity",
-                        "# Violations",
-                    ]
-                    graph_nodes.append(A)  # type: ignore
-                    graph_nodes.append(B)  # type: ignore
-                    graph_edges.append(
-                        {"from": A, "to": B, "label": str(violation_count)}  # type: ignore
-                    )
-                    table_rows.append([A, B, str(violation_count)])  # type: ignore
-                else:
-                    table_headers = ["Activity", "# Violations"]
-                    table_rows.append([A, str(violation_count)])  # type: ignore
+                if violation_count > 0:
+                    if rule_name not in ["existence", "absence", "init", "exactly_one"]:
+                        table_headers = [
+                            "First Activity",
+                            "Second Activity",
+                            "# Violations",
+                        ]
+                        graph_nodes.append(A)  # type: ignore
+                        graph_nodes.append(B)  # type: ignore
+                        graph_edges.append(
+                            {"from": A, "to": B, "label": str(violation_count)}  # type: ignore
+                        )
+                        table_rows.append([A, B, str(violation_count)])  # type: ignore
+                    else:
+                        table_headers = ["Activity", "# Violations"]
+                        table_rows.append([A, str(violation_count)])  # type: ignore
             graph_nodes = [{"id": node} for node in list(set(list(graph_nodes)))]  # type: ignore
 
             if table_headers != []:
