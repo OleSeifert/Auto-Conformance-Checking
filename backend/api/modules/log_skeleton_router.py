@@ -383,7 +383,10 @@ def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnTyp
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
     
     # Format the frequencies into a list of lists for the table
-    rows = [[activity, ", ".join(map(str, count))] for activity, count in freq_dict.items()]
+    rows = [
+    [activity, ", ".join(map(str, count))]
+    for activity, count in freq_dict.items()
+    ]
     if not rows:
         return {"tables": [], "graphs": []}
     return {
