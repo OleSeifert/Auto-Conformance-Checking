@@ -33,6 +33,24 @@ import {
   GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
   GET_RESULT_TEMPORAL_PROFILE,
   TEMPORAL_PROFILE,
+  COMPUTE_DECLARATIVE_CONSTRAINTS,
+  GET_EXISTANCE_VIOLATIONS,
+  GET_ABSENCE_VIOLATIONS,
+  GET_EXACTLY_ONE_VIOLATIONS,
+  GET_INIT_VIOLATIONS,
+  GET_RESPONDED_EXISTENCE_VIOLATIONS,
+  GET_COEXISTENCE_VIOLATIONS,
+  GET_RESPONSE_VIOLATIONS,
+  GET_PRECEDENCE_VIOLATIONS,
+  GET_SUCCESSION_VIOLATIONS,
+  GET_ALTPRECEDENCE_VIOLATIONS,
+  GET_ALTSUCCESION_VIOLATIONS,
+  GET_CHAINRESPONSE_VIOLATIONS,
+  GET_CHAINPRECEDENCE_VIOLATIONS,
+  GET_CHAINSUCCESION_VIOLATIONS,
+  GET_NONCOEXISTENCE_VIOLATIONS,
+  GET_NONSUCCESION_VIOLATIONS,
+  GET_NONCHAINSUCCESION_VIOLATIONS,
   RESOURCE_BASED,
   HANDOVER_OF_WORK,
   SUBCONTRACTING,
@@ -123,6 +141,51 @@ const LOG_SKELETON_OPTIONS = [
   },
 ];
 
+// --------------------Declarative Constraints Options --------------------
+const DECLARATIVE_OPTIONS = [
+  { label: "Existence", endpoint: GET_EXISTANCE_VIOLATIONS },
+  { label: "Never", endpoint: GET_ABSENCE_VIOLATIONS },
+  { label: "Exactly Once", endpoint: GET_EXACTLY_ONE_VIOLATIONS },
+  { label: "Initially", endpoint: GET_INIT_VIOLATIONS },
+  {
+    label: "Responded Existence",
+    endpoint: GET_RESPONDED_EXISTENCE_VIOLATIONS,
+  },
+  { label: "Co-Existence", endpoint: GET_COEXISTENCE_VIOLATIONS },
+  { label: "Always After", endpoint: GET_RESPONSE_VIOLATIONS },
+  { label: "Always Before", endpoint: GET_PRECEDENCE_VIOLATIONS },
+  { label: "Succession", endpoint: GET_SUCCESSION_VIOLATIONS },
+  {
+    label: "Alternate Precedence",
+    endpoint: GET_ALTPRECEDENCE_VIOLATIONS,
+  },
+  {
+    label: "Alternate Succession",
+    endpoint: GET_ALTSUCCESION_VIOLATIONS,
+  },
+  {
+    label: "Immediately After",
+    endpoint: GET_CHAINRESPONSE_VIOLATIONS,
+  },
+  {
+    label: "Immediately Before",
+    endpoint: GET_CHAINPRECEDENCE_VIOLATIONS,
+  },
+  {
+    label: "Chain Succession",
+    endpoint: GET_CHAINSUCCESION_VIOLATIONS,
+  },
+  {
+    label: "Non Co-Existence",
+    endpoint: GET_NONCOEXISTENCE_VIOLATIONS,
+  },
+  { label: "Non Succession", endpoint: GET_NONSUCCESION_VIOLATIONS },
+  {
+    label: "Non Chain Succession",
+    endpoint: GET_NONCHAINSUCCESION_VIOLATIONS,
+  },
+];
+
 // -------------------- Resource Options --------------------
 
 const resourceOptions = {
@@ -164,17 +227,15 @@ const resourceOptions = {
 // -------------------- Main Component --------------------
 
 const ResultsPage = () => {
-  // const [view, setView] = useState("log_skeleton");
   const [view, setView] = useState("general"); // Default view
 
   //general insights
   const [generalInsightsTables, setGeneralInsightsTables] = useState([]);
   const [generalLoading, setGeneralLoading] = useState(false);
 
-  // Shared
+  // Shared Output Space
   const [graphData, setGraphData] = useState([]);
   const [tableData, setTableData] = useState([]);
-  // const [loading, setLoading] = useState(false);
 
   // Log Skeleton
   const [jobId, setJobId] = useState(null);
@@ -185,6 +246,13 @@ const ResultsPage = () => {
   const [zeta, setZeta] = useState("");
   const [temporalJobId, setTemporalJobId] = useState(null);
   const [showResultLoading, setShowResultLoading] = useState(false);
+
+  // Declarative Constraints
+  const [minSupport, setMinSupport] = useState("");
+  const [minConfidence, setMinConfidence] = useState("");
+  const [declJobId, setDeclJobId] = useState(null);
+  const [selectedDeclOption, setSelectedDeclOption] = useState("");
+  const [declLoading, setDeclLoading] = useState(false);
 
   // Resource-based
   const [resourceJobId, setResourceJobId] = useState(null);
@@ -222,7 +290,7 @@ const ResultsPage = () => {
     }
   }, [view]);
 
-  // -------------------- Log Skeleton: Fetch Job ID --------------------
+  // -------------------- Log Skeleton: Fetch Job ID on startup--------------------
 
   useEffect(() => {
     if (view === "log_skeleton") {
@@ -239,7 +307,7 @@ const ResultsPage = () => {
     }
   }, [view]);
 
-  // -------------------- Resource-Based: Fetch Job ID --------------------
+  // -------------------- Resource-Based: Fetch Job ID on start up--------------------
 
   useEffect(() => {
     if (view === "resource") {
@@ -256,7 +324,7 @@ const ResultsPage = () => {
     }
   }, [view]);
 
-  // -------------------- Clear old outputs when view changes --------------------
+  // -------------------- Clear old outputs when view changes for all insights --------------------
   useEffect(() => {
     setGraphData([]);
     setTableData([]);
@@ -264,6 +332,7 @@ const ResultsPage = () => {
     setSelectedOption("");
     setSelectedResourceOption("");
     setZeta("");
+    setSelectedDeclOption("");
     setResourceInputs({
       resource1: "",
       resource2: "",
@@ -273,7 +342,8 @@ const ResultsPage = () => {
     });
   }, [view]);
 
-  // -------------------- Log Skeleton: Handle Option Selection --------------------
+  // ------------------------------------ Log Skeleton---------------------------------------------------
+  // -------------------- Log Skeleton: Handle Option Selection after we have job id --------------------
 
   const handleOptionSelect = async (option) => {
     setSelectedOption(option.value);
@@ -312,7 +382,7 @@ const ResultsPage = () => {
     }
   };
 
-  // -------------------- TEMPORAL PROFILE--------------------
+  // --------------------------- TEMPORAL PROFILE---------------------------
   // -------------------- Temporal Profile: Submit Zeta --------------------
 
   const handleComputeTemporal = async () => {
@@ -372,8 +442,69 @@ const ResultsPage = () => {
     }
   };
 
-  // ----------------------------------- RESOURCE BASED ---------------------------------------
-  // -------------------- Resource-Based: Handle SNA, Org, Role Discovery --------------------
+  // --------------------------- DECLARATIVE CONSTRAINTS ---------------------------
+  // -------------------- Declarative Constraints: Submit Inputs --------------------
+
+  const handleComputeDeclarative = async () => {
+    if (!minSupport || !minConfidence) {
+      alert("Please enter both minimum support and minimum confidence.");
+      return;
+    }
+
+    try {
+      const url = `${COMPUTE_DECLARATIVE_CONSTRAINTS}?min_support=${parseFloat(
+        minSupport
+      )}&min_confidence=${parseFloat(minConfidence)}`;
+      const res = await fetch(url, { method: "GET" });
+      const data = await res.json();
+      setDeclJobId(data.job_id);
+      alert(
+        "Constraints computation started. Now select a Declarative Insight."
+      );
+    } catch (err) {
+      alert("Error computing declarative constraints: " + err.message);
+    }
+  };
+
+  const handleDeclarativeOptionSelect = async (option) => {
+    if (!declJobId) {
+      alert("Please compute constraints first.");
+      return;
+    }
+
+    setSelectedDeclOption(option.label);
+    setGraphData([]);
+    setTableData([]);
+    setDeclLoading(true);
+
+    try {
+      let attempts = 0;
+      let resultData = null;
+      while (attempts < 20) {
+        const res = await fetch(`${option.endpoint}/${declJobId}`);
+        if (res.ok) {
+          resultData = await res.json();
+          break;
+        }
+        await new Promise((res) => setTimeout(res, 500));
+        attempts++;
+      }
+
+      if (!resultData) {
+        throw new Error("Timeout: backend did not return results in time.");
+      }
+
+      setGraphData(resultData.graphs || []);
+      setTableData(resultData.tables || []);
+    } catch (err) {
+      alert("Failed to fetch declarative constraint result: " + err.message);
+    } finally {
+      setDeclLoading(false);
+    }
+  };
+
+  // ----------------------------------- RESOURCE BASED ---------------------------------------------
+  // -------------------- Resource-Based: Handle SNA, Org Mining, Role Discovery --------------------
 
   const handleSNAOrOrgOption = async (selected) => {
     const endpointMap = {
@@ -420,7 +551,7 @@ const ResultsPage = () => {
     }
   };
 
-  // -------------------- Resource Profiles: Handle Input and Submit --------------------
+  // -------------------- Resource Based: Handle Input and Submit for Resource Profiles --------------------
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -517,7 +648,7 @@ const ResultsPage = () => {
     }
   };
 
-  // -------------------- Render Graphs & Tables --------------------
+  // -------------------- Render Graphs & Tables (Common for all Insights)--------------------
 
   const renderGraphAndTable = () => (
     <>
@@ -553,13 +684,14 @@ const ResultsPage = () => {
       )}
     </>
   );
-  // -------------------- UI --------------------
+
+  // ------------------------- UI Properties------------------------------------
 
   return (
     <Card sx={{ mx: "auto", mt: 4, maxWidth: 1000, boxShadow: 3 }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          Conformance Insights
+          Results Page
         </Typography>
 
         {/* -------- View Selector -------- */}
@@ -685,6 +817,62 @@ const ResultsPage = () => {
           </Box>
         )}
 
+        {/* -------- Declarative Constraints Section -------- */}
+        {view === "declarative" && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Minimum Support Ratio (Set to 0.3 for best results)"
+              variant="outlined"
+              type="number"
+              value={minSupport}
+              onChange={(e) => setMinSupport(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Minimum Confidence Ratio (Set to 0.7 for best results)"
+              variant="outlined"
+              type="number"
+              value={minConfidence}
+              onChange={(e) => setMinConfidence(e.target.value)}
+              fullWidth
+            />
+            <Button variant="contained" onClick={handleComputeDeclarative}>
+              Submit Constraints
+            </Button>
+
+            {declJobId && (
+              <FormControl fullWidth>
+                <InputLabel>Declarative Insight</InputLabel>
+                <Select
+                  value={selectedDeclOption}
+                  label="Declarative Insight"
+                  onChange={(e) =>
+                    handleDeclarativeOptionSelect(
+                      DECLARATIVE_OPTIONS.find(
+                        (opt) => opt.label === e.target.value
+                      )
+                    )
+                  }
+                >
+                  {DECLARATIVE_OPTIONS.map((opt) => (
+                    <MenuItem key={opt.label} value={opt.label}>
+                      {opt.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+
+            {declLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              renderGraphAndTable()
+            )}
+          </Box>
+        )}
+
         {/* -------- Resource-Based Section -------- */}
         {view === "resource" && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -771,7 +959,7 @@ const ResultsPage = () => {
               </Box>
             )}
 
-            {/* -------- Resource Insight Dropdown -------- */}
+            {/* -------- Resource Insight Dropdown under Resource Profiles for Resource-Based conformance-------- */}
             {selectedResourceType && (
               <FormControl fullWidth>
                 <InputLabel>Resource Insight</InputLabel>
@@ -798,7 +986,7 @@ const ResultsPage = () => {
               </FormControl>
             )}
 
-            {/* -------- Results Loading or Output -------- */}
+            {/* -------- Circular Waiting Animation -------- */}
             {resourceLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
                 <CircularProgress />

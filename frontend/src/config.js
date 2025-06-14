@@ -29,6 +29,24 @@ export const GET_ACTIVITY_FREQUENCIES = `${API_BASE}/api/log-skeleton/old/get_ac
 export const GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL = `${API_BASE}/api/log-skeleton/get_directly_follows_and_count`;
 
 //Declerative Constraints Endpoints
+export const COMPUTE_DECLARATIVE_CONSTRAINTS = `${API_BASE}/api/declarative-constraints/compute-constraints`;
+export const GET_EXISTANCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_existance_violations`;
+export const GET_ABSENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_absence_violations`;
+export const GET_EXACTLY_ONE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_exactly_one_violations`;
+export const GET_INIT_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_init_violations`;
+export const  GET_RESPONDED_EXISTENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_responded_existence_violations`;
+export const GET_COEXISTENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_coexistence_violations`;
+export const GET_RESPONSE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_response_violations`;
+export const GET_PRECEDENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_precedence_violations`;
+export const GET_SUCCESSION_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_succession_violations`;
+export const GET_ALTPRECEDENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_altprecedence_violations`;
+export const GET_ALTSUCCESION_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_altsuccession_violations`;
+export const GET_CHAINRESPONSE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_chainresponse_violations`;
+export const GET_CHAINPRECEDENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_chainprecedence_violations`;
+export const GET_CHAINSUCCESION_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_chainsuccession_violations`;
+export const GET_NONCOEXISTENCE_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_noncoexistence_violations`;
+export const GET_NONSUCCESION_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_nonsuccession_violations`;
+export const GET_NONCHAINSUCCESION_VIOLATIONS = `${API_BASE}/api/declarative-constraints/get_nonchainsuccession_violations`;
 
 // Temporal Profile Endpoints
 export const TEMPORAL_PROFILE = `${API_BASE}/api/temporal-profile/compute-result`;
