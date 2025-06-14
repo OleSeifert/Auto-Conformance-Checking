@@ -61,7 +61,7 @@ async def compute_resource_based_metrics(
 @router.get("/sna/handover-of-work/{job_id}")
 async def get_handover_of_work_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
+) -> Dict[str, List[Union[TableType, GraphType]]]:
     """Returns the handover of work values in table/graph format.
 
     Args:
@@ -112,7 +112,7 @@ async def get_handover_of_work_metric(
 @router.get("/sna/subcontracting/{job_id}")
 async def get_subcontracting_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
+) -> Dict[str, List[Union[TableType, GraphType]]]:
     """Returns the subcontracting values in table/graph format.
 
     Args:
@@ -161,7 +161,7 @@ async def get_subcontracting_metric(
 @router.get("/sna/working-together/{job_id}")
 async def get_working_together_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
+) -> Dict[str, List[Union[TableType, GraphType]]]:
     """Returns the working together metric in table/graph format.
 
     Args:
@@ -210,7 +210,7 @@ async def get_working_together_metric(
 @router.get("/sna/similar-activities/{job_id}")
 async def get_similar_activities_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
+) -> Dict[str, List[Union[TableType, GraphType]]]:
     """Returns the similar activities metric in table/graph format.
 
     Args:
