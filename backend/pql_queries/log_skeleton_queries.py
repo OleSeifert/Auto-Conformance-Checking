@@ -21,7 +21,7 @@ def get_always_before_relation(celonis: CelonisConnectionManager) -> DataFrame:
         A dataframe that contains for pairs of Activities whether
         they always occurr before each other.
     """
-    target_df = DataFrame(columns=["Activity A always before", "Activity B", "Rel"])
+    target_df = DataFrame(columns=["Activity A", "Activity B", "Rel"])
     act_table = get_activities(celonis)
     activitiy_pairs = list(combinations(act_table["Activity"].to_list(), 2))  # type: ignore
     i = 0
@@ -60,7 +60,7 @@ def get_always_after_relation(celonis: CelonisConnectionManager) -> DataFrame:
         A dataframe that contains for pairs of Activities whether
         they always occurr after each other.
     """
-    target_df = DataFrame(columns=["Activity A", "Activity B always after A", "Rel"])
+    target_df = DataFrame(columns=["Activity A", "Activity B", "Rel"])
     act_table = get_activities(celonis)
     activitiy_pairs = list(combinations(act_table["Activity"].to_list(), 2))  # type: ignore
     i = 0
@@ -216,7 +216,7 @@ def get_directly_follows_relation_and_count(
     """
     dfg_query = {
         "Activity A": """ SOURCE("ACTIVITIES"."concept:name")""",
-        "Activity B Directly-follows A": """ TARGET("ACTIVITIES"."concept:name")""",
+        "Activity B": """ TARGET("ACTIVITIES"."concept:name")""",
         "Rel": """  CASE WHEN
                     COUNT(SOURCE ("ACTIVITIES"."concept:name")) > 0
                     THEN 'true' ELSE 'false'

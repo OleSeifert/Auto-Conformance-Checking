@@ -1,2 +1,0 @@
-# Never send secrets into the docker image
-../.env
