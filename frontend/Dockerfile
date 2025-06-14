@@ -4,12 +4,12 @@ FROM node:18-alpine as build
 WORKDIR /app
 
 # Copy dependency files and install
-COPY package.json ./
-COPY package-lock.json ./
+COPY frontend/package.json ./
+COPY frontend/package-lock.json ./
 RUN npm install
 
 # Copy rest of the project files
-COPY . ./
+COPY frontend/ ./
 
 # Build the React app
 RUN npm run build
