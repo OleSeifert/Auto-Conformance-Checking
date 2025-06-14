@@ -59,25 +59,27 @@ class DeclarativeConstraints:
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
         self.timestamp_col: Optional[str] = timestamp_col
-        self.valid_rules = list({
-            "Existence" : "existance", 
-            "Never" : "absence", 
-            "Exactly Once" : "exactly_one", 
-            "Initially" : "init", 
-            "Responded Existence" : "responded_existence",
-            "Co-Existence" : "coexistence",
-            "Always After" : "response",
-            "Always Before" : "precedence",
-            "Succession" : "succession",
-            "Alternate Precedence" : "altprecedence",
-            "Alternate Succession" : "altsuccession",
-            "Immediately After" : "chainresponse",
-            "Immediately Before" : "chainprecedence",
-            "Chain Succession" : "chainsuccession",
-            "Non Co-Existence" : "noncoexistence",
-            "Not Succession" : "nonsuccession",
-            "Not Chain Succession" : "nonchainsuccession",
-        }.values())
+        self.valid_rules = list(
+            {
+                "Existence": "existance",
+                "Never": "absence",
+                "Exactly Once": "exactly_one",
+                "Initially": "init",
+                "Responded Existence": "responded_existence",
+                "Co-Existence": "coexistence",
+                "Always After": "response",
+                "Always Before": "precedence",
+                "Succession": "succession",
+                "Alternate Precedence": "altprecedence",
+                "Alternate Succession": "altsuccession",
+                "Immediately After": "chainresponse",
+                "Immediately Before": "chainprecedence",
+                "Chain Succession": "chainsuccession",
+                "Non Co-Existence": "noncoexistence",
+                "Not Succession": "nonsuccession",
+                "Not Chain Succession": "nonchainsuccession",
+            }.values()
+        )
         self.conf_results_memory: Dict[str, None] = {
             rule: None for rule in self.valid_rules
         }
