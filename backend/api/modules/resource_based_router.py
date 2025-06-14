@@ -8,7 +8,6 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, R
 from backend.api.celonis import get_celonis_connection
 from backend.api.jobs import verify_correct_job_module
 from backend.api.models.schemas.job_models import JobStatus
-from backend.api.models.schemas.resource_based_models import OrganizationalRole
 from backend.api.tasks.resource_based_tasks import (
     compute_and_store_resource_based_metrics,
 )
@@ -259,22 +258,43 @@ async def get_similar_activities_metric(
 # **************** Role Discovery ****************
 
 
-@router.get("/role-discovery/{job_id}", response_model=List[OrganizationalRole])
+@router.get(
+    "/role-discovery/{job_id}",
+)
 async def get_organizational_roles_result(
     job_id: str, request: Request
-) -> List[OrganizationalRole]:
-    """Retrieves the computed organizational roles.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the computed organizational roles and returns them as a table.
 
     Args:
         job_id: The ID of the job to retrieve the organizational roles for.
         request: The FastAPI request object.
 
     Returns:
-        A list of OrganizationalRole objects representing the discovered roles.
+        A ResponseSchema object with a table:
+        Headers: ["Activity", "Originator", "Importance"]
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return request.app.state.jobs[job_id].result.get("organizational_roles", [])
+    roles_data = request.app.state.jobs[job_id].result.get("organizational_roles", [])
+
+    rows: List[List[str]] = []
+    for role in roles_data:
+        activities = role.get("activities", [])
+        originators = role.get("originators_importance", {})
+        for activity in activities:
+            for originator, importance in originators.items():
+                rows.append([activity, originator, str(importance)])
+
+    return {
+        "tables": [
+            {
+                "headers": ["Activity", "Originator", "Importance"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
 
 
 # **************** Resource Profiles ****************
@@ -835,99 +855,161 @@ async def get_resource_social_position(
 
 @router.get(
     "/organizational-mining/group-relative-focus/{job_id}",
-    response_model=Dict[str, Dict[str, float]],
 )
 async def get_group_relative_focus_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the Group Relative Focus metric.
 
-    Args:
-        job_id: The ID of the job to retrieve the metric for.
-        request: The FastAPI request object.
+    Formatted as a table with headers and rows.
 
     Returns:
-        A dictionary containing the Group Relative Focus metric.
+        ResponseSchema with a single table, no graph.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    focus_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_relative_focus", {})
     )
 
+    rows: List[List[Any]] = [
+        [group, activity, f"{score:.4f}"]
+        for group, activity_scores in focus_data.items()
+        for activity, score in activity_scores.items()
+    ]
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Activity", "Relative Focus"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-relative-stake/{job_id}",
-    response_model=Dict[str, Dict[str, float]],
 )
 async def get_group_relative_stake_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the Group Relative Stake metric.
+
+    Formatted as a table with headers and rows.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
         request: The FastAPI request object.
 
     Returns:
-        A dictionary containing the Group Relative Stake metric.
+        A ResponseSchema containing the Group Relative Stake table.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    stake_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_relative_stake", {})
     )
 
+    rows: List[List[str]] = [
+        [group, activity, f"{score:.4f}"]
+        for group, activity_scores in stake_data.items()
+        for activity, score in activity_scores.items()
+    ]
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Activity", "Relative Stake"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-coverage/{job_id}",
-    response_model=Dict[str, Dict[str, float]],
 )
 async def get_group_coverage_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, float]]:
+) -> Dict[str, List[Dict[str, List[Any]]]]:
     """Retrieves the Group Coverage metric.
+
+    Formatted as a table with headers and rows.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
         request: The FastAPI request object.
 
     Returns:
-        A dictionary containing the Group Coverage metric.
+        A ResponseSchema containing the Group Coverage table.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    coverage_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_coverage", {})
     )
 
+    rows: List[List[str]] = [
+        [group, resource, f"{score:.4f}"]
+        for group, resource_scores in coverage_data.items()
+        for resource, score in resource_scores.items()
+    ]
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Resource", "Coverage"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }
+
 
 @router.get(
     "/organizational-mining/group-member-contribution/{job_id}",
-    response_model=Dict[str, Dict[str, Dict[str, int]]],
 )
 async def get_group_member_contribution_metric(
     job_id: str, request: Request
-) -> Dict[str, Dict[str, Dict[str, int]]]:
-    """Retrieves the Group Member Contribution metric.
+) -> Dict[str, List[Dict[str, List[Any]]]]:
+    """Retrieves the Group Member Contribution metric formatted as a table.
 
     Args:
         job_id: The ID of the job to retrieve the metric for.
         request: The FastAPI request object.
 
     Returns:
-        A dictionary containing the Group Member Contribution metric.
+        A ResponseSchema containing the Group Member Contribution table.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
-    return (
+    contribution_data = (
         request.app.state.jobs[job_id]
         .result.get("organizational_diagnostics", {})
         .get("group_member_contribution", {})
     )
+
+    rows: List[List[str]] = []
+    for group, member_dict in contribution_data.items():
+        for member, activity_dict in member_dict.items():
+            for activity, count in activity_dict.items():
+                rows.append([group, member, activity, str(count)])
+
+    return {
+        "tables": [
+            {
+                "headers": ["Group", "Member", "Activity", "Count"],
+                "rows": rows,
+            }
+        ],
+        "graphs": [],
+    }

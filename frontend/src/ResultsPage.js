@@ -1,380 +1,4 @@
-
-// import React, { useState, useEffect } from 'react';
-// import {
-//   Box,
-//   Button,
-//   Card,
-//   CardContent,
-//   Typography,
-//   Divider,
-//   MenuItem,
-//   Select,
-//   InputLabel,
-//   FormControl,
-//   CircularProgress,
-//   TextField
-// } from '@mui/material';
-
-// import Graph from './Graph';
-// import Table from './Table';
-
-// import {
-//   COMPUTE_SKELETON,
-//   GET_EQUVALENCE,
-//   GET_ALWAYS_BEFORE,
-//   GET_ALWAYS_AFTER,
-//   GET_NEVER_TOGETHER,
-//   GET_DIRECTLY_FOLLOWS,
-//   GET_ACTIVITY_FREQUENCIES,
-//   GET_RESULT_TEMPORAL_PROFILE,
-//   TEMPORAL_PROFILE
-// } from './config';
-
-
-// // -------------------- Log Skeleton Options --------------------
-
-// const LOG_SKELETON_OPTIONS = [
-//   { label: "Get Equivalence", value: "get_equivalence", endpoint: GET_EQUVALENCE },
-//   { label: "Always Before", value: "get_always_before", endpoint: GET_ALWAYS_BEFORE },
-//   { label: "Always After", value: "get_always_after", endpoint: GET_ALWAYS_AFTER },
-//   { label: "Never Together", value: "get_never_together", endpoint: GET_NEVER_TOGETHER },
-//   { label: "Directly Follows", value: "get_directly_follows", endpoint: GET_DIRECTLY_FOLLOWS },
-//   { label: "Activity Frequencies", value: "get_activity_frequencies", endpoint: GET_ACTIVITY_FREQUENCIES }
-// ];
-
-
-// // -------------------- Resource Options --------------------
-
-// const resourceOptions = {
-//   sna: [
-//     "Handover of Work",
-//     "Subcontracting",
-//     "Working together",
-//     "Similar Activities"
-//   ],
-//   role_discovery: [
-//     "Role Discovery"
-//   ],
-//   resource_profiles: [
-//     "Distinct Activities",
-//     "Activity Frequency",
-//     "Activity Completions",
-//     "Case-Completions",
-//     "Fraction-Case Completions",
-//     "Average workload",
-//     "Multitasking",
-//     "Average Activity Duration",
-//     "Average case duration",
-//     "Interaction Two Resources",
-//     "Social Position"
-//   ],
-//   organizational_mining: [
-//     "Group Relative Focus",
-//     "Group Relative Stake",
-//     "Group Coverage",
-//     "Group Member Contributions"
-//   ]
-// };
-
-
-// // -------------------- Main Component --------------------
-
-// const ResultsPage = () => {
-//   const [view, setView] = useState('log_skeleton');
-
-//   // Shared
-//   const [graphData, setGraphData] = useState([]);
-//   const [tableData, setTableData] = useState([]);
-
-//   // Log Skeleton
-//   const [jobId, setJobId] = useState(null);
-//   const [selectedOption, setSelectedOption] = useState('');
-//   const [loading, setLoading] = useState(false);
-
-//   // Temporal Profile
-//   const [zeta, setZeta] = useState('');
-//   const [temporalJobId, setTemporalJobId] = useState(null);
-//   const [showResultLoading, setShowResultLoading] = useState(false);
-
-//   // Resource-based Conformance
-//   const [selectedResourceType, setSelectedResourceType] = useState('');
-//   const [selectedResourceOption, setSelectedResourceOption] = useState('');
-
-
-//   // -------------------- Log Skeleton: Fetch Job ID --------------------
-
-//   useEffect(() => {
-//     const computeJob = async () => {
-//       try {
-//         const res = await fetch(COMPUTE_SKELETON, { method: 'POST' });
-//         const data = await res.json();
-//         setJobId(data.job_id);
-//       } catch (err) {
-//         alert('Error starting log skeleton computation: ' + err.message);
-//       }
-//     };
-//     computeJob();
-//   }, []);
-
-
-//   // -------------------- Log Skeleton: Handle Option Selection --------------------
-
-//   const handleOptionSelect = async (option) => {
-//     setSelectedOption(option.value);
-//     setGraphData([]);
-//     setTableData([]);
-//     setLoading(true);
-
-//     try {
-//       const res = await fetch(`${option.endpoint}/${jobId}`);
-//       const result = await res.json();
-//       setGraphData(result.graphs || []);
-//       setTableData(result.tables || []);
-//     } catch (err) {
-//       alert('Failed to fetch result: ' + err.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-
-//   // -------------------- Temporal Profile: Submit Zeta --------------------
-
-//   const handleComputeTemporal = async () => {
-//     if (!zeta) {
-//       alert("Please enter a zeta value.");
-//       return;
-//     }
-
-//     try {
-//       const computeRes = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
-//         method: 'POST'
-//       });
-
-//       if (!computeRes.ok) {
-//         const errorText = await computeRes.text();
-//         throw new Error(`Error computing job: ${errorText}`);
-//       }
-
-//       const computeData = await computeRes.json();
-//       setTemporalJobId(computeData.job_id);
-//       alert("Zeta submitted successfully. You can now click 'Show Temporal Results' to view the result.");
-
-//     } catch (err) {
-//       alert("Error submitting zeta value: " + err.message);
-//       console.error(err);
-//     }
-//   };
-
-
-//   // -------------------- Temporal Profile: Fetch Results --------------------
-
-//   const handleFetchTemporalResults = async () => {
-//     if (!temporalJobId) {
-//       alert("Please submit zeta first.");
-//       return;
-//     }
-
-//     setGraphData([]);
-//     setTableData([]);
-//     setShowResultLoading(true);
-
-//     try {
-//       let attempts = 0;
-//       let resultData = null;
-
-//       while (attempts < 20) {
-//         const resultRes = await fetch(`${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`);
-//         if (resultRes.ok) {
-//           resultData = await resultRes.json();
-//           break;
-//         } else {
-//           await new Promise(res => setTimeout(res, 500));
-//           attempts++;
-//         }
-//       }
-
-//       if (!resultData) {
-//         throw new Error("Timeout: backend did not return results in time.");
-//       }
-
-//       setGraphData(resultData.graphs || []);
-//       setTableData(resultData.tables || []);
-
-//     } catch (err) {
-//       alert("Error fetching temporal profile result: " + err.message);
-//       console.error("Detailed error:", err);
-//     } finally {
-//       setShowResultLoading(false);
-//     }
-//   };
-
-
-//   // -------------------- Render Graphs & Tables --------------------
-
-//   const renderGraphAndTable = () => {
-//     const hasGraphs = Array.isArray(graphData) && graphData.length > 0;
-//     const hasTables = Array.isArray(tableData) && tableData.length > 0;
-
-//     return (
-//       <>
-//         {hasGraphs && graphData.map((graph, idx) => (
-//           <Box key={idx} sx={{ mt: 4 }}>
-//             <Typography variant="h6">Graph {idx + 1}</Typography>
-//             <Graph graphData={graph} />
-//           </Box>
-//         ))}
-
-//         {hasTables && tableData.map((table, idx) => (
-//           <Box key={idx} sx={{ mt: 4 }}>
-//             <Typography variant="h6">Table {idx + 1}</Typography>
-//             <Table headers={table.headers} rows={table.rows} />
-//           </Box>
-//         ))}
-
-//         {!hasGraphs && !hasTables && (
-//           <Typography color="text.secondary" sx={{ mt: 2 }}>
-//             No data to display.
-//           </Typography>
-//         )}
-//       </>
-//     );
-//   };
-
-
-//   // -------------------- UI --------------------
-
-//   return (
-//     <Card sx={{ mx: 'auto', mt: 4, maxWidth: 1000, boxShadow: 3 }}>
-//       <CardContent>
-//         <Typography variant="h5" gutterBottom>
-//           Conformance Insights
-//         </Typography>
-
-//         {/* View Selector */}
-//         <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
-//           <Button variant={view === 'log_skeleton' ? 'contained' : 'outlined'} onClick={() => setView('log_skeleton')}>
-//             Log Skeleton
-//           </Button>
-//           <Button variant={view === 'temporal' ? 'contained' : 'outlined'} onClick={() => setView('temporal')}>
-//             Temporal
-//           </Button>
-//           <Button variant={view === 'declarative' ? 'contained' : 'outlined'} onClick={() => setView('declarative')}>
-//             Declarative
-//           </Button>
-//           <Button variant={view === 'resource' ? 'contained' : 'outlined'} onClick={() => setView('resource')}>
-//             Resource
-//           </Button>
-//         </Box>
-
-//         <Divider />
-
-//         <Box sx={{ mt: 3 }}>
-//           {/* -------- Log Skeleton Section -------- */}
-//           {view === 'log_skeleton' && (
-//             <>
-//               <FormControl fullWidth sx={{ mb: 2 }}>
-//                 <InputLabel>Select Log Skeleton Operation</InputLabel>
-//                 <Select
-//                   value={selectedOption}
-//                   label="Select Log Skeleton Operation"
-//                   onChange={(e) =>
-//                     handleOptionSelect(
-//                       LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
-//                     )
-//                   }
-//                   disabled={!jobId}
-//                 >
-//                   {LOG_SKELETON_OPTIONS.map((opt) => (
-//                     <MenuItem key={opt.value} value={opt.value}>
-//                       {opt.label}
-//                     </MenuItem>
-//                   ))}
-//                 </Select>
-//               </FormControl>
-
-//               {loading ? (
-//                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-//                   <CircularProgress />
-//                 </Box>
-//               ) : (
-//                 renderGraphAndTable()
-//               )}
-//             </>
-//           )}
-
-//           {/* -------- Temporal Profile Section -------- */}
-//           {view === 'temporal' && (
-//             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-//               <TextField
-//                 label="Zeta Value"
-//                 variant="outlined"
-//                 type="number"
-//                 value={zeta}
-//                 onChange={(e) => setZeta(e.target.value)}
-//                 fullWidth
-//               />
-//               <Button variant="contained" onClick={handleComputeTemporal}>Submit Zeta</Button>
-//               <Button variant="outlined" onClick={handleFetchTemporalResults}>Show Temporal Results</Button>
-
-//               {showResultLoading ? (
-//                 <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-//                   <CircularProgress />
-//                 </Box>
-//               ) : (
-//                 renderGraphAndTable()
-//               )}
-//             </Box>
-//           )}
-
-//           {/* -------- Resource-Based Section -------- */}
-//           {view === 'resource' && (
-//             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-//               {/* Primary Dropdown */}
-//               <FormControl fullWidth>
-//                 <InputLabel>Resource Perspective</InputLabel>
-//                 <Select
-//                   value={selectedResourceType}
-//                   label="Resource Perspective"
-//                   onChange={(e) => {
-//                     setSelectedResourceType(e.target.value);
-//                     setSelectedResourceOption('');
-//                   }}
-//                 >
-//                   <MenuItem value="sna">Social Network Analysis</MenuItem>
-//                   <MenuItem value="role_discovery">Role Discovery</MenuItem>
-//                   <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
-//                   <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
-//                 </Select>
-//               </FormControl>
-
-//               {/* Secondary Dropdown */}
-//               {selectedResourceType && (
-//                 <FormControl fullWidth>
-//                   <InputLabel>Resource Insight</InputLabel>
-//                   <Select
-//                     value={selectedResourceOption}
-//                     label="Resource Insight"
-//                     onChange={(e) => setSelectedResourceOption(e.target.value)}
-//                   >
-//                     {resourceOptions[selectedResourceType].map((opt) => (
-//                       <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-//                     ))}
-//                   </Select>
-//                 </FormControl>
-//               )}
-//             </Box>
-//           )}
-//         </Box>
-//       </CardContent>
-//     </Card>
-//   );
-// };
-
-// export default ResultsPage;
-
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -387,41 +11,180 @@ import {
   InputLabel,
   FormControl,
   CircularProgress,
-  TextField
-} from '@mui/material';
+  TextField,
+} from "@mui/material";
 
-import Graph from './Graph';
-import Table from './Table';
+import Graph from "./Graph";
+import Table from "./Table";
 
 import {
+  GET_GENERAL_INSIGHTS,
   COMPUTE_SKELETON,
-  GET_EQUVALENCE,
+  GET_EQUIVALENCE,
+  GET_EQUIVALENCE_PQL,
   GET_ALWAYS_BEFORE,
+  GET_ALWAYS_BEFORE_PQL,
   GET_ALWAYS_AFTER,
+  GET_ALWAYS_AFTER_PQL,
   GET_NEVER_TOGETHER,
+  GET_NEVER_TOGETHER_PQL,
   GET_DIRECTLY_FOLLOWS,
   GET_ACTIVITY_FREQUENCIES,
+  GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
   GET_RESULT_TEMPORAL_PROFILE,
   TEMPORAL_PROFILE,
+  COMPUTE_DECLARATIVE_CONSTRAINTS,
+  GET_EXISTANCE_VIOLATIONS,
+  GET_ABSENCE_VIOLATIONS,
+  GET_EXACTLY_ONE_VIOLATIONS,
+  GET_INIT_VIOLATIONS,
+  GET_RESPONDED_EXISTENCE_VIOLATIONS,
+  GET_COEXISTENCE_VIOLATIONS,
+  GET_RESPONSE_VIOLATIONS,
+  GET_PRECEDENCE_VIOLATIONS,
+  GET_SUCCESSION_VIOLATIONS,
+  GET_ALTPRECEDENCE_VIOLATIONS,
+  GET_ALTSUCCESION_VIOLATIONS,
+  GET_CHAINRESPONSE_VIOLATIONS,
+  GET_CHAINPRECEDENCE_VIOLATIONS,
+  GET_CHAINSUCCESION_VIOLATIONS,
+  GET_NONCOEXISTENCE_VIOLATIONS,
+  GET_NONSUCCESION_VIOLATIONS,
+  GET_NONCHAINSUCCESION_VIOLATIONS,
   RESOURCE_BASED,
   HANDOVER_OF_WORK,
   SUBCONTRACTING,
   WORKING_TOGETHER,
-  SIMILAR_ACTIVITIES
-} from './config';
-
+  SIMILAR_ACTIVITIES,
+  GROUP_RELATIVE_FOCUS,
+  GROUP_RELATIVE_STATE,
+  GROUP_COVERAGE,
+  GROUP_MEMBER_CONTRIBUTION,
+  ROLE_DISCOVERY,
+  DISTINCT_ACTIVITIES,
+  DISTINCT_ACTIVITIES_PQL,
+  ACTIVITY_FREQUENCY,
+  ACTIVITY_FREQUENCY_PQL,
+  ACTIVITY_COMPLETIONS,
+  ACTIVITY_COMPLETIONS_PQL,
+  CASE_COMPLETIONS,
+  CASE_COMPLETIONS_PQL,
+  FRACTION_CASE_COMPLETIONS,
+  FRACTION_CASE_COMPLETIONS_PQL,
+  AVERAGE_WORKLOAD,
+  AVERAGE_WORKLOAD_PQL,
+  MULTITASKING,
+  AVERAGE_ACTIVITY_DURATION,
+  AVERAGE_CASE_DURATION,
+  INTERACTION_TWO_RESOURCES,
+  INTERACTION_TWO_RESOURCES_PQL,
+  SOCIAL_POSITION,
+} from "./config";
 
 // -------------------- Log Skeleton Options --------------------
 
 const LOG_SKELETON_OPTIONS = [
-  { label: "Get Equivalence", value: "get_equivalence", endpoint: GET_EQUVALENCE },
-  { label: "Always Before", value: "get_always_before", endpoint: GET_ALWAYS_BEFORE },
-  { label: "Always After", value: "get_always_after", endpoint: GET_ALWAYS_AFTER },
-  { label: "Never Together", value: "get_never_together", endpoint: GET_NEVER_TOGETHER },
-  { label: "Directly Follows", value: "get_directly_follows", endpoint: GET_DIRECTLY_FOLLOWS },
-  { label: "Activity Frequencies", value: "get_activity_frequencies", endpoint: GET_ACTIVITY_FREQUENCIES }
+  {
+    label: "Get Equivalence",
+    value: "get_equivalence",
+    endpoint: GET_EQUIVALENCE,
+  },
+  {
+    label: "Get Equivalence (PQL)",
+    value: "get_equivalence_pql",
+    endpoint: GET_EQUIVALENCE_PQL,
+  },
+  {
+    label: "Always Before",
+    value: "get_always_before",
+    endpoint: GET_ALWAYS_BEFORE,
+  },
+  {
+    label: "Always Before (PQL)",
+    value: "get_always_before_pql",
+    endpoint: GET_ALWAYS_BEFORE_PQL,
+  },
+  {
+    label: "Always After",
+    value: "get_always_after",
+    endpoint: GET_ALWAYS_AFTER,
+  },
+  {
+    label: "Always After (PQL)",
+    value: "get_always_after_pql",
+    endpoint: GET_ALWAYS_AFTER_PQL,
+  },
+  {
+    label: "Never Together",
+    value: "get_never_together",
+    endpoint: GET_NEVER_TOGETHER,
+  },
+  {
+    label: "Never Together (PQL)",
+    value: "get_never_together_pql",
+    endpoint: GET_NEVER_TOGETHER_PQL,
+  },
+  {
+    label: "Directly Follows",
+    value: "get_directly_follows",
+    endpoint: GET_DIRECTLY_FOLLOWS,
+  },
+  {
+    label: "Activity Frequencies",
+    value: "get_activity_frequencies",
+    endpoint: GET_ACTIVITY_FREQUENCIES,
+  },
+  {
+    label: "Directly Follows and Count (PQL)",
+    value: "get_directly_follows_and_count",
+    endpoint: GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
+  },
 ];
 
+// --------------------Declarative Constraints Options --------------------
+const DECLARATIVE_OPTIONS = [
+  { label: "Existence", endpoint: GET_EXISTANCE_VIOLATIONS },
+  { label: "Never", endpoint: GET_ABSENCE_VIOLATIONS },
+  { label: "Exactly Once", endpoint: GET_EXACTLY_ONE_VIOLATIONS },
+  { label: "Initially", endpoint: GET_INIT_VIOLATIONS },
+  {
+    label: "Responded Existence",
+    endpoint: GET_RESPONDED_EXISTENCE_VIOLATIONS,
+  },
+  { label: "Co-Existence", endpoint: GET_COEXISTENCE_VIOLATIONS },
+  { label: "Always After", endpoint: GET_RESPONSE_VIOLATIONS },
+  { label: "Always Before", endpoint: GET_PRECEDENCE_VIOLATIONS },
+  { label: "Succession", endpoint: GET_SUCCESSION_VIOLATIONS },
+  {
+    label: "Alternate Precedence",
+    endpoint: GET_ALTPRECEDENCE_VIOLATIONS,
+  },
+  {
+    label: "Alternate Succession",
+    endpoint: GET_ALTSUCCESION_VIOLATIONS,
+  },
+  {
+    label: "Immediately After",
+    endpoint: GET_CHAINRESPONSE_VIOLATIONS,
+  },
+  {
+    label: "Immediately Before",
+    endpoint: GET_CHAINPRECEDENCE_VIOLATIONS,
+  },
+  {
+    label: "Chain Succession",
+    endpoint: GET_CHAINSUCCESION_VIOLATIONS,
+  },
+  {
+    label: "Non Co-Existence",
+    endpoint: GET_NONCOEXISTENCE_VIOLATIONS,
+  },
+  { label: "Non Succession", endpoint: GET_NONSUCCESION_VIOLATIONS },
+  {
+    label: "Non Chain Succession",
+    endpoint: GET_NONCHAINSUCCESION_VIOLATIONS,
+  },
+];
 
 // -------------------- Resource Options --------------------
 
@@ -430,113 +193,196 @@ const resourceOptions = {
     "Handover of Work",
     "Subcontracting",
     "Working together",
-    "Similar Activities"
+    "Similar Activities",
   ],
-  role_discovery: [
-    "Role Discovery"
-  ],
+  role_discovery: ["Role Discovery"],
   resource_profiles: [
     "Distinct Activities",
+    "Distinct Activities (using PQL)",
     "Activity Frequency",
+    "Activity Frequency (using PQL)",
     "Activity Completions",
+    "Activity Completions (using PQL)",
     "Case-Completions",
+    "Case-Completions (using PQL)",
     "Fraction-Case Completions",
+    "Fraction-Case Completions (using PQL)",
     "Average workload",
+    "Average workload (using PQL)",
     "Multitasking",
     "Average Activity Duration",
     "Average case duration",
     "Interaction Two Resources",
-    "Social Position"
+    "Interaction Two Resources (using PQL)",
+    "Social Position",
   ],
   organizational_mining: [
     "Group Relative Focus",
     "Group Relative Stake",
     "Group Coverage",
-    "Group Member Contributions"
-  ]
+    "Group Member Contributions",
+  ],
 };
-
 
 // -------------------- Main Component --------------------
 
 const ResultsPage = () => {
-  const [view, setView] = useState('log_skeleton');
+  const [view, setView] = useState("general"); // Default view
 
-  // Shared
+  //general insights
+  const [generalInsightsTables, setGeneralInsightsTables] = useState([]);
+  const [generalLoading, setGeneralLoading] = useState(false);
+
+  // Shared Output Space
   const [graphData, setGraphData] = useState([]);
   const [tableData, setTableData] = useState([]);
 
   // Log Skeleton
   const [jobId, setJobId] = useState(null);
-  const [selectedOption, setSelectedOption] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [jobLoading, setJobLoading] = useState(false);
 
   // Temporal Profile
-  const [zeta, setZeta] = useState('');
+  const [zeta, setZeta] = useState("");
   const [temporalJobId, setTemporalJobId] = useState(null);
   const [showResultLoading, setShowResultLoading] = useState(false);
 
-  // Resource-based Conformance
-  const [selectedResourceType, setSelectedResourceType] = useState('');
-  const [selectedResourceOption, setSelectedResourceOption] = useState('');
+  // Declarative Constraints
+  const [minSupport, setMinSupport] = useState("");
+  const [minConfidence, setMinConfidence] = useState("");
+  const [declJobId, setDeclJobId] = useState(null);
+  const [selectedDeclOption, setSelectedDeclOption] = useState("");
+  const [declLoading, setDeclLoading] = useState(false);
+
+  // Resource-based
   const [resourceJobId, setResourceJobId] = useState(null);
+  const [selectedResourceType, setSelectedResourceType] = useState("");
+  const [selectedResourceOption, setSelectedResourceOption] = useState("");
+  const [resourceLoading, setResourceLoading] = useState(false);
+  const [floatResult, setFloatResult] = useState(null);
 
+  // Inputs for Resource Profiles
+  const [resourceInputs, setResourceInputs] = useState({
+    resource1: "",
+    resource2: "",
+    activity: "",
+    start_time: "",
+    end_time: "",
+  });
 
-  // -------------------- Log Skeleton: Fetch Job ID --------------------
-
+  // -------------------- General Insights: Fetch Data --------------------
   useEffect(() => {
-    const computeJob = async () => {
+    const fetchGeneralInsights = async () => {
+      setGeneralLoading(true);
       try {
-        const res = await fetch(COMPUTE_SKELETON, { method: 'POST' });
+        const res = await fetch(GET_GENERAL_INSIGHTS);
         const data = await res.json();
-        setJobId(data.job_id);
+        setGeneralInsightsTables(data.tables || []);
       } catch (err) {
-        alert('Error starting log skeleton computation: ' + err.message);
+        alert("Failed to fetch general insights: " + err.message);
+      } finally {
+        setGeneralLoading(false);
       }
     };
-    computeJob();
-  }, []);
 
+    if (view === "general") {
+      fetchGeneralInsights();
+    }
+  }, [view]);
 
-  // -------------------- Resource-Based: Fetch Job ID --------------------
+  // -------------------- Log Skeleton: Fetch Job ID on startup--------------------
 
   useEffect(() => {
-    if (view === 'resource') {
-      const computeResourceJob = async () => {
+    if (view === "log_skeleton") {
+      const computeJob = async () => {
         try {
-          const res = await fetch(RESOURCE_BASED, { method: 'POST' });
+          const res = await fetch(COMPUTE_SKELETON, { method: "POST" });
+          const data = await res.json();
+          setJobId(data.job_id);
+        } catch (err) {
+          alert("Error starting log skeleton computation: " + err.message);
+        }
+      };
+      computeJob();
+    }
+  }, [view]);
+
+  // -------------------- Resource-Based: Fetch Job ID on start up--------------------
+
+  useEffect(() => {
+    if (view === "resource") {
+      const computeJob = async () => {
+        try {
+          const res = await fetch(RESOURCE_BASED, { method: "POST" });
           const data = await res.json();
           setResourceJobId(data.job_id);
         } catch (err) {
           alert("Error starting resource-based computation: " + err.message);
         }
       };
-      computeResourceJob();
+      computeJob();
     }
   }, [view]);
 
+  // -------------------- Clear old outputs when view changes for all insights --------------------
+  useEffect(() => {
+    setGraphData([]);
+    setTableData([]);
+    setFloatResult(null);
+    setSelectedOption("");
+    setSelectedResourceOption("");
+    setZeta("");
+    setSelectedDeclOption("");
+    setResourceInputs({
+      resource1: "",
+      resource2: "",
+      activity: "",
+      start_time: "",
+      end_time: "",
+    });
+  }, [view]);
 
-  // -------------------- Log Skeleton: Handle Option Selection --------------------
+  // ------------------------------------ Log Skeleton---------------------------------------------------
+  // -------------------- Log Skeleton: Handle Option Selection after we have job id --------------------
 
   const handleOptionSelect = async (option) => {
     setSelectedOption(option.value);
     setGraphData([]);
     setTableData([]);
-    setLoading(true);
+    setJobLoading(true);
+
+    // Check if it's a PQL option
+    const isPQL = option.label.endsWith("(PQL)");
+    const endpoint = option.endpoint;
 
     try {
-      const res = await fetch(`${option.endpoint}/${jobId}`);
-      const result = await res.json();
-      setGraphData(result.graphs || []);
-      setTableData(result.tables || []);
+      let attempts = 0;
+      let resultData = null;
+
+      while (attempts < 20) {
+        const res = await fetch(isPQL ? endpoint : `${endpoint}/${jobId}`);
+        if (res.ok) {
+          resultData = await res.json();
+          break;
+        }
+        await new Promise((res) => setTimeout(res, 500));
+        attempts++;
+      }
+
+      if (!resultData) {
+        throw new Error("Timeout: backend did not return results in time.");
+      }
+
+      setGraphData(resultData.graphs || []);
+      setTableData(resultData.tables || []);
     } catch (err) {
-      alert('Failed to fetch result: ' + err.message);
+      alert("Failed to fetch result: " + err.message);
     } finally {
-      setLoading(false);
+      setJobLoading(false);
     }
   };
 
-
+  // --------------------------- TEMPORAL PROFILE---------------------------
   // -------------------- Temporal Profile: Submit Zeta --------------------
 
   const handleComputeTemporal = async () => {
@@ -546,31 +392,22 @@ const ResultsPage = () => {
     }
 
     try {
-      const computeRes = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
-        method: 'POST'
+      const res = await fetch(`${TEMPORAL_PROFILE}?zeta=${parseFloat(zeta)}`, {
+        method: "POST",
       });
-
-      if (!computeRes.ok) {
-        const errorText = await computeRes.text();
-        throw new Error(`Error computing job: ${errorText}`);
-      }
-
-      const computeData = await computeRes.json();
-      setTemporalJobId(computeData.job_id);
-      alert("Zeta submitted successfully. You can now click 'Show Temporal Results' to view the result.");
-
+      const data = await res.json();
+      setTemporalJobId(data.job_id);
+      alert("Zeta submitted successfully. Now click 'Show Temporal Results'.");
     } catch (err) {
-      alert("Error submitting zeta value: " + err.message);
-      console.error(err);
+      alert("Error computing temporal result: " + err.message);
     }
   };
-
 
   // -------------------- Temporal Profile: Fetch Results --------------------
 
   const handleFetchTemporalResults = async () => {
     if (!temporalJobId) {
-      alert("Please submit zeta first.");
+      alert("Please submit Zeta first.");
       return;
     }
 
@@ -578,19 +415,79 @@ const ResultsPage = () => {
     setTableData([]);
     setShowResultLoading(true);
 
+    //polling mechanism implementation
     try {
       let attempts = 0;
       let resultData = null;
-
       while (attempts < 20) {
-        const resultRes = await fetch(`${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`);
-        if (resultRes.ok) {
-          resultData = await resultRes.json();
+        const res = await fetch(
+          `${GET_RESULT_TEMPORAL_PROFILE}/${temporalJobId}`
+        );
+        if (res.ok) {
+          resultData = await res.json();
           break;
-        } else {
-          await new Promise(res => setTimeout(res, 500));
-          attempts++;
         }
+        await new Promise((res) => setTimeout(res, 500));
+        attempts++;
+      }
+      if (!resultData) {
+        throw new Error("Timeout: backend did not return results in time.");
+      }
+      setGraphData(resultData.graphs || []);
+      setTableData(resultData.tables || []);
+    } catch (err) {
+      alert("Error fetching result: " + err.message);
+    } finally {
+      setShowResultLoading(false);
+    }
+  };
+
+  // --------------------------- DECLARATIVE CONSTRAINTS ---------------------------
+  // -------------------- Declarative Constraints: Submit Inputs --------------------
+
+  const handleComputeDeclarative = async () => {
+    if (!minSupport || !minConfidence) {
+      alert("Please enter both minimum support and minimum confidence.");
+      return;
+    }
+
+    try {
+      const url = `${COMPUTE_DECLARATIVE_CONSTRAINTS}?min_support=${parseFloat(
+        minSupport
+      )}&min_confidence=${parseFloat(minConfidence)}`;
+      const res = await fetch(url, { method: "GET" });
+      const data = await res.json();
+      setDeclJobId(data.job_id);
+      alert(
+        "Constraints computation started. Now select a Declarative Insight."
+      );
+    } catch (err) {
+      alert("Error computing declarative constraints: " + err.message);
+    }
+  };
+
+  const handleDeclarativeOptionSelect = async (option) => {
+    if (!declJobId) {
+      alert("Please compute constraints first.");
+      return;
+    }
+
+    setSelectedDeclOption(option.label);
+    setGraphData([]);
+    setTableData([]);
+    setDeclLoading(true);
+
+    try {
+      let attempts = 0;
+      let resultData = null;
+      while (attempts < 20) {
+        const res = await fetch(`${option.endpoint}/${declJobId}`);
+        if (res.ok) {
+          resultData = await res.json();
+          break;
+        }
+        await new Promise((res) => setTimeout(res, 500));
+        attempts++;
       }
 
       if (!resultData) {
@@ -599,220 +496,506 @@ const ResultsPage = () => {
 
       setGraphData(resultData.graphs || []);
       setTableData(resultData.tables || []);
-
     } catch (err) {
-      alert("Error fetching temporal profile result: " + err.message);
-      console.error("Detailed error:", err);
+      alert("Failed to fetch declarative constraint result: " + err.message);
     } finally {
-      setShowResultLoading(false);
+      setDeclLoading(false);
     }
   };
 
+  // ----------------------------------- RESOURCE BASED ---------------------------------------------
+  // -------------------- Resource-Based: Handle SNA, Org Mining, Role Discovery --------------------
 
-  // -------------------- Resource-Based: Handle SNA Option Selection --------------------
-
-  const handleSNAOptionSelect = async (selected) => {
+  const handleSNAOrOrgOption = async (selected) => {
     const endpointMap = {
-     "Handover of Work": HANDOVER_OF_WORK,
-      "Subcontracting": SUBCONTRACTING,
-     "Working together": WORKING_TOGETHER,
-      "Similar Activities": SIMILAR_ACTIVITIES
+      "Handover of Work": HANDOVER_OF_WORK,
+      Subcontracting: SUBCONTRACTING,
+      "Working together": WORKING_TOGETHER,
+      "Similar Activities": SIMILAR_ACTIVITIES,
+      "Role Discovery": ROLE_DISCOVERY,
+      "Group Relative Focus": GROUP_RELATIVE_FOCUS,
+      "Group Relative Stake": GROUP_RELATIVE_STATE,
+      "Group Coverage": GROUP_COVERAGE,
+      "Group Member Contributions": GROUP_MEMBER_CONTRIBUTION,
     };
 
-  const endpoint = endpointMap[selected];
-  if (!endpoint || !resourceJobId) return;
+    const endpoint = endpointMap[selected];
+    if (!endpoint || !resourceJobId) return;
 
-  setGraphData([]);
-  setTableData([]);
-  setLoading(true);
+    setGraphData([]);
+    setTableData([]);
+    setResourceLoading(true);
 
-  try {
-      const res = await fetch(`${endpoint}/${resourceJobId}`);
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText);
+    //polling mechanism implementation
+    try {
+      let attempts = 0;
+      let resultData = null;
+      while (attempts < 20) {
+        const res = await fetch(`${endpoint}/${resourceJobId}`);
+        if (res.ok) {
+          resultData = await res.json();
+          break;
+        }
+        await new Promise((res) => setTimeout(res, 500));
+        attempts++;
       }
-
-      const result = await res.json();
-      setGraphData(result.graphs || []);
-      setTableData(result.tables || []);
+      if (!resultData) {
+        throw new Error("Timeout: backend did not return results in time.");
+      }
+      setGraphData(resultData.graphs || []);
+      setTableData(resultData.tables || []);
     } catch (err) {
       alert("Error fetching resource-based result: " + err.message);
-      console.error(err);
     } finally {
-      setLoading(false);
-   }
+      setResourceLoading(false);
+    }
   };
 
-  // -------------------- Render Graphs & Tables --------------------
+  // -------------------- Resource Based: Handle Input and Submit for Resource Profiles --------------------
 
-  const renderGraphAndTable = () => {
-    const hasGraphs = Array.isArray(graphData) && graphData.length > 0;
-    const hasTables = Array.isArray(tableData) && tableData.length > 0;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setResourceInputs((prev) => ({ ...prev, [name]: value }));
+  };
 
-    return (
-      <>
-        {hasGraphs && graphData.map((graph, idx) => (
-          <Box key={idx} sx={{ mt: 4 }}>
-            <Typography variant="h6">Graph {idx + 1}</Typography>
-            <Graph graphData={graph} />
-          </Box>
-        ))}
+  const submitResourceProfiles = () => {
+    alert("Inputs submitted. Now select a resource insight.");
+  };
 
-        {hasTables && tableData.map((table, idx) => (
-          <Box key={idx} sx={{ mt: 4 }}>
-            <Typography variant="h6">Table {idx + 1}</Typography>
-            <Table headers={table.headers} rows={table.rows} />
-          </Box>
-        ))}
+  const handleResourceProfileFetch = async (option) => {
+    const queryParams = new URLSearchParams();
+    const { resource1, resource2, activity, start_time, end_time } =
+      resourceInputs;
 
-        {!hasGraphs && !hasTables && (
-          <Typography color="text.secondary" sx={{ mt: 2 }}>
-            No data to display.
+    switch (option) {
+      case "Distinct Activities":
+      case "Distinct Activities (using PQL)":
+      case "Activity Completions":
+      case "Activity Completions (using PQL)":
+      case "Case-Completions":
+      case "Case-Completions (using PQL)":
+      case "Fraction-Case Completions":
+      case "Fraction-Case Completions (using PQL)":
+      case "Average workload":
+      case "Average workload (using PQL)":
+      case "Multitasking":
+      case "Average case duration":
+      case "Social Position":
+        queryParams.append("resource", resource1);
+        queryParams.append("start_time", start_time);
+        queryParams.append("end_time", end_time);
+        break;
+
+      case "Activity Frequency":
+      case "Average Activity Duration":
+        queryParams.append("resource", resource1);
+        queryParams.append("activity", activity);
+        queryParams.append("start_time", start_time);
+        queryParams.append("end_time", end_time);
+        break;
+
+      case "Interaction Two Resources":
+      case "Interaction Two Resources (using PQL)":
+        queryParams.append("resource1", resource1);
+        queryParams.append("resource2", resource2);
+        queryParams.append("start_time", start_time);
+        queryParams.append("end_time", end_time);
+        break;
+
+      default:
+        return;
+    }
+
+    const endpointMap = {
+      "Distinct Activities": DISTINCT_ACTIVITIES,
+      "Distinct Activities (using PQL)": DISTINCT_ACTIVITIES_PQL,
+      "Activity Frequency": ACTIVITY_FREQUENCY,
+      "Activity Frequency (using PQL)": ACTIVITY_FREQUENCY_PQL,
+      "Activity Completions": ACTIVITY_COMPLETIONS,
+      "Activity Completions (using PQL)": ACTIVITY_COMPLETIONS_PQL,
+      "Case-Completions": CASE_COMPLETIONS,
+      "Case-Completions (using PQL)": CASE_COMPLETIONS_PQL,
+      "Fraction-Case Completions": FRACTION_CASE_COMPLETIONS,
+      "Fraction-Case Completions (using PQL)": FRACTION_CASE_COMPLETIONS_PQL,
+      "Average workload": AVERAGE_WORKLOAD,
+      "Average workload (using PQL)": AVERAGE_WORKLOAD_PQL,
+      Multitasking: MULTITASKING,
+      "Average Activity Duration": AVERAGE_ACTIVITY_DURATION,
+      "Average case duration": AVERAGE_CASE_DURATION,
+      "Interaction Two Resources": INTERACTION_TWO_RESOURCES,
+      "Interaction Two Resources (using PQL)": INTERACTION_TWO_RESOURCES_PQL,
+      "Social Position": SOCIAL_POSITION,
+    };
+
+    const url = `${endpointMap[option]}?${queryParams.toString()}`;
+    setResourceLoading(true);
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      const floatVal = parseFloat(text);
+
+      if (!isNaN(floatVal)) {
+        setFloatResult(`Output: ${floatVal}`);
+      } else {
+        alert("Unexpected response format: Not a number.");
+        setFloatResult(null);
+      }
+    } catch (err) {
+      alert("Error fetching float metric: " + err.message);
+      setFloatResult(null);
+    } finally {
+      setResourceLoading(false);
+    }
+  };
+
+  // -------------------- Render Graphs & Tables (Common for all Insights)--------------------
+
+  const renderGraphAndTable = () => (
+    <>
+      {graphData.map((graph, idx) => (
+        <Box key={idx} sx={{ mt: 4 }}>
+          <Typography variant="h6">Graph {idx + 1}</Typography>
+          <Graph graphData={graph} />
+        </Box>
+      ))}
+      {tableData.map((table, idx) => (
+        <Box key={idx} sx={{ mt: 4 }}>
+          <Typography variant="h6">Table {idx + 1}</Typography>
+          <Table headers={table.headers} rows={table.rows} />
+        </Box>
+      ))}
+      {floatResult !== null && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Result</Typography>
+          <Typography variant="body1">
+            {selectedResourceOption
+              ? `${selectedResourceOption}: ${floatResult.replace(
+                  "Output: ",
+                  ""
+                )}`
+              : floatResult}
           </Typography>
-        )}
-      </>
-    );
-  };
+        </Box>
+      )}
+      {!graphData.length && !tableData.length && floatResult === null && (
+        <Typography color="text.secondary" sx={{ mt: 2 }}>
+          No data to display.
+        </Typography>
+      )}
+    </>
+  );
 
-
-  // -------------------- UI --------------------
+  // ------------------------- UI Properties------------------------------------
 
   return (
-    <Card sx={{ mx: 'auto', mt: 4, maxWidth: 1000, boxShadow: 3 }}>
+    <Card sx={{ mx: "auto", mt: 4, maxWidth: 1000, boxShadow: 3 }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
-          Conformance Insights
+          Results Page
         </Typography>
 
-        {/* View Selector */}
-        <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
-          <Button variant={view === 'log_skeleton' ? 'contained' : 'outlined'} onClick={() => setView('log_skeleton')}>
+        {/* -------- View Selector -------- */}
+        <Box sx={{ display: "flex", gap: 2, my: 2 }}>
+          <Button
+            variant={view === "general" ? "contained" : "outlined"}
+            onClick={() => setView("general")}
+          >
+            General Insights
+          </Button>
+          <Button
+            variant={view === "log_skeleton" ? "contained" : "outlined"}
+            onClick={() => setView("log_skeleton")}
+          >
             Log Skeleton
           </Button>
-          <Button variant={view === 'temporal' ? 'contained' : 'outlined'} onClick={() => setView('temporal')}>
+          <Button
+            variant={view === "temporal" ? "contained" : "outlined"}
+            onClick={() => setView("temporal")}
+          >
             Temporal
           </Button>
-          <Button variant={view === 'declarative' ? 'contained' : 'outlined'} onClick={() => setView('declarative')}>
+          <Button
+            variant={view === "declarative" ? "contained" : "outlined"}
+            onClick={() => setView("declarative")}
+          >
             Declarative
           </Button>
-          <Button variant={view === 'resource' ? 'contained' : 'outlined'} onClick={() => setView('resource')}>
+          <Button
+            variant={view === "resource" ? "contained" : "outlined"}
+            onClick={() => setView("resource")}
+          >
             Resource
           </Button>
         </Box>
 
         <Divider />
 
-        <Box sx={{ mt: 3 }}>
-          {/* -------- Log Skeleton Section -------- */}
-          {view === 'log_skeleton' && (
-            <>
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <InputLabel>Select Log Skeleton Operation</InputLabel>
+        {/* -------- General Insights Section -------- */}
+        {view === "general" && (
+          <>
+            {generalLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <>
+                {generalInsightsTables.map((table, idx) => (
+                  <Box key={idx} sx={{ mt: 4 }}>
+                    <Typography variant="h6">Table {idx + 1}</Typography>
+                    <Table headers={table.headers} rows={table.rows} />
+                  </Box>
+                ))}
+                {!generalInsightsTables.length && (
+                  <Typography color="text.secondary" sx={{ mt: 2 }}>
+                    No general insights available.
+                  </Typography>
+                )}
+              </>
+            )}
+          </>
+        )}
+        {/* -------- Log Skeleton Section -------- */}
+        {view === "log_skeleton" && (
+          <>
+            <FormControl fullWidth sx={{ mb: 2 }}>
+              <InputLabel>Select Log Skeleton Operation</InputLabel>
+              <Select
+                value={selectedOption}
+                label="Select Log Skeleton Operation"
+                onChange={(e) =>
+                  handleOptionSelect(
+                    LOG_SKELETON_OPTIONS.find(
+                      (opt) => opt.value === e.target.value
+                    )
+                  )
+                }
+                disabled={!jobId}
+              >
+                {LOG_SKELETON_OPTIONS.map((opt) => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {jobLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              renderGraphAndTable()
+            )}
+          </>
+        )}
+
+        {/* -------- Temporal Profile Section -------- */}
+        {view === "temporal" && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Zeta Value"
+              variant="outlined"
+              type="number"
+              value={zeta}
+              onChange={(e) => setZeta(e.target.value)}
+              fullWidth
+            />
+            <Button variant="contained" onClick={handleComputeTemporal}>
+              Submit Zeta
+            </Button>
+            <Button variant="outlined" onClick={handleFetchTemporalResults}>
+              Show Temporal Results
+            </Button>
+
+            {showResultLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              renderGraphAndTable()
+            )}
+          </Box>
+        )}
+
+        {/* -------- Declarative Constraints Section -------- */}
+        {view === "declarative" && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <TextField
+              label="Minimum Support Ratio (Set to 0.3 for best results)"
+              variant="outlined"
+              type="number"
+              value={minSupport}
+              onChange={(e) => setMinSupport(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Minimum Confidence Ratio (Set to 0.7 for best results)"
+              variant="outlined"
+              type="number"
+              value={minConfidence}
+              onChange={(e) => setMinConfidence(e.target.value)}
+              fullWidth
+            />
+            <Button variant="contained" onClick={handleComputeDeclarative}>
+              Submit Constraints
+            </Button>
+
+            {declJobId && (
+              <FormControl fullWidth>
+                <InputLabel>Declarative Insight</InputLabel>
                 <Select
-                  value={selectedOption}
-                  label="Select Log Skeleton Operation"
+                  value={selectedDeclOption}
+                  label="Declarative Insight"
                   onChange={(e) =>
-                    handleOptionSelect(
-                      LOG_SKELETON_OPTIONS.find(opt => opt.value === e.target.value)
+                    handleDeclarativeOptionSelect(
+                      DECLARATIVE_OPTIONS.find(
+                        (opt) => opt.label === e.target.value
+                      )
                     )
                   }
-                  disabled={!jobId}
                 >
-                  {LOG_SKELETON_OPTIONS.map((opt) => (
-                    <MenuItem key={opt.value} value={opt.value}>
+                  {DECLARATIVE_OPTIONS.map((opt) => (
+                    <MenuItem key={opt.label} value={opt.label}>
                       {opt.label}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
+            )}
 
-              {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                renderGraphAndTable()
-              )}
-            </>
-          )}
+            {declLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              renderGraphAndTable()
+            )}
+          </Box>
+        )}
 
-          {/* -------- Temporal Profile Section -------- */}
-          {view === 'temporal' && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
-                label="Zeta Value"
-                variant="outlined"
-                type="number"
-                value={zeta}
-                onChange={(e) => setZeta(e.target.value)}
-                fullWidth
-              />
-              <Button variant="contained" onClick={handleComputeTemporal}>Submit Zeta</Button>
-              <Button variant="outlined" onClick={handleFetchTemporalResults}>Show Temporal Results</Button>
+        {/* -------- Resource-Based Section -------- */}
+        {view === "resource" && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {/* -------- Resource Perspective Dropdown -------- */}
+            <FormControl fullWidth>
+              <InputLabel>Resource Perspective</InputLabel>
+              <Select
+                value={selectedResourceType}
+                label="Resource Perspective"
+                onChange={(e) => {
+                  setSelectedResourceType(e.target.value);
+                  setSelectedResourceOption("");
+                  setFloatResult(null);
+                  setGraphData([]);
+                  setTableData([]);
+                }}
+              >
+                <MenuItem value="sna">Social Network Analysis</MenuItem>
+                <MenuItem value="role_discovery">Role Discovery</MenuItem>
+                <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
+                <MenuItem value="organizational_mining">
+                  Organizational Mining
+                </MenuItem>
+              </Select>
+            </FormControl>
 
-              {showResultLoading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                renderGraphAndTable()
-              )}
-            </Box>
-          )}
+            {/* -------- Resource Profiles Input Fields -------- */}
+            {selectedResourceType === "resource_profiles" && (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                  width: "70%",
+                  mt: 2,
+                  mx: "auto",
+                }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  Enter Inputs for Resource Profile
+                </Typography>
+                <TextField
+                  label="Resource 1"
+                  name="resource1"
+                  value={resourceInputs.resource1}
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Resource 2 (For interaction between 2 resources)"
+                  name="resource2"
+                  value={resourceInputs.resource2}
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Activity"
+                  name="activity"
+                  value={resourceInputs.activity}
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+                <TextField
+                  label="Start Time"
+                  name="start_time"
+                  value={resourceInputs.start_time}
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+                <TextField
+                  label="End Time"
+                  name="end_time"
+                  value={resourceInputs.end_time}
+                  onChange={handleInputChange}
+                  fullWidth
+                />
+                <Button
+                  variant="contained"
+                  onClick={submitResourceProfiles}
+                  sx={{ width: "fit-content" }}
+                >
+                  Submit Resource Inputs
+                </Button>
+              </Box>
+            )}
 
-          {/* -------- Resource-Based Section -------- */}
-          {view === 'resource' && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {/* Primary Dropdown */}
+            {/* -------- Resource Insight Dropdown under Resource Profiles for Resource-Based conformance-------- */}
+            {selectedResourceType && (
               <FormControl fullWidth>
-                <InputLabel>Resource Perspective</InputLabel>
+                <InputLabel>Resource Insight</InputLabel>
                 <Select
-                  value={selectedResourceType}
-                  label="Resource Perspective"
+                  value={selectedResourceOption}
+                  label="Resource Insight"
                   onChange={(e) => {
-                    setSelectedResourceType(e.target.value);
-                    setSelectedResourceOption('');
+                    const selected = e.target.value;
+                    setSelectedResourceOption(selected);
+
+                    if (selectedResourceType === "resource_profiles") {
+                      handleResourceProfileFetch(selected);
+                    } else {
+                      handleSNAOrOrgOption(selected);
+                    }
                   }}
                 >
-                  <MenuItem value="sna">Social Network Analysis</MenuItem>
-                  <MenuItem value="role_discovery">Role Discovery</MenuItem>
-                  <MenuItem value="resource_profiles">Resource Profiles</MenuItem>
-                  <MenuItem value="organizational_mining">Organizational Mining</MenuItem>
+                  {resourceOptions[selectedResourceType].map((opt) => (
+                    <MenuItem key={opt} value={opt}>
+                      {opt}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
+            )}
 
-              {/* Secondary Dropdown */}
-              {selectedResourceType && (
-                <FormControl fullWidth>
-                  <InputLabel>Resource Insight</InputLabel>
-                  <Select
-                    value={selectedResourceOption}
-                    label="Resource Insight"
-                    onChange={(e) => {
-                      setSelectedResourceOption(e.target.value);
-                      if (selectedResourceType === 'sna') {
-                        handleSNAOptionSelect(e.target.value);
-                      }
-                    }}
-                  >
-                    {resourceOptions[selectedResourceType].map((opt) => (
-                      <MenuItem key={opt} value={opt}>{opt}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-
-              {loading ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                  <CircularProgress />
-                </Box>
-              ) : (
-                renderGraphAndTable()
-              )}
-            </Box>
-          )}
-        </Box>
+            {/* -------- Circular Waiting Animation -------- */}
+            {resourceLoading ? (
+              <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              renderGraphAndTable()
+            )}
+          </Box>
+        )}
       </CardContent>
     </Card>
   );
