@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
-import { CELONIS_LOG_UPLOAD } from './config';
+import React, { useState } from "react";
+import { CELONIS_LOG_UPLOAD } from "./config";
 import {
-  Box, Button, Card, CardContent, Typography, InputLabel
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  InputLabel,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const UploadPage = () => {
   const [file, setFile] = useState(null);
@@ -29,7 +34,7 @@ const UploadPage = () => {
         throw new Error(error);
       }
 
-      const result = await res.json(); 
+      const result = await res.json();
 
       const fileType = file.name.endsWith(".xes") ? "xes" : "csv";
       navigate("/mapping", {
@@ -38,22 +43,27 @@ const UploadPage = () => {
           fileType: fileType,
         },
       });
-
     } catch (err) {
       alert("Error uploading file: " + err.message);
     }
   };
 
   return (
-    <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, boxShadow: 3 }}>
+    <Card sx={{ maxWidth: 600, mx: "auto", mt: 4, boxShadow: 3 }}>
       <CardContent>
         <Typography variant="h5" gutterBottom>
           Upload Event Log
         </Typography>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <InputLabel>Upload .csv or .xes File</InputLabel>
-          <input type="file" accept=".csv,.xes" onChange={e => setFile(e.target.files[0])} />
-          <Button variant="contained" onClick={handleUpload}>Submit</Button>
+          <input
+            type="file"
+            accept=".csv,.xes"
+            onChange={(e) => setFile(e.target.files[0])}
+          />
+          <Button variant="contained" onClick={handleUpload}>
+            Submit
+          </Button>
         </Box>
       </CardContent>
     </Card>
