@@ -129,6 +129,7 @@ celerybeat.pid
 
 # Environments
 .env
+.env.env.lock
 .venv
 env/
 venv/
@@ -176,4 +177,3 @@ cython_debug/
 
 # Event logs as they are usually too big in size
 event_logs/*
-.DS_Store

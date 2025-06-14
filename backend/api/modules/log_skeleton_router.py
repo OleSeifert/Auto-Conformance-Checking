@@ -1,7 +1,7 @@
 """Contains the routes for handling log skeletons and related operations."""
 
 import uuid
-from typing import Dict, List, TypeAlias, Union
+from typing import Dict, List, Literal, TypedDict
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Request
 
@@ -16,11 +16,28 @@ from backend.pql_queries import general_queries, log_skeleton_queries
 router = APIRouter(prefix="/api/log-skeleton", tags=["Log Skeleton CC"])
 MODULE_NAME = "log_skeleton"
 
-# **************** Type Aliases ****************
+# **************** Type Definitions ****************
 
-TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
-GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
-EndpointReturnType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
+
+class Table(TypedDict):
+    """Type definition for a table structure."""
+
+    headers: List[str]
+    rows: List[List[str]]
+
+
+class Graph(TypedDict):
+    """Type definition for a graph structure."""
+
+    nodes: List[Dict[Literal["id"], str]]
+    edges: List[Dict[Literal["from", "to", "label"], str]]
+
+
+class EndpointReturnType(TypedDict):
+    """Type definition for the return type of the endpoint."""
+
+    tables: List[Table]
+    graphs: List[Graph]
 
 
 @router.post("/compute-skeleton", status_code=202)
@@ -99,12 +116,12 @@ def get_equivalence_pql(
         return {"tables": [], "graphs": []}
 
     # Create tables sub-structure
-    tables: TableType = {}
+    tables: Table = {"headers": [], "rows": []}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs: GraphType = {}
+    graphs: Graph = {"nodes": [], "edges": []}
     graphs["nodes"] = []
     graphs["edges"] = []
 
@@ -121,6 +138,10 @@ def get_equivalence_pql(
                     "label": "equals_to",
                 }
             )
+
+    # Remove the "Rel" column from the headers and rows (as it is always "true")
+    tables["headers"].remove("Rel")  # type: ignore
+    tables["rows"] = [row[:-1] for row in tables["rows"]]  # type: ignore
 
     return {
         "tables": [tables],
@@ -164,12 +185,12 @@ def get_always_after_pql(
     if result_df.empty:
         return {"tables": [], "graphs": []}  # type: ignore
     # Create tables sub-structure
-    tables: TableType = {}
+    tables: Table = {"headers": [], "rows": []}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs: GraphType = {}
+    graphs: Graph = {"nodes": [], "edges": []}
     graphs["nodes"] = []
     graphs["edges"] = []
 
@@ -182,10 +203,14 @@ def get_always_after_pql(
             graphs["edges"].append(
                 {
                     "from": row["Activity A"],
-                    "to": row["Activity B"],
+                    "to": row["Activity B always after A"],
                     "label": "always_after",
                 }
             )
+
+    # Remove the "Rel" column from the headers and rows (as it is always "true")
+    tables["headers"].remove("Rel")
+    tables["rows"] = [row[:-1] for row in tables["rows"]]  # type: ignore
 
     return {
         "tables": [tables],
@@ -225,12 +250,12 @@ def get_always_before_pql(
     if result_df.empty:
         return {"tables": [], "graphs": []}  # type: ignore
     # Create tables sub-structure
-    tables: TableType = {}
+    tables: Table = {"headers": [], "rows": []}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs: GraphType = {}
+    graphs: Graph = {"nodes": [], "edges": []}
     graphs["nodes"] = []
     graphs["edges"] = []
 
@@ -242,11 +267,15 @@ def get_always_before_pql(
         if row["Rel"] == "true":
             graphs["edges"].append(
                 {
-                    "from": row["Activity A"],
+                    "from": row["Activity A always before"],
                     "to": row["Activity B"],
                     "label": "always_before",
                 }
             )
+
+    # Remove the "Rel" column from the headers and rows (as it is always "true")
+    tables["headers"].remove("Rel")
+    tables["rows"] = [row[:-1] for row in tables["rows"]]  # type: ignore
 
     return {
         "tables": [tables],
@@ -286,12 +315,12 @@ def get_never_together_pql(
     if result_df.empty:
         return {"tables": [], "graphs": []}  # type: ignore
     # Create tables sub-structure
-    tables: TableType = {}
+    tables: Table = {"headers": [], "rows": []}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs: GraphType = {}
+    graphs: Graph = {"nodes": [], "edges": []}
     graphs["nodes"] = []
     graphs["edges"] = []
 
@@ -308,6 +337,10 @@ def get_never_together_pql(
                     "label": "never_together",
                 }
             )
+
+    # Remove the "Rel" column from the headers and rows (as it is always "true")
+    tables["headers"].remove("Rel")
+    tables["rows"] = [row[:-1] for row in tables["rows"]]  # type: ignore
 
     return {
         "tables": [tables],
@@ -348,12 +381,12 @@ def get_directly_follows_pql(
         return {"tables": [], "graphs": []}  # type: ignore
 
     # Create tables sub-structure
-    tables: TableType = {}
+    tables: Table = {"headers": [], "rows": []}
     tables["headers"] = result_df.columns.tolist()
     tables["rows"] = result_df[result_df["Rel"] == "true"].astype(str).values.tolist()  # type: ignore
 
     # Create graphs sub-structure
-    graphs: GraphType = {}
+    graphs: Graph = {"nodes": [], "edges": []}
     graphs["nodes"] = []
     graphs["edges"] = []
 
@@ -366,10 +399,14 @@ def get_directly_follows_pql(
             graphs["edges"].append(
                 {
                     "from": row["Activity A"],
-                    "to": row["Activity B"],
+                    "to": row["Activity B Directly-follows A"],
                     "label": str(row["Count"]),  # type: ignore
                 }
             )
+
+    # Remove the "Rel" column from the headers and rows (as it is always "true")
+    tables["headers"].remove("Rel")
+    tables["rows"] = [row[:-1] for row in tables["rows"]]  # type: ignore
 
     return {
         "tables": [tables],
@@ -383,7 +420,7 @@ def get_activity_frequencies(job_id: str, request: Request) -> EndpointReturnTyp
     freq_dict = request.app.state.jobs[job_id].result.get("activ_freq", {})
 
     # Format the frequencies into a list of lists for the table
-    rows = [
+    rows = [  # type: ignore
         [activity, ", ".join(map(str, count))] for activity, count in freq_dict.items()
     ]
     if not rows:
