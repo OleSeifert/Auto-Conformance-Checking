@@ -1,7 +1,7 @@
 """Queries that can be used to get log-skeleton related data from celonis."""
 
 from itertools import combinations
-from typing import Dict, List, TypeAlias, Union
+from typing import Dict, List, TypeAlias, Union, Any
 
 from pandas import DataFrame
 import pandas as pd
@@ -13,8 +13,10 @@ from backend.pql_queries.general_queries import get_activities
 
 # **************** Type Aliases ****************
 
-TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
-GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+# TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+# GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+TableType: TypeAlias = Dict[str, Any]
+GraphType: TypeAlias = Dict[str, Any]
 ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 # **************** Formatting Function ****************
