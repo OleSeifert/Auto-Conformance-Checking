@@ -1,7 +1,7 @@
 """Contains the routes for handling declarative constraints."""
 
 import uuid
-from typing import Dict, List, TypeAlias, Union, Any
+from typing import Dict, List, TypeAlias, Union
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Request, Query
 
