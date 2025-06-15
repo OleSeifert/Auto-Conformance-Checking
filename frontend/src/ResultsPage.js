@@ -17,6 +17,9 @@ import {
 import Graph from "./Graph";
 import Table from "./Table";
 import ArrowGraph from "./ArrowGraph";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import InfoIcon from "@mui/icons-material/Info";
 
 import {
   GET_GENERAL_INSIGHTS,
@@ -142,6 +145,23 @@ const LOG_SKELETON_OPTIONS = [
   },
 ];
 
+// -------------------- Log Skeleton Descriptions --------------------
+const logSkeletonDescriptions = {
+  "Get Equivalence": "Checks which activities always occur together in cases.",
+  "Get Equivalence (PQL)":
+    "PQL-based variant for identifying equivalent activities.",
+  "Always Before": "Activity A always occurs before Activity B.",
+  "Always Before (PQL)": "PQL-based rule for 'always before' relationships.",
+  "Always After": "Activity A always occurs after Activity B.",
+  "Always After (PQL)": "PQL-based rule for 'always after' relationships.",
+  "Never Together": "Detects mutually exclusive activity pairs.",
+  "Never Together (PQL)": "PQL variant for mutual exclusivity.",
+  "Directly Follows": "Identifies direct succession between activities.",
+  "Activity Frequencies": "Counts how frequently each activity occurs.",
+  "Directly Follows and Count (PQL)":
+    "Shows direct follow relationships with frequency (PQL).",
+};
+
 // --------------------Declarative Constraints Options --------------------
 const DECLARATIVE_OPTIONS = [
   { label: "Existence", endpoint: GET_EXISTANCE_VIOLATIONS },
@@ -187,6 +207,39 @@ const DECLARATIVE_OPTIONS = [
   },
 ];
 
+// -------------------- Declarative Constraints Descriptions --------------------
+const declarativeDescriptions = {
+  Existence:
+    "Ensures that a particular activity occurs at least once in a trace.",
+  Never: "Specifies that a particular activity must not occur in a trace.",
+  "Exactly Once": "Restricts an activity to occur exactly one time per trace.",
+  Initially: "Requires that a specific activity is the first in every trace.",
+  "Responded Existence":
+    "If Activity A occurs, then Activity B must also occur somewhere in the trace.",
+  "Co-Existence":
+    "Activities A and B must either both occur or both be absent in a trace.",
+  "Always After":
+    "If Activity A occurs, Activity B must follow it at some point.",
+  "Always Before":
+    "If Activity B occurs, Activity A must have occurred before it.",
+  Succession:
+    "If Activity A occurs, then Activity B must occur afterwards, and vice versa.",
+  "Alternate Precedence":
+    "Every occurrence of Activity B must be preceded by exactly one occurrence of Activity A.",
+  "Alternate Succession":
+    "Every occurrence of Activity A must be followed by exactly one occurrence of Activity B.",
+  "Immediately After":
+    "Activity B must directly follow Activity A whenever A occurs.",
+  "Immediately Before":
+    "Activity A must directly precede Activity B whenever B occurs.",
+  "Chain Succession":
+    "Every occurrence of Activity A must be immediately followed by B, and every B must be preceded by A.",
+  "Non Co-Existence":
+    "Activities A and B cannot both appear in the same trace.",
+  "Non Succession": "Activity A should never be followed by Activity B.",
+  "Non Chain Succession": "Activity B must not immediately follow Activity A.",
+};
+
 // -------------------- Resource Options --------------------
 
 const resourceOptions = {
@@ -223,6 +276,48 @@ const resourceOptions = {
     "Group Coverage",
     "Group Member Contributions",
   ],
+};
+
+// -------------------- Resource Descriptions --------------------
+const resourceDescriptions = {
+  "Handover of Work":
+    "Measures how often one resource hands over work to another.",
+  Subcontracting:
+    "Captures indirect handovers involving intermediate activities.",
+  "Working together":
+    "Indicates joint involvement of two resources in the same case.",
+  "Similar Activities":
+    "Identifies resources that perform similar types of activities.",
+  "Role Discovery":
+    "Finds patterns in activity-resource relationships to infer roles.",
+  "Group Relative Focus":
+    "Shows how much focus a group has on specific activities.",
+  "Group Relative Stake": "Measures involvement of a group in different cases.",
+  "Group Coverage": "Indicates how many activities a group is involved in.",
+  "Group Member Contributions":
+    "Shows individual contribution level in a group.",
+  "Distinct Activities": "Counts unique activities per resource.",
+  "Distinct Activities (using PQL)":
+    "Same as Distinct Activities but queried via PQL.",
+  "Activity Frequency":
+    "Counts how often a specific activity is performed by a resource.",
+  "Activity Frequency (using PQL)": "Same using PQL query.",
+  "Activity Completions": "Counts completed activities by resource.",
+  "Activity Completions (using PQL)": "Same via PQL.",
+  "Case-Completions": "Counts completed cases per resource.",
+  "Case-Completions (using PQL)": "Same via PQL.",
+  "Fraction-Case Completions": "Fraction of cases completed relative to total.",
+  "Fraction-Case Completions (using PQL)": "Same via PQL.",
+  "Average workload": "Mean number of active tasks assigned to a resource.",
+  "Average workload (using PQL)": "Same using PQL query.",
+  Multitasking: "Measures how many tasks are done in parallel.",
+  "Average Activity Duration":
+    "Average duration to complete a single activity.",
+  "Average case duration": "Mean duration to complete a case.",
+  "Interaction Two Resources":
+    "Interaction frequency between two specific resources.",
+  "Interaction Two Resources (using PQL)": "Same using PQL.",
+  "Social Position": "A relative score indicating the influence of a resource.",
 };
 
 // -------------------- Main Component --------------------
@@ -510,7 +605,7 @@ const ResultsPage = () => {
   const handleSNAOrOrgOption = async (selected) => {
     const endpointMap = {
       "Handover of Work": HANDOVER_OF_WORK,
-      "Subcontracting": SUBCONTRACTING,
+      Subcontracting: SUBCONTRACTING,
       "Working together": WORKING_TOGETHER,
       "Similar Activities": SIMILAR_ACTIVITIES,
       "Role Discovery": ROLE_DISCOVERY,
@@ -620,7 +715,7 @@ const ResultsPage = () => {
       "Fraction-Case Completions (using PQL)": FRACTION_CASE_COMPLETIONS_PQL,
       "Average workload": AVERAGE_WORKLOAD,
       "Average workload (using PQL)": AVERAGE_WORKLOAD_PQL,
-      "Multitasking": MULTITASKING,
+      Multitasking: MULTITASKING,
       "Average Activity Duration": AVERAGE_ACTIVITY_DURATION,
       "Average case duration": AVERAGE_CASE_DURATION,
       "Interaction Two Resources": INTERACTION_TWO_RESOURCES,
@@ -786,10 +881,36 @@ const ResultsPage = () => {
                   )
                 }
                 disabled={!jobId}
+                renderValue={(value) => {
+                  const label =
+                    LOG_SKELETON_OPTIONS.find((opt) => opt.value === value)
+                      ?.label || value;
+                  return (
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <span>{label}</span>
+                      {logSkeletonDescriptions[label] && (
+                        <Tooltip title={logSkeletonDescriptions[label]}>
+                          <IconButton size="small" sx={{ ml: 1 }}>
+                            <InfoIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Box>
+                  );
+                }}
               >
                 {LOG_SKELETON_OPTIONS.map((opt) => (
                   <MenuItem key={opt.value} value={opt.value}>
-                    {opt.label}
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                      <span>{opt.label}</span>
+                      {logSkeletonDescriptions[opt.label] && (
+                        <Tooltip title={logSkeletonDescriptions[opt.label]}>
+                          <IconButton size="small" sx={{ ml: 1 }}>
+                            <InfoIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>
@@ -819,9 +940,16 @@ const ResultsPage = () => {
             <Button variant="contained" onClick={handleComputeTemporal}>
               Submit Zeta
             </Button>
-            <Button variant="outlined" onClick={handleFetchTemporalResults}>
-              Show Temporal Results
-            </Button>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Button variant="outlined" onClick={handleFetchTemporalResults}>
+                Show Temporal Results
+              </Button>
+              <Tooltip title="This button fetches the computed results from the backend based on the Zeta value you submitted earlier. Make sure to submit Zeta first.">
+                <IconButton size="small">
+                  <InfoIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
 
             {showResultLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
@@ -872,7 +1000,16 @@ const ResultsPage = () => {
                 >
                   {DECLARATIVE_OPTIONS.map((opt) => (
                     <MenuItem key={opt.label} value={opt.label}>
-                      {opt.label}
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <span>{opt.label}</span>
+                        {declarativeDescriptions[opt.label] && (
+                          <Tooltip title={declarativeDescriptions[opt.label]}>
+                            <IconButton size="small" sx={{ ml: 1 }}>
+                              <InfoIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                      </Box>
                     </MenuItem>
                   ))}
                 </Select>
@@ -985,7 +1122,6 @@ const ResultsPage = () => {
                   onChange={(e) => {
                     const selected = e.target.value;
                     setSelectedResourceOption(selected);
-
                     if (selectedResourceType === "resource_profiles") {
                       handleResourceProfileFetch(selected);
                     } else {
@@ -995,7 +1131,14 @@ const ResultsPage = () => {
                 >
                   {resourceOptions[selectedResourceType].map((opt) => (
                     <MenuItem key={opt} value={opt}>
-                      {opt}
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <span>{opt}</span>
+                        <Tooltip title={resourceDescriptions[opt] || ""}>
+                          <IconButton size="small" sx={{ ml: 1 }}>
+                            <InfoIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
                     </MenuItem>
                   ))}
                 </Select>
