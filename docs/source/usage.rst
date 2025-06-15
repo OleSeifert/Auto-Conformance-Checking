@@ -12,7 +12,7 @@ Adding Celonis Credentials
 
 The first page you will see after starting the application in your browser is the **Celonis Credentials** page.
 
-.. image:: ../_static/img/frontend/celonis_credentials.jpeg
+.. image:: ./_static/img/frontend/celonis_credentials.jpeg
 
 
 Here you you need to enter your Celonis credentials.
@@ -34,11 +34,11 @@ To obtain your ``API Token``, you need to log in to the Celonis platform and nav
 You find it in the bottom of the left sidebar.
 Then you have to click on "Edit Profile".
 
-.. image:: ../_static/img/frontend/settings.jpeg
+.. image:: ./_static/img/frontend/settings.jpeg
 
 Then you need to scroll down to the **API-Keys** section.
 
-.. image:: ../_static/img/frontend/api_token.png
+.. image:: ./_static/img/frontend/api_token.png
 
 There you can create a new ``API Token`` that you can copy and paste into the application.
 
@@ -57,7 +57,7 @@ Uploading an Event Log
 
 The next page you will see is the **Upload Event Log** page.
 
-.. image:: ../_static/img/frontend/upload.jpeg
+.. image:: ./_static/img/frontend/upload.jpeg
 
 Here you can upload your event log in ``CSV`` or ``XES`` format.
 
@@ -67,7 +67,7 @@ Mapping the Event Log Columns
 
 After you uploaded your event log, you will be redirected to the **Map Event Log Columns** page.
 
-.. image:: ../_static/img/frontend/mapping.jpeg
+.. image:: ./_static/img/frontend/mapping.jpeg
 
 Here you need to map the columns of your event log to the required columns for the conformance checking techniques.
 The required columns are:
@@ -92,7 +92,7 @@ Conformance Checking Insights
 The last page you see is the **Conformance Checking Insights** page.
 This is the main page of the application, where you can see the results of the different conformance checking techniques.
 
-.. image:: ../_static/img/frontend/conf_insight.jpeg
+.. image:: ./_static/img/frontend/conf_insight.jpeg
 
 Here you can select different conformance checking techniques.
 For each technique you can select different aspects to analyze.

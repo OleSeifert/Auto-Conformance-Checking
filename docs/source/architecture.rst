@@ -11,7 +11,7 @@ The overall backend architecture is shown in the following diagram:
 
 .. _backend-architecture:
 
-.. figure:: ../_static/img/backend.svg
+.. figure:: ./_static/img/backend.svg
 
   Backend Architecture
 
