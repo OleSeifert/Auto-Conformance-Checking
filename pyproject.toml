@@ -35,4 +35,4 @@ pythonpath = "backend"
 url = "https://pypi.celonis.cloud/"
 
 [tool.mypy]
-exclude = "tests/"
+exclude = ["tests/", "docs/"]
