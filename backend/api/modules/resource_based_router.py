@@ -320,7 +320,6 @@ async def get_distinct_activities(
         The number of distinct activities for the specified resource.
     """
     df = celonis.get_dataframe_with_resource_group_from_celonis()
-    print(f"{df=}")
     if df is None or df.empty:
         raise HTTPException(status_code=404, detail="No data retrieved from Celonis.")
     try:
