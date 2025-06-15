@@ -36,3 +36,7 @@ rstf:
 	$(SPHINXAPIDOC) -f $(ALLAPIDOCOPTS) $(SOURCEAPI) $(BACKEND)
 	@echo
 	@echo "rst API documentation files generated. The .rst files are in $(SOURCEAPI)."
+
+clean:
+	@$(SPHINXBUILD) -M clean "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O);
+	cd _build; git worktree add -f html gh-pages

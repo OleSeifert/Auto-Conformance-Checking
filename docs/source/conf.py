@@ -25,7 +25,7 @@ author = "Samadrita Saha, René Rockstedt, Ekansh Agarwal, Yash Raj, Ole Seifert
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["autoapi.extension", "sphinx.ext.napoleon"]
+extensions = ["autoapi.extension", "sphinx.ext.napoleon", "sphinx.ext.githubpages"]
 
 autoclass_content = "both"
 
