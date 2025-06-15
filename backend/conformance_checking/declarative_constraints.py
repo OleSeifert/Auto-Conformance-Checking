@@ -34,6 +34,7 @@ class DeclarativeConstraints:
         log: pd.DataFrame,
         min_support_ratio: Optional[float] = 0.3,
         min_confidence_ratio: Optional[float] = 0.75,
+        fitness_score: Optional[float] = 1.0,
         case_id_col: Optional[str] = None,
         activity_col: Optional[str] = None,
         timestamp_col: Optional[str] = None,
@@ -48,6 +49,8 @@ class DeclarativeConstraints:
               Defaults to 0.3.
             min_confidence_ratio: The minimum confidence ratio for discovering rules.
               Defaults to 0.75.
+            fitness_score: The fitness score threshold for conformance checking.
+              Defaults to 1.0.
             case_id_col : The name of the column containing case IDs.
             activity_col : The name of the column containing activity names.
             timestamp_col : The name of the column containing timestamps.
@@ -55,6 +58,7 @@ class DeclarativeConstraints:
         self.log = log
         self.min_support_ratio = min_support_ratio
         self.min_confidence_ratio = min_confidence_ratio
+        self.fitness_score = fitness_score
         self.declare_model: Optional[DeclareModelType] = None
         self.case_id_col: Optional[str] = case_id_col
         self.activity_col: Optional[str] = activity_col
@@ -91,6 +95,7 @@ class DeclarativeConstraints:
         log: Optional[pd.DataFrame] = None,
         min_support_ratio: Optional[float] = None,
         min_confidence_ratio: Optional[float] = None,
+        fitness_score: Optional[float] = None,
     ) -> None:
         """Runs the declarative model on the event log.
 
@@ -100,6 +105,7 @@ class DeclarativeConstraints:
             log: The event log to use.
             min_support_ratio: The minimum support ratio for discovering rules.
             min_confidence_ratio: The minimum confidence ratio for discovering rules.
+            fitness_score: The fitness score threshold for conformance checking.
         """
         if log is None:
             log = self.log
@@ -107,6 +113,8 @@ class DeclarativeConstraints:
             min_support_ratio = self.min_support_ratio
         if min_confidence_ratio is None:
             min_confidence_ratio = self.min_confidence_ratio
+        if fitness_score is not None:
+            self.fitness_score = fitness_score
         self.declare_model = pm4py.discover_declare(  # type: ignore
             log,
             min_support_ratio=min_support_ratio,
@@ -121,6 +129,7 @@ class DeclarativeConstraints:
         declare_model: Optional[DeclareModelType] = None,
         log: Optional[pd.DataFrame] = None,
         rule_name: Optional[str] = None,
+        fitness_score: Optional[float] = None,
         verbose: bool = False,
     ) -> ReturnGraphType:
         """Summarizes number of violations for a declarative rule.
@@ -133,6 +142,7 @@ class DeclarativeConstraints:
             log: The event log. If None, uses the default log.
             rule_name: Name of the rule to check.
             verbose: Whether to print details for debugging.
+            fitness_score: The fitness score threshold for conformance checking.
 
         Returns:
             Summary with graph and table information of rule violations.
@@ -146,11 +156,15 @@ class DeclarativeConstraints:
             declare_model = self.declare_model
         if log is None:
             log = self.log
+        if fitness_score is not None:
+            self.fitness_score = fitness_score
 
         if str(rule_name) not in self.valid_rules:
             raise ValueError(
                 f"Unsupported rule: '{rule_name}'. Must be one of: {self.valid_rules}"
             )
+        if self.fitness_score is None:
+            self.fitness_score = 1.0
 
         if declare_model is None:
             raise ValueError("Declare model is stil None. Something has gone wrong.")
@@ -171,7 +185,9 @@ class DeclarativeConstraints:
                 else:
                     A, B = rule_key, None  # type: ignore
                 diagnostics = decl_conf.apply(log, {rule_name: {(A, B): rule_info}})  # type: ignore
-                violated = [d for d in diagnostics if d["dev_fitness"] < 1.0]  # type: ignore
+                violated = [
+                    d for d in diagnostics if d["dev_fitness"] < self.fitness_score
+                ]  # type: ignore
                 violation_count = len(violated)  # type: ignore
 
                 if violation_count > 0:
@@ -410,6 +426,7 @@ class DeclarativeConstraints:
         log: Optional[pd.DataFrame] = None,
         min_support_ratio: Optional[float] = None,
         min_confidence_ratio: Optional[float] = None,
+        fitness_score: Optional[float] = 1.0,
         list_of_rules: Optional[List[str]] = None,
         run_from_scratch: Optional[bool] = False,
     ) -> Any:
@@ -423,6 +440,7 @@ class DeclarativeConstraints:
               valid rules.
             run_from_scratch: If True, re-evaluates all rules even if results
               stored.
+            fitness_score: The fitness score threshold for conformance checking.
 
         Returns:
             Dictionary of all violations.
@@ -435,11 +453,14 @@ class DeclarativeConstraints:
             min_confidence_ratio = self.min_confidence_ratio
         if list_of_rules is None:
             list_of_rules = self.valid_rules
+        if fitness_score is not None:
+            self.fitness_score = fitness_score
 
         self.run_model(
             log=log,
             min_support_ratio=min_support_ratio,
             min_confidence_ratio=min_confidence_ratio,
+            fitness_score=fitness_score,
         )
         for rule in list_of_rules:
             self.temp = self.get_declarative_conformance_diagnostics(

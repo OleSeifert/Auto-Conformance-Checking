@@ -14,6 +14,7 @@ from backend.api.tasks.declarative_constraints_tasks import (
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
+from backend.pql_queries import declarative_queries
 
 # **************** Type Aliases ****************
 
@@ -33,6 +34,7 @@ async def compute_declarative_constraints(
     request: Request,
     min_support: float = Query(0.3, description="Minimum support ratio"),
     min_confidence: float = Query(0.75, description="Minimum confidence ratio"),
+    fitness_score: float = Query(1.0, description="Fitness score for the constraints"),
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
     """Computes the declarative constraints and stores it.
@@ -48,6 +50,7 @@ async def compute_declarative_constraints(
           Defaults to Depends(get_celonis_connection).
         min_support: The minimum support ratio for the constraints.
         min_confidence: The minimum confidence ratio for the constraints.
+        fitness_score: The fitness score for the constraints.
 
     Returns:
         A dictionary containing the job ID of the scheduled task.
@@ -65,12 +68,13 @@ async def compute_declarative_constraints(
         celonis,
         min_support,
         min_confidence,
+        fitness_score,
     )
 
     return {"job_id": job_id}
 
 
-# **************** Retrieving Declarative Model Attributes ****************
+# **************** Retrieving Declarative Model Attributes - PM4PY ****************
 
 
 @router.get("/get_existance_violations/{job_id}")
@@ -363,3 +367,42 @@ def get_nonchainsuccession_violations(job_id: str, request: Request) -> ReturnGr
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     return request.app.state.jobs[job_id].result.get("nonchainsuccession", [])
+
+
+# **************** Retrieving Declarative Model Attributes - PM4PY ****************
+
+
+@router.get("/get_always_after_pql/")
+def get_always_after_pql(
+    request: Request,
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> ReturnGraphType:
+    """Retrieves the always-after relations via PQL.
+
+    Args:
+        request: The FastAPI request object.
+        celonis: The CelonisManager dependency injection.
+
+    Returns:
+        A JSON object with "tables" and "graphs" keys.
+    """
+    result_df = declarative_queries.get_always_after_relation(celonis)
+    return result_df
+
+
+@router.get("/get_always_before_pql/")
+def get_always_before_pql(
+    request: Request,
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> ReturnGraphType:
+    """Retrieves the always-before relations via PQL.
+
+    Args:
+        request: The FastAPI request object.
+        celonis: The CelonisManager dependency injection.
+
+    Returns:
+        A JSON object with "tables" and "graphs" keys.
+    """
+    result_df = declarative_queries.get_always_before_relation(celonis)
+    return result_df
