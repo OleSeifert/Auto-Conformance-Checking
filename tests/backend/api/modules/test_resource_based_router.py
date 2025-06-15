@@ -872,3 +872,159 @@ class TestGetGroupMemberContributionEndpoint:
         assert "graphs" in response_data
         assert len(response_data["tables"]) == 1
         assert len(response_data["graphs"]) == 0
+
+
+class TestGetDistinctActivitiesPQLEndpoint:
+    """Tests for the /pql/resource-profile/distinct-activities endpoint."""
+
+    def test_get_distinct_activities_pql_success(self, test_client: TestClient):
+        """Test successful retrieval of distinct activities PQL."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_number_of_distinct_activities"
+        ) as mock_get_distinct:
+            mock_get_distinct.return_value = 5
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/distinct-activities",
+                params={
+                    "resource": "Resource A",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            print(response.json())
+            assert response.status_code == 200
+            assert response.json() == 5
+
+
+class TestGetResourceActivityFrequencyPQLEndpoint:
+    """Tests for the /pql/resource-profile/activity-frequency endpoint."""
+
+    def test_get_resource_activity_frequency_pql_success(self, test_client: TestClient):
+        """Test successful retrieval of resource activity frequency PQL."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_activity_frequency"
+        ) as mock_get_frequency:
+            mock_get_frequency.return_value = 0.75
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/activity-frequency",
+                params={
+                    "resource": "Resource A",
+                    "activity": "Activity A",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            assert response.status_code == 200
+            assert response.json() == 0.75
+
+
+class TestGetResourceActivityCompletionsPQLEndpoint:
+    """Tests for the /pql/resource-profile/activity-completions endpoint."""
+
+    def test_get_resource_activity_completions_pql_success(
+        self, test_client: TestClient
+    ):
+        """Test successful retrieval of resource activity completions PQL."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_activity_completions"
+        ) as mock_get_completions:
+            mock_get_completions.return_value = 15
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/activity-completions",
+                params={
+                    "resource": "Resource A",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            assert response.status_code == 200
+            assert response.json() == 15
+
+
+class TestGetResourceCaseCompletionsPQLEndpoint:
+    """Tests for the /pql/resource-profile/case-completions endpoint."""
+
+    def test_get_resource_case_completions_pql_success(self, test_client: TestClient):
+        """Test successful retrieval of resource case completions PQL."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_case_completions"
+        ) as mock_get_case_completions:
+            mock_get_case_completions.return_value = 8
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/case-completions",
+                params={
+                    "resource": "Resource A",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            assert response.status_code == 200
+            assert response.json() == 8
+
+
+class TestGetResourceFractionCaseCompletionsPQLEndpoint:
+    """Tests for /pql/resource-profile/fraction-case-completions."""
+
+    def test_get_resource_fraction_case_completions_pql_success(
+        self, test_client: TestClient
+    ):
+        """Test successful retrieval of fraction case completions PQL."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_fraction_case_completions"
+        ) as mock_get_fraction:
+            mock_get_fraction.return_value = 0.62
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/fraction-case-completions",
+                params={
+                    "resource": "Resource A",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            assert response.status_code == 200
+            assert response.json() == 0.62
+
+
+class TestGetResourceAverageWorkloadPQLEndpoint:
+    """Tests for api/resource-based/pql/resource-profile/average-workload."""
+
+    def test_get_resource_average_workload_pql_success(self, test_client: TestClient):
+        """Test successful retrieval of resource average workload PQL."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_average_workload"
+        ) as mock_get_workload:
+            mock_get_workload.return_value = 2.5
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/average-workload",
+                params={
+                    "resource": "Resource A",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            assert response.status_code == 200
+            assert response.json() == 2.5
+
+
+class TestGetInteractionOfTwoResourcesPQLEndpoint:
+    """Tests for /pql/resource-profile/interaction-two-resources."""
+
+    def test_get_interaction_of_two_resources_pql_success(
+        self, test_client: TestClient
+    ):
+        """Test successful retrieval of interaction two resources (PQL)."""
+        with patch(
+            "backend.api.modules.resource_based_router.resource_based_queries.get_interaction_two_resources"
+        ) as mock_get_interaction:
+            mock_get_interaction.return_value = 0.45
+            response = test_client.get(
+                "/api/resource-based/pql/resource-profile/interaction-two-resources",
+                params={
+                    "resource1": "Resource A",
+                    "resource2": "Resource B",
+                    "start_time": "2023-01-01",
+                    "end_time": "2023-12-31",
+                },
+            )
+            assert response.status_code == 200
+            assert response.json() == 0.45
