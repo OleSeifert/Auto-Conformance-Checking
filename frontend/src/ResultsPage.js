@@ -346,6 +346,7 @@ const ResultsPage = () => {
   // Declarative Constraints
   const [minSupport, setMinSupport] = useState("");
   const [minConfidence, setMinConfidence] = useState("");
+  const [zetaValue, setZetaValue] = useState("");
   const [declJobId, setDeclJobId] = useState(null);
   const [selectedDeclOption, setSelectedDeclOption] = useState("");
   const [declLoading, setDeclLoading] = useState(false);
@@ -548,9 +549,14 @@ const ResultsPage = () => {
     }
 
     try {
-      const url = `${COMPUTE_DECLARATIVE_CONSTRAINTS}?min_support=${parseFloat(
-        minSupport
-      )}&min_confidence=${parseFloat(minConfidence)}`;
+      const queryParams = new URLSearchParams({
+        min_support: parseFloat(minSupport),
+        min_confidence: parseFloat(minConfidence),
+      });
+      if (zetaValue) {
+        queryParams.append("zeta", parseFloat(zetaValue));
+      }
+      const url = `${COMPUTE_DECLARATIVE_CONSTRAINTS}?${queryParams.toString()}`;
       const res = await fetch(url, { method: "GET" });
       const data = await res.json();
       setDeclJobId(data.job_id);
@@ -978,6 +984,14 @@ const ResultsPage = () => {
               type="number"
               value={minConfidence}
               onChange={(e) => setMinConfidence(e.target.value)}
+              fullWidth
+            />
+            <TextField
+              label="Fitess Score (Set to 1.0 for best results)"
+              variant="outlined"
+              type="number"
+              value={zetaValue}
+              onChange={(e) => setZetaValue(e.target.value)}
               fullWidth
             />
             <Button variant="contained" onClick={handleComputeDeclarative}>
