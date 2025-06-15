@@ -281,43 +281,59 @@ const resourceOptions = {
 // -------------------- Resource Descriptions --------------------
 const resourceDescriptions = {
   "Handover of Work":
-    "Measures how often one resource hands over work to another.",
+    "The Handover of Work metric measures how many times an individual is followed by another individual in the execution of a business process.",
   Subcontracting:
-    "Captures indirect handovers involving intermediate activities.",
+    "The Subcontracting metric calculates how many times the work of an individual is interleaved by the work of another individual, only to eventually “return” to the original individual.",
   "Working together":
-    "Indicates joint involvement of two resources in the same case.",
+    "The Working Together metric calculates how many times two individuals work together to resolve a process instance.",
   "Similar Activities":
-    "Identifies resources that perform similar types of activities.",
+    "The Similar Activities metric calculates how similar the work patterns are between two individuals.",
   "Role Discovery":
-    "Finds patterns in activity-resource relationships to infer roles.",
+    "The organizational role is a set of activities in the log that are executed by a similar (multi)set of resources.",
   "Group Relative Focus":
-    "Shows how much focus a group has on specific activities.",
-  "Group Relative Stake": "Measures involvement of a group in different cases.",
-  "Group Coverage": "Indicates how many activities a group is involved in.",
+    "The Group Relative Focus metric specifies for a given work how much a resource group performed this type of work compared to the overall workload of the group. It can be used to measure how the workload of a resource group is distributed over different types of work, i.e., work diversification of the group.",
+  "Group Relative Stake":
+    "The Group Relative Stake metric specifies for a given work how much this type of work was performed by a certain resource group among all groups. It can be used to measure how the workload devoted to a certain type of work is distributed over resource groups in an organizational model, i.e., work participation by different groups.",
+  "Group Coverage":
+    "The Group Coverage metric with respect to a given type of work, specifies the proportion of members of a resource group that performed this type of work.",
   "Group Member Contributions":
-    "Shows individual contribution level in a group.",
-  "Distinct Activities": "Counts unique activities per resource.",
+    "The Group Member Contribution metric of a member of a resource group with respect to a given type of work specifies how much of this type of work by the group was performed by the member. It can be used to measure how the workload of the entire group devoted to a certain type of work is distributed over the group members.",
+  "Distinct Activities":
+    "Number of distinct activities done by a resource in a given time interval [t1, t2).",
   "Distinct Activities (using PQL)":
-    "Same as Distinct Activities but queried via PQL.",
+    "Number of distinct activities done by a resource in a given time interval [t1, t2) using PQL Queries.",
   "Activity Frequency":
-    "Counts how often a specific activity is performed by a resource.",
-  "Activity Frequency (using PQL)": "Same using PQL query.",
-  "Activity Completions": "Counts completed activities by resource.",
-  "Activity Completions (using PQL)": "Same via PQL.",
-  "Case-Completions": "Counts completed cases per resource.",
-  "Case-Completions (using PQL)": "Same via PQL.",
-  "Fraction-Case Completions": "Fraction of cases completed relative to total.",
-  "Fraction-Case Completions (using PQL)": "Same via PQL.",
-  "Average workload": "Mean number of active tasks assigned to a resource.",
-  "Average workload (using PQL)": "Same using PQL query.",
-  Multitasking: "Measures how many tasks are done in parallel.",
+    "Fraction of completions of a given activity a by a given resource r during a given time slot [t1, t2), with respect to the total number of activity completions by resource r during [t1, t2).",
+  "Activity Frequency (using PQL)":
+    "Fraction of completions of a given activity a by a given resource r during a given time slot [t1, t2), with respect to the total number of activity completions by resource r during [t1, t2) using PQL queries.",
+  "Activity Completions":
+    "The number of activity instances completed by a given resource during a given time slot.",
+  "Activity Completions (using PQL)":
+    "The number of activity instances completed by a given resource during a given time slot using PQL queries.",
+  "Case-Completions":
+    "The number of cases completed during a given time slot in which a given resource was involved.",
+  "Case-Completions (using PQL)":
+    "The number of cases completed during a given time slot in which a given resource was involved using PQL queries.",
+  "Fraction-Case Completions":
+    "The fraction of cases completed during a given time slot in which a given resource was involved with respect to the total number of cases completed during the time slot.",
+  "Fraction-Case Completions (using PQL)":
+    "The fraction of cases completed during a given time slot in which a given resource was involved with respect to the total number of cases completed during the time slot using PQL queries.",
+  "Average workload":
+    "The average number of activities started by a given resource but not completed at a moment in time.",
+  "Average workload (using PQL)":
+    "The average number of activities started by a given resource but not completed at a moment in time using PQL queries.",
+  Multitasking:
+    "The fraction of active time during which a given resource is involved in more than one activity with respect to the resource's active time.",
   "Average Activity Duration":
-    "Average duration to complete a single activity.",
-  "Average case duration": "Mean duration to complete a case.",
+    "The average duration of instances of a given activity completed during a given time slot by a given resource.",
+  "Average case duration":
+    "The average duration of cases completed during a given time slot in which a given resource was involved.",
   "Interaction Two Resources":
-    "Interaction frequency between two specific resources.",
-  "Interaction Two Resources (using PQL)": "Same using PQL.",
-  "Social Position": "A relative score indicating the influence of a resource.",
+    "The number of cases completed during a given time slot in which two given resources were involved.",
+  "Interaction Two Resources (using PQL)":
+    "The number of cases completed during a given time slot in which two given resources were involved using PQL queries.",
+  "Social Position":
+    "The fraction of resources involved in the same cases with a given resource during a given time slot with respect to the total number of resources active during the time slot.",
 };
 
 // -------------------- Main Component --------------------
@@ -895,7 +911,21 @@ const ResultsPage = () => {
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <span>{label}</span>
                       {logSkeletonDescriptions[label] && (
-                        <Tooltip title={logSkeletonDescriptions[label]}>
+                        <Tooltip
+                          title={
+                            <Box
+                              sx={{
+                                fontSize: 14,
+                                lineHeight: 1.6,
+                                maxWidth: 300,
+                              }}
+                            >
+                              {logSkeletonDescriptions[label]}
+                            </Box>
+                          }
+                          arrow
+                          placement="right"
+                        >
                           <IconButton size="small" sx={{ ml: 1 }}>
                             <InfoIcon fontSize="small" />
                           </IconButton>
@@ -910,7 +940,21 @@ const ResultsPage = () => {
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <span>{opt.label}</span>
                       {logSkeletonDescriptions[opt.label] && (
-                        <Tooltip title={logSkeletonDescriptions[opt.label]}>
+                        <Tooltip
+                          title={
+                            <Box
+                              sx={{
+                                fontSize: 14,
+                                lineHeight: 1.6,
+                                maxWidth: 300,
+                              }}
+                            >
+                              {logSkeletonDescriptions[opt.label]}
+                            </Box>
+                          }
+                          arrow
+                          placement="right"
+                        >
                           <IconButton size="small" sx={{ ml: 1 }}>
                             <InfoIcon fontSize="small" />
                           </IconButton>
@@ -950,9 +994,22 @@ const ResultsPage = () => {
               <Button variant="outlined" onClick={handleFetchTemporalResults}>
                 Show Temporal Results
               </Button>
-              <Tooltip title="This button fetches the computed results from the backend based on the Zeta value you submitted earlier. Make sure to submit Zeta first.">
-                <IconButton size="small">
-                  <InfoIcon fontSize="small" />
+              <Tooltip
+                title={
+                  <Box sx={{ fontSize: 14, lineHeight: 1.6, maxWidth: 300 }}>
+                    The temporal conformance results consist of the source
+                    activity of the recorded deviation, the target activity of
+                    the recorded deviation, the time passed between the
+                    occurrence of the source activity and the target activity,
+                    and the value of (time passed - mean)/std for this
+                    occurrence (zeta).
+                  </Box>
+                }
+                placement="right"
+                arrow
+              >
+                <IconButton size="medium">
+                  <InfoIcon fontSize="medium" />
                 </IconButton>
               </Tooltip>
             </Box>
@@ -1147,7 +1204,22 @@ const ResultsPage = () => {
                     <MenuItem key={opt} value={opt}>
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <span>{opt}</span>
-                        <Tooltip title={resourceDescriptions[opt] || ""}>
+                        <Tooltip
+                          title={
+                            <Box
+                              sx={{
+                                fontSize: 14,
+                                lineHeight: 1.6,
+                                maxWidth: 300,
+                              }}
+                            >
+                              {resourceDescriptions[opt] ||
+                                "No description available."}
+                            </Box>
+                          }
+                          arrow
+                          placement="right"
+                        >
                           <IconButton size="small" sx={{ ml: 1 }}>
                             <InfoIcon fontSize="small" />
                           </IconButton>
