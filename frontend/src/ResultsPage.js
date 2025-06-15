@@ -578,7 +578,7 @@ const ResultsPage = () => {
         min_confidence: parseFloat(minConfidence),
       });
       if (zetaValue) {
-        queryParams.append("zeta", parseFloat(zetaValue));
+        queryParams.append("fitness_score", parseFloat(zetaValue));
       }
       const url = `${COMPUTE_DECLARATIVE_CONSTRAINTS}?${queryParams.toString()}`;
       const res = await fetch(url, { method: "GET" });
@@ -1056,7 +1056,7 @@ const ResultsPage = () => {
               fullWidth
             />
             <TextField
-              label="Fitess Score (Set to 1.0 for best results)"
+              label="Fitness Score (Set to 1.0 for best results and default is set at 1.0)"
               variant="outlined"
               type="number"
               value={zetaValue}
