@@ -19,21 +19,21 @@ from backend.pql_queries import resource_based_queries
 
 # **************** Type Aliases ****************
 
-TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
-GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
-ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[Any]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, Any]]]
+
 
 router = APIRouter(prefix="/api/resource-based", tags=["Resource-Based CC"])
 MODULE_NAME = "resource_based"
 
 
 @router.post("/compute", status_code=202)
-async def compute_sna_metrics(
+async def compute_resource_based_metrics(
     background_tasks: BackgroundTasks,
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
-    """Computes the SNA metrics and stores it.
+    """Computes the resource-based metrics and stores it.
 
     Args:
         background_tasks: The background tasks manager.
@@ -60,10 +60,15 @@ async def compute_sna_metrics(
 @router.get("/sna/handover-of-work/{job_id}")
 async def get_handover_of_work_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Retrieves the computed Handover of Work SNA metric and returns it.
+) -> Dict[str, List[Union[TableType, GraphType]]]:
+    """Returns the handover of work values in table/graph format.
 
-    In a frontend-compatible format.
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the handover of work metric.
     """
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
@@ -106,9 +111,18 @@ async def get_handover_of_work_metric(
 @router.get("/sna/subcontracting/{job_id}")
 async def get_subcontracting_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Returns subcontracting metric in table/graph format."""
+) -> Dict[str, List[Union[TableType, GraphType]]]:
+    """Returns the subcontracting values in table/graph format.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the subcontracting metric.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
+
     raw_values = (
         request.app.state.jobs[job_id]
         .result.get("subcontracting", {})
@@ -146,9 +160,18 @@ async def get_subcontracting_metric(
 @router.get("/sna/working-together/{job_id}")
 async def get_working_together_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Returns working together metric in table/graph format."""
+) -> Dict[str, List[Union[TableType, GraphType]]]:
+    """Returns the working together metric in table/graph format.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the working together metric.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
+
     raw_values = (
         request.app.state.jobs[job_id]
         .result.get("working_together", {})
@@ -186,9 +209,18 @@ async def get_working_together_metric(
 @router.get("/sna/similar-activities/{job_id}")
 async def get_similar_activities_metric(
     job_id: str, request: Request
-) -> Dict[str, List[Dict[str, List[Any]]]]:
-    """Returns similar activities metric in table/graph format."""
+) -> Dict[str, List[Union[TableType, GraphType]]]:
+    """Returns the similar activities metric in table/graph format.
+
+    Args:
+        job_id: The ID of the job to retrieve the metric for.
+        request: The FastAPI request object.
+
+    Returns:
+        A dictionary containing the tables and graphs for the similar activities metric.
+    """
     verify_correct_job_module(job_id, request, MODULE_NAME)
+
     raw_values = (
         request.app.state.jobs[job_id]
         .result.get("similar_activities", {})
