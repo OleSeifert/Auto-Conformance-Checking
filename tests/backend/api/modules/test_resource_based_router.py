@@ -226,4 +226,125 @@ class TestGetSimilarActivitiesEndpoint:
 
         response = test_client.get("/api/resource-based/sna/similar-activities/job_id")
         assert response.status_code == 400
-        assert response.json() == {"detail": "Job ID belongs to a different module"}
+        assert response.json() == {
+            "detail": "Job ID belongs to a different module"
+        }  # *****************Role Discovery Tests*****************
+
+    class TestGetOrganizationalRolesEndpoint:
+        """Tests for the api/resource-based/role-discovery endpoint."""
+
+        def test_get_organizational_roles_success(self, test_client: TestClient):
+            """Test successful retrieval of organizational roles."""
+            dummy_result = {  # type: ignore
+                "organizational_roles": [
+                    {
+                        "activities": ["Activity A"],
+                        "originators_importance": {"Resource A": "0.85"},
+                    },
+                    {
+                        "activities": ["Activity B"],
+                        "originators_importance": {"Resource B": "0.72"},
+                    },
+                    {
+                        "activities": ["Activity C"],
+                        "originators_importance": {"Resource C": "0.93"},
+                    },
+                ]
+            }
+
+            test_client.app.state.jobs = {  # type: ignore
+                "test_job_id": JobStatus(
+                    module="resource_based",
+                    status="complete",
+                    result=dummy_result,  # type: ignore
+                )
+            }
+
+            response = test_client.get("/api/resource-based/role-discovery/test_job_id")
+
+            assert response.status_code == 200
+            response_data = response.json()
+
+            assert "tables" in response_data
+            assert "graphs" in response_data
+            assert len(response_data["tables"]) == 1
+            assert len(response_data["graphs"]) == 0
+
+            table = response_data["tables"][0]
+            assert table["headers"] == ["Activity", "Originator", "Importance"]
+            assert len(table["rows"]) == 3
+            assert table["rows"][0] == ["Activity A", "Resource A", "0.85"]
+            assert table["rows"][1] == ["Activity B", "Resource B", "0.72"]
+            assert table["rows"][2] == ["Activity C", "Resource C", "0.93"]
+
+        def test_get_organizational_roles_empty_result(self, test_client: TestClient):
+            """Test organizational roles retrieval with empty result."""
+            dummy_result = {  # type: ignore
+                "organizational_roles": []
+            }
+
+            test_client.app.state.jobs = {  # type: ignore
+                "test_job_id": JobStatus(
+                    module="resource_based",
+                    status="complete",
+                    result=dummy_result,  # type: ignore
+                )
+            }
+
+            response = test_client.get("/api/resource-based/role-discovery/test_job_id")
+
+            assert response.status_code == 200
+            response_data = response.json()
+
+            assert "tables" in response_data
+            assert "graphs" in response_data
+            assert len(response_data["tables"]) == 1
+            assert len(response_data["graphs"]) == 0
+
+            table = response_data["tables"][0]
+            assert table["headers"] == ["Activity", "Originator", "Importance"]
+            assert len(table["rows"]) == 0
+
+        def test_get_organizational_roles_missing_result_key(
+            self, test_client: TestClient
+        ):
+            """Test organizational roles retrieval with result key missing."""
+            dummy_result = {}  # type: ignore
+
+            test_client.app.state.jobs = {  # type: ignore
+                "test_job_id": JobStatus(
+                    module="resource_based",
+                    status="complete",
+                    result=dummy_result,  # type: ignore
+                )
+            }
+
+            response = test_client.get("/api/resource-based/role-discovery/test_job_id")
+
+            assert response.status_code == 200
+            response_data = response.json()
+
+            assert "tables" in response_data
+            assert "graphs" in response_data
+            assert len(response_data["tables"]) == 1
+            assert len(response_data["graphs"]) == 0
+
+            table = response_data["tables"][0]
+            assert table["headers"] == ["Activity", "Originator", "Importance"]
+            assert len(table["rows"]) == 0
+
+        def test_get_organizational_roles_job_belongs_to_different_module(
+            self, test_client: TestClient
+        ):
+            """Test getting organizational roles with wrong module's job ID."""
+            test_client.app.state.jobs = {  # type: ignore
+                "job_id": JobStatus(
+                    module="temporal",
+                    status="complete",
+                    result={},
+                )
+            }
+
+            response = test_client.get("/api/resource-based/role-discovery/job_id")
+            assert response.status_code == 400
+            assert response.json() == {"detail": "Job ID belongs to a different module"}
