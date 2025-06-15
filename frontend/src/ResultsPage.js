@@ -149,19 +149,19 @@ const LOG_SKELETON_OPTIONS = [
 
 // -------------------- Log Skeleton Descriptions --------------------
 const logSkeletonDescriptions = {
-  "Get Equivalence": "Checks which activities always occur together in cases.",
+  "Get Equivalence": "Pairs of activities, where both activities occur equally often in every trace.",
   "Get Equivalence (PQL)":
-    "PQL-based variant for identifying equivalent activities.",
-  "Always Before": "Activity A always occurs before Activity B.",
-  "Always Before (PQL)": "PQL-based rule for 'always before' relationships.",
-  "Always After": "Activity A always occurs after Activity B.",
-  "Always After (PQL)": "PQL-based rule for 'always after' relationships.",
-  "Never Together": "Detects mutually exclusive activity pairs.",
-  "Never Together (PQL)": "PQL variant for mutual exclusivity.",
-  "Directly Follows": "Identifies direct succession between activities.",
+    "Pairs of activities, where both activities occur equally often in every trace using PQL queries.",
+  "Always Before": "Pairs of activities, where the first activity always occurs before the second one.",
+  "Always Before (PQL)": "Pairs of activities, where the first activity always occurs before the second one using PQL queries.",
+  "Always After": "Pairs of activities, where the second activity always occurs after the first one.",
+  "Always After (PQL)": "Pairs of activities, where the second activity always occurs after the first one using PQL queries.",
+  "Never Together": "Pairs of activities that do not occur together in any trace..",
+  "Never Together (PQL)": "Pairs of activities that do not occur together in any trace using PQL queries.",
+  "Directly Follows": "Pairs of activities, where the first activity can be followed by the second one.",
   "Activity Frequencies": "Counts how frequently each activity occurs.",
   "Directly Follows and Count (PQL)":
-    "Shows direct follow relationships with frequency (PQL).",
+    "Pairs of activities, where the first activity can be followed by the second one. The count of occurrences is also provided using PQL queries.",
 };
 
 // --------------------Declarative Constraints Options --------------------
