@@ -352,8 +352,7 @@ class TestGetOrganizationalRolesEndpoint:
 
 
 class TestGetDistinctActivitiesEndpoint:
-    """Tests for the api/resource-based/resource-profile/distinct-activities
-    endpoint."""
+    """Tests for the /resource-profile/distinct-activities endpoint."""
 
     def test_get_distinct_activities_success(self):
         """Test successful retrieval of distinct activities count."""
@@ -401,8 +400,7 @@ class TestGetDistinctActivitiesEndpoint:
 
 
 class TestGetResourceActivityFrequencyEndpoint:
-    """Tests for the api/resource-based/resource-profile/activity-frequency
-    endpoint."""
+    """Tests for the /resource-profile/activity-frequency endpoint."""
 
     def test_get_resource_activity_frequency_success(self):
         """Test successful retrieval of resource activity frequency."""
@@ -445,8 +443,7 @@ class TestGetResourceActivityFrequencyEndpoint:
 
 
 class TestGetResourceActivityCompletionsEndpoint:
-    """Tests for the api/resource-based/resource-profile/activity-completions
-    endpoint."""
+    """Tests for the /resource-profile/activity-completions endpoint."""
 
     def test_get_resource_activity_completions_success(self):
         """Test successful retrieval of resource activity completions."""
@@ -488,8 +485,7 @@ class TestGetResourceActivityCompletionsEndpoint:
 
 
 class TestGetResourceCaseCompletionsEndpoint:
-    """Tests for the api/resource-based/resource-profile/case-completions
-    endpoint."""
+    """Tests for the /resource-profile/case-completions endpoint."""
 
     def test_get_resource_case_completions_success(self):
         """Test successful retrieval of resource case completions."""
@@ -531,8 +527,7 @@ class TestGetResourceCaseCompletionsEndpoint:
 
 
 class TestGetResourceFractionCaseCompletionsEndpoint:
-    """Tests for api/resource-based/resource-profile/fraction-case-
-    completions."""
+    """Tests for /resource-profile/fraction-case-completions."""
 
     def test_get_resource_fraction_case_completions_success(self):
         """Test successful retrieval of resource fraction case completions."""
@@ -658,8 +653,7 @@ class TestGetResourceMultitaskingEndpoint:
 
 
 class TestGetInteractionOfTwoResourcesEndpoint:
-    """Tests for api/resource-based/resource-profile/interaction-two-
-    resources."""
+    """Tests for /resource-profile/interaction-two-resources."""
 
     def test_get_interaction_of_two_resources_success(self):
         """Test successful retrieval of interaction between two resources."""
@@ -745,8 +739,7 @@ class TestGetResourceSocialPositionEndpoint:
 
 
 class TestGetGroupRelativeFocusEndpoint:
-    """Tests for api/resource-based/organizational-mining/group-relative-
-    focus."""
+    """Tests for /organizational-mining/group-relative-focus."""
 
     def test_get_group_relative_focus_success(self, test_client: TestClient):
         """Test successful retrieval of group relative focus metric."""
@@ -780,8 +773,7 @@ class TestGetGroupRelativeFocusEndpoint:
 
 
 class TestGetGroupRelativeStakeEndpoint:
-    """Tests for api/resource-based/organizational-mining/group-relative-
-    stake."""
+    """Tests for /organizational-mining/group-relative-stake."""
 
     def test_get_group_relative_stake_success(self, test_client: TestClient):
         """Test successful retrieval of group relative stake metric."""
@@ -849,8 +841,7 @@ class TestGetGroupCoverageEndpoint:
 
 
 class TestGetGroupMemberContributionEndpoint:
-    """Tests for api/resource-based/organizational-mining/group-member-
-    contribution."""
+    """Tests for /organizational-mining/group-member-contribution."""
 
     def test_get_group_member_contribution_success(self, test_client: TestClient):
         """Test successful retrieval of group member contribution metric."""
