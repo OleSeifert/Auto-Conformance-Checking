@@ -15,6 +15,7 @@ def compute_and_store_declarative_constraints(
     celonis: CelonisConnectionManager,
     min_support_ratio: float = 0.3,
     min_confidence_ratio: float = 0.75,
+    fitness_score: float = 1.0,
 ) -> None:
     """Computes the declarative constraints and stores it in the app state.
 
@@ -24,6 +25,7 @@ def compute_and_store_declarative_constraints(
         celonis: The CelonisConnectionManager instance.
         min_support_ratio: The minimum support ratio for the constraints.
         min_confidence_ratio: The minimum confidence ratio for the constraints.
+        fitness_score: The fitness score for the constraints.
     """
     # Get the job record from the app state
     rec: JobStatus = app.state.jobs[job_id]
@@ -39,11 +41,11 @@ def compute_and_store_declarative_constraints(
 
         # Compute the declarative constraints
         dc = DeclarativeConstraints(df)
-        dc.run_model(
+        rec.result = dc.update_model_and_run_all_rules(
             min_support_ratio=min_support_ratio,
             min_confidence_ratio=min_confidence_ratio,
+            fitness_score=fitness_score,
         )
-        rec.result = dc.run_all_rules()
         rec.status = "complete"
 
     except Exception as e:

@@ -3,7 +3,7 @@
 import uuid
 from typing import Dict, List, TypeAlias, Union
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, Request, Query
 
 from backend.api.celonis import get_celonis_connection
 from backend.api.jobs import verify_correct_job_module
@@ -14,12 +14,13 @@ from backend.api.tasks.declarative_constraints_tasks import (
 from backend.celonis_connection.celonis_connection_manager import (
     CelonisConnectionManager,
 )
+from backend.pql_queries import declarative_queries
 
 # **************** Type Aliases ****************
 
-ReturnGraphType: TypeAlias = Dict[
-    str, List[Dict[str, List[Union[str, Dict[str, str]]]]]
-]
+TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 router = APIRouter(
     prefix="/api/declarative-constraints", tags=["Declarative Constraints CC"]
@@ -27,10 +28,13 @@ router = APIRouter(
 MODULE_NAME = "declarative_constraints"
 
 
-@router.post("/compute-constraints", status_code=202)
+@router.get("/compute-constraints", status_code=202)
 async def compute_declarative_constraints(
     background_tasks: BackgroundTasks,
     request: Request,
+    min_support: float = Query(0.3, description="Minimum support ratio"),
+    min_confidence: float = Query(0.75, description="Minimum confidence ratio"),
+    fitness_score: float = Query(1.0, description="Fitness score for the constraints"),
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
 ) -> Dict[str, str]:
     """Computes the declarative constraints and stores it.
@@ -44,6 +48,9 @@ async def compute_declarative_constraints(
           application state via `request.app.state`.
         celonis (optional): The CelonisManager dependency injection.
           Defaults to Depends(get_celonis_connection).
+        min_support: The minimum support ratio for the constraints.
+        min_confidence: The minimum confidence ratio for the constraints.
+        fitness_score: The fitness score for the constraints.
 
     Returns:
         A dictionary containing the job ID of the scheduled task.
@@ -55,13 +62,19 @@ async def compute_declarative_constraints(
 
     # Schedule the worker
     background_tasks.add_task(
-        compute_and_store_declarative_constraints, request.app, job_id, celonis
+        compute_and_store_declarative_constraints,
+        request.app,
+        job_id,
+        celonis,
+        min_support,
+        min_confidence,
+        fitness_score,
     )
 
     return {"job_id": job_id}
 
 
-# **************** Retrieving Declarative Model Attributes ****************
+# **************** Retrieving Declarative Model Attributes - PM4PY ****************
 
 
 @router.get("/get_existance_violations/{job_id}")
@@ -354,3 +367,42 @@ def get_nonchainsuccession_violations(job_id: str, request: Request) -> ReturnGr
     verify_correct_job_module(job_id, request, MODULE_NAME)
 
     return request.app.state.jobs[job_id].result.get("nonchainsuccession", [])
+
+
+# **************** Retrieving Declarative Model Attributes - PQL Queries ****************
+
+
+@router.get("/get_always_after_pql/")
+def get_always_after_pql(
+    request: Request,
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> Dict[str, Union[List[TableType], List[GraphType]]]:
+    """Retrieves the always-after relations via PQL.
+
+    Args:
+        request: The FastAPI request object.
+        celonis: The CelonisManager dependency injection.
+
+    Returns:
+        A JSON object with "tables" and "graphs" keys.
+    """
+    result_df = declarative_queries.get_always_after_relation(celonis)
+    return result_df
+
+
+@router.get("/get_always_before_pql/")
+def get_always_before_pql(
+    request: Request,
+    celonis: CelonisConnectionManager = Depends(get_celonis_connection),
+) -> Dict[str, Union[List[TableType], List[GraphType]]]:
+    """Retrieves the always-before relations via PQL.
+
+    Args:
+        request: The FastAPI request object.
+        celonis: The CelonisManager dependency injection.
+
+    Returns:
+        A JSON object with "tables" and "graphs" keys.
+    """
+    result_df = declarative_queries.get_always_before_relation(celonis)
+    return result_df
