@@ -45,7 +45,9 @@ import {
   GET_RESPONDED_EXISTENCE_VIOLATIONS,
   GET_COEXISTENCE_VIOLATIONS,
   GET_RESPONSE_VIOLATIONS,
+  GET_DECL_ALWAYS_AFTER_PQL,
   GET_PRECEDENCE_VIOLATIONS,
+  GET_DECL_ALWAYS_BEFORE_PQL,
   GET_SUCCESSION_VIOLATIONS,
   GET_ALTPRECEDENCE_VIOLATIONS,
   GET_ALTSUCCESION_VIOLATIONS,
@@ -174,7 +176,9 @@ const DECLARATIVE_OPTIONS = [
   },
   { label: "Co-Existence", endpoint: GET_COEXISTENCE_VIOLATIONS },
   { label: "Always After", endpoint: GET_RESPONSE_VIOLATIONS },
+  { label: "Always After (PQL)", endpoint: GET_DECL_ALWAYS_AFTER_PQL },
   { label: "Always Before", endpoint: GET_PRECEDENCE_VIOLATIONS },
+  { label: "Always Before (PQL)", endpoint: GET_DECL_ALWAYS_BEFORE_PQL },
   { label: "Succession", endpoint: GET_SUCCESSION_VIOLATIONS },
   {
     label: "Alternate Precedence",
@@ -220,8 +224,12 @@ const declarativeDescriptions = {
     "Activities A and B must either both occur or both be absent in a trace.",
   "Always After":
     "If Activity A occurs, Activity B must follow it at some point.",
+  "Always After (PQL)":
+    "If Activity A occurs, Activity B must follow it at some point using PQL queries.",
   "Always Before":
     "If Activity B occurs, Activity A must have occurred before it.",
+  "Always Before (PQL)":
+    "If Activity B occurs, Activity A must have occurred before it using PQL queries.",
   Succession:
     "If Activity A occurs, then Activity B must occur afterwards, and vice versa.",
   "Alternate Precedence":
@@ -585,7 +593,8 @@ const ResultsPage = () => {
   };
 
   const handleDeclarativeOptionSelect = async (option) => {
-    if (!declJobId) {
+    const isPQL = option.label.endsWith("(PQL)");
+    if (!isPQL && !declJobId) {
       alert("Please compute constraints first.");
       return;
     }
@@ -598,8 +607,11 @@ const ResultsPage = () => {
     try {
       let attempts = 0;
       let resultData = null;
+      const endpoint = option.endpoint;
+      const fetchURL = isPQL ? endpoint : `${endpoint}/${declJobId}`;
+
       while (attempts < 20) {
-        const res = await fetch(`${option.endpoint}/${declJobId}`);
+        const res = await fetch(fetchURL);
         if (res.ok) {
           resultData = await res.json();
           break;
@@ -1074,7 +1086,21 @@ const ResultsPage = () => {
                       <Box sx={{ display: "flex", alignItems: "center" }}>
                         <span>{opt.label}</span>
                         {declarativeDescriptions[opt.label] && (
-                          <Tooltip title={declarativeDescriptions[opt.label]}>
+                          <Tooltip
+                            title={
+                              <Box
+                                sx={{
+                                  fontSize: 14,
+                                  lineHeight: 1.6,
+                                  maxWidth: 300,
+                                }}
+                              >
+                                {declarativeDescriptions[opt.label]}
+                              </Box>
+                            }
+                            arrow
+                            placement="right"
+                          >
                             <IconButton size="small" sx={{ ml: 1 }}>
                               <InfoIcon fontSize="small" />
                             </IconButton>
