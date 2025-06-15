@@ -42,13 +42,13 @@ def format_graph_and_table (curr_df: pd.DataFrame) -> ReturnGraphType:
                     'to': str(row[curr_df.columns[1]]),     # type: ignore
                     'label': str(row[curr_df.columns[2]])   # type: ignore
                 })
-
-            output["graphs"].append({                       
-                "nodes": list(set(list(nodes))),                            # type: ignore
-                "edges": edges
-            })
         
             nodes = [{'id': str(ele)} for ele in list(set(list(nodes)))]    # type: ignore
+            output["graphs"].append({                       
+                "nodes": nodes,                            # type: ignore
+                "edges": edges
+            })
+
             headers = list(curr_df.columns) 
             rows = curr_df.values.tolist()                                  # type: ignore
             output["tables"].append({ 

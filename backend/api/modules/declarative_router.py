@@ -1,7 +1,7 @@
 """Contains the routes for handling declarative constraints."""
 
 import uuid
-from typing import Dict, List, TypeAlias, Union
+from typing import Dict, List, TypeAlias, Union, Any
 
 from fastapi import APIRouter, BackgroundTasks, Depends, Request, Query
 
@@ -376,7 +376,7 @@ def get_nonchainsuccession_violations(job_id: str, request: Request) -> ReturnGr
 def get_always_after_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> ReturnGraphType:
+) -> Dict[str, Union[List[TableType], List[GraphType]]]:
     """Retrieves the always-after relations via PQL.
 
     Args:
@@ -394,7 +394,7 @@ def get_always_after_pql(
 def get_always_before_pql(
     request: Request,
     celonis: CelonisConnectionManager = Depends(get_celonis_connection),
-) -> ReturnGraphType:
+) -> Dict[str, Union[List[TableType], List[GraphType]]]:
     """Retrieves the always-before relations via PQL.
 
     Args:
