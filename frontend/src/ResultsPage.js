@@ -16,6 +16,7 @@ import {
 
 import Graph from "./Graph";
 import Table from "./Table";
+import ArrowGraph from "./ArrowGraph";
 
 import {
   GET_GENERAL_INSIGHTS,
@@ -509,7 +510,7 @@ const ResultsPage = () => {
   const handleSNAOrOrgOption = async (selected) => {
     const endpointMap = {
       "Handover of Work": HANDOVER_OF_WORK,
-      Subcontracting: SUBCONTRACTING,
+      "Subcontracting": SUBCONTRACTING,
       "Working together": WORKING_TOGETHER,
       "Similar Activities": SIMILAR_ACTIVITIES,
       "Role Discovery": ROLE_DISCOVERY,
@@ -619,7 +620,7 @@ const ResultsPage = () => {
       "Fraction-Case Completions (using PQL)": FRACTION_CASE_COMPLETIONS_PQL,
       "Average workload": AVERAGE_WORKLOAD,
       "Average workload (using PQL)": AVERAGE_WORKLOAD_PQL,
-      Multitasking: MULTITASKING,
+      "Multitasking": MULTITASKING,
       "Average Activity Duration": AVERAGE_ACTIVITY_DURATION,
       "Average case duration": AVERAGE_CASE_DURATION,
       "Interaction Two Resources": INTERACTION_TWO_RESOURCES,
@@ -652,18 +653,32 @@ const ResultsPage = () => {
 
   const renderGraphAndTable = () => (
     <>
-      {graphData.map((graph, idx) => (
-        <Box key={idx} sx={{ mt: 4 }}>
-          <Typography variant="h6">Graph {idx + 1}</Typography>
-          <Graph graphData={graph} />
-        </Box>
-      ))}
+      {graphData.map((graph, idx) => {
+        const useArrowGraph = [
+          "get_always_before_pql",
+          "get_always_after_pql",
+          "get_directly_follows_and_count",
+        ].includes(selectedOption);
+
+        return (
+          <Box key={idx} sx={{ mt: 4 }}>
+            <Typography variant="h6">Graph {idx + 1}</Typography>
+            {useArrowGraph ? (
+              <ArrowGraph graphData={graph} />
+            ) : (
+              <Graph graphData={graph} />
+            )}
+          </Box>
+        );
+      })}
+
       {tableData.map((table, idx) => (
         <Box key={idx} sx={{ mt: 4 }}>
           <Typography variant="h6">Table {idx + 1}</Typography>
           <Table headers={table.headers} rows={table.rows} />
         </Box>
       ))}
+
       {floatResult !== null && (
         <Box sx={{ mt: 4 }}>
           <Typography variant="h6">Result</Typography>
@@ -677,6 +692,7 @@ const ResultsPage = () => {
           </Typography>
         </Box>
       )}
+
       {!graphData.length && !tableData.length && floatResult === null && (
         <Typography color="text.secondary" sx={{ mt: 2 }}>
           No data to display.
