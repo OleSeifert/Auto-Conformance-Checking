@@ -369,7 +369,7 @@ def get_nonchainsuccession_violations(job_id: str, request: Request) -> ReturnGr
     return request.app.state.jobs[job_id].result.get("nonchainsuccession", [])
 
 
-# **************** Retrieving Declarative Model Attributes - PM4PY ****************
+# **************** Retrieving Declarative Model Attributes - PQL Queries ****************
 
 
 @router.get("/get_always_after_pql/")
