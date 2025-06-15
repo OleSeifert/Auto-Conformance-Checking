@@ -29,6 +29,7 @@ def format_graph_and_table(curr_df: pd.DataFrame) -> ReturnGraphType:
     Returns:
         ReturnGraphType: A dictionary containing the formatted graph and table.
     """
+
     output: ReturnGraphType = {"graphs": [], "tables": []}
 
     if not curr_df.empty:
