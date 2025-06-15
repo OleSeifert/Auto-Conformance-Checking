@@ -556,7 +556,7 @@ class TestGetResourceFractionCaseCompletionsEndpoint:
                 )
 
                 with patch(
-                    "backend.conformance_checking.resource_based.ResourceBased.get_fraction_git ccase_completions"
+                    "backend.conformance_checking.resource_based.ResourceBased.get_fraction_case_completions"
                 ) as mock_get_fraction:
                     mock_get_fraction.return_value = 0.62
 
@@ -741,3 +741,143 @@ class TestGetResourceSocialPositionEndpoint:
 
                     assert response.status_code == 200
                     assert response.json() == 0.78
+                    # **************** Organizational Mining Tests ****************
+
+
+class TestGetGroupRelativeFocusEndpoint:
+    """Tests for api/resource-based/organizational-mining/group-relative-
+    focus."""
+
+    def test_get_group_relative_focus_success(self, test_client: TestClient):
+        """Test successful retrieval of group relative focus metric."""
+        dummy_result = {  # type: ignore
+            "group_relative_focus": [
+                {"group": "Group A", "activity": "Activity 1", "focus": 0.85},
+                {"group": "Group B", "activity": "Activity 2", "focus": 0.72},
+                {"group": "Group C", "activity": "Activity 3", "focus": 0.93},
+            ]
+        }
+
+        test_client.app.state.jobs = {  # type: ignore
+            "test_job_id": JobStatus(
+                module="resource_based",
+                status="complete",
+                result=dummy_result,  # type: ignore
+            )
+        }
+
+        response = test_client.get(
+            "/api/resource-based/organizational-mining/group-relative-focus/test_job_id"
+        )
+
+        assert response.status_code == 200
+        response_data = response.json()
+
+        assert "tables" in response_data
+        assert "graphs" in response_data
+        assert len(response_data["tables"]) == 1
+        assert len(response_data["graphs"]) == 0
+
+
+class TestGetGroupRelativeStakeEndpoint:
+    """Tests for api/resource-based/organizational-mining/group-relative-
+    stake."""
+
+    def test_get_group_relative_stake_success(self, test_client: TestClient):
+        """Test successful retrieval of group relative stake metric."""
+        dummy_result = {  # type: ignore
+            "group_relative_stake": [
+                {"group": "Group A", "activity": "Activity 1", "stake": 0.75},
+                {"group": "Group B", "activity": "Activity 2", "stake": 0.68},
+                {"group": "Group C", "activity": "Activity 3", "stake": 0.82},
+            ]
+        }
+
+        test_client.app.state.jobs = {  # type: ignore
+            "test_job_id": JobStatus(
+                module="resource_based",
+                status="complete",
+                result=dummy_result,  # type: ignore
+            )
+        }
+
+        response = test_client.get(
+            "/api/resource-based/organizational-mining/group-relative-stake/test_job_id"
+        )
+
+        assert response.status_code == 200
+        response_data = response.json()
+
+        assert "tables" in response_data
+        assert "graphs" in response_data
+        assert len(response_data["tables"]) == 1
+        assert len(response_data["graphs"]) == 0
+
+
+class TestGetGroupCoverageEndpoint:
+    """Tests for api/resource-based/organizational-mining/group-coverage."""
+
+    def test_get_group_coverage_success(self, test_client: TestClient):
+        """Test successful retrieval of group coverage metric."""
+        dummy_result = {  # type: ignore
+            "group_coverage": [
+                {"group": "Group A", "activity": "Activity 1", "coverage": 0.90},
+                {"group": "Group B", "activity": "Activity 2", "coverage": 0.65},
+                {"group": "Group C", "activity": "Activity 3", "coverage": 0.88},
+            ]
+        }
+
+        test_client.app.state.jobs = {  # type: ignore
+            "test_job_id": JobStatus(
+                module="resource_based",
+                status="complete",
+                result=dummy_result,  # type: ignore
+            )
+        }
+
+        response = test_client.get(
+            "/api/resource-based/organizational-mining/group-coverage/test_job_id"
+        )
+
+        assert response.status_code == 200
+        response_data = response.json()
+
+        assert "tables" in response_data
+        assert "graphs" in response_data
+        assert len(response_data["tables"]) == 1
+        assert len(response_data["graphs"]) == 0
+
+
+class TestGetGroupMemberContributionEndpoint:
+    """Tests for api/resource-based/organizational-mining/group-member-
+    contribution."""
+
+    def test_get_group_member_contribution_success(self, test_client: TestClient):
+        """Test successful retrieval of group member contribution metric."""
+        dummy_result = {  # type: ignore
+            "group_member_contribution": [
+                {"group": "Group A", "member": "Resource 1", "contribution": 0.77},
+                {"group": "Group B", "member": "Resource 2", "contribution": 0.84},
+                {"group": "Group C", "member": "Resource 3", "contribution": 0.91},
+            ]
+        }
+
+        test_client.app.state.jobs = {  # type: ignore
+            "test_job_id": JobStatus(
+                module="resource_based",
+                status="complete",
+                result=dummy_result,  # type: ignore
+            )
+        }
+
+        response = test_client.get(
+            "/api/resource-based/organizational-mining/group-member-contribution/test_job_id"
+        )
+
+        assert response.status_code == 200
+        response_data = response.json()
+
+        assert "tables" in response_data
+        assert "graphs" in response_data
+        assert len(response_data["tables"]) == 1
+        assert len(response_data["graphs"]) == 0
