@@ -406,7 +406,7 @@ def get_directly_follows_pql(
 
     # Remove the "Rel" column from the headers and rows (as it is always "true")
     tables["headers"].remove("Rel")
-    tables["rows"] = [row[:-1] for row in tables["rows"]]  # type: ignore
+    tables["rows"] = [row[:-2] + row[-1:] for row in tables["rows"]]  # type: ignore
 
     return {
         "tables": [tables],
