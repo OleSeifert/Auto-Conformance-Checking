@@ -1,7 +1,7 @@
 """Queries that can be used to get log-skeleton related data from celonis."""
 
 from itertools import combinations
-from typing import Dict, List, TypeAlias, Union
+from typing import Dict, List, TypeAlias, Union, Any
 
 from pandas import DataFrame
 import pandas as pd
@@ -13,8 +13,10 @@ from backend.pql_queries.general_queries import get_activities
 
 # **************** Type Aliases ****************
 
-TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
-GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+# TableType: TypeAlias = Dict[str, Union[List[str], List[List[str]]]]
+# GraphType: TypeAlias = Dict[str, List[Dict[str, str]]]
+TableType: TypeAlias = Dict[str, Any]
+GraphType: TypeAlias = Dict[str, Any]
 ReturnGraphType: TypeAlias = Dict[str, Union[List[TableType], List[GraphType]]]
 
 # **************** Formatting Function ****************
@@ -29,7 +31,6 @@ def format_graph_and_table(curr_df: pd.DataFrame) -> ReturnGraphType:
     Returns:
         ReturnGraphType: A dictionary containing the formatted graph and table.
     """
-
     output: ReturnGraphType = {"graphs": [], "tables": []}
 
     if not curr_df.empty:
@@ -39,7 +40,7 @@ def format_graph_and_table(curr_df: pd.DataFrame) -> ReturnGraphType:
             for i, row in curr_df.iterrows():  # type: ignore
                 nodes.append(str(row[curr_df.columns[0]]))  # type: ignore
                 nodes.append(str(row[curr_df.columns[1]]))  # type: ignore
-                edges.append(
+                edges.append(  # type: ignore
                     {  # type: ignore
                         "from": str(row[curr_df.columns[0]]),  # type: ignore
                         "to": str(row[curr_df.columns[1]]),  # type: ignore
@@ -101,21 +102,21 @@ def get_always_before_relation(celonis: CelonisConnectionManager) -> ReturnGraph
                             NODE ['{pair[0]}'] as tgt CONNECTED BY EVENTUALLY [src , tgt])""",
         }
         pair_df = celonis.get_dataframe_from_celonis(query)  # type: ignore
-        if (pair_df["B before A"] == 1).any() and not (
-            pair_df["A before B"] == 1
+        if (pair_df["B before A"] == 1).any() and not (  # type: ignore
+            pair_df["A before B"] == 1  # type: ignore
         ).any():  # type: ignore
             target_df.loc[i] = [
                 pair[1],
                 pair[0],
-                int((pair_df["B before A"] == 1).sum()),
+                int((pair_df["B before A"] == 1).sum()),  # type: ignore
             ]  # type: ignore
-        elif (pair_df["A before B"] == 1).any() and not (
-            pair_df["B before A"] == 1
+        elif (pair_df["A before B"] == 1).any() and not (  # type: ignore
+            pair_df["B before A"] == 1  # type: ignore
         ).any():  # type: ignore
             target_df.loc[i] = [
                 pair[0],
                 pair[1],
-                int((pair_df["A before B"] == 1).sum()),
+                int((pair_df["A before B"] == 1).sum()),  # type: ignore
             ]  # type: ignore
     output = format_graph_and_table(target_df)
     return output
@@ -146,15 +147,15 @@ def get_always_after_relation(celonis: CelonisConnectionManager) -> ReturnGraphT
             target_df.loc[i] = [
                 pair[1],
                 pair[0],
-                int((pair_df["B after A"] == 1).sum()),
+                int((pair_df["B after A"] == 1).sum()),  # type: ignore
             ]  # type: ignore
-        elif (pair_df["A after B"] == 1).any() and not (
-            pair_df["B after A"] == 1
+        elif (pair_df["A after B"] == 1).any() and not (  # type: ignore
+            pair_df["B after A"] == 1  # type: ignore
         ).any():  # type: ignore
             target_df.loc[i] = [
                 pair[0],
                 pair[1],
-                int((pair_df["A after B"] == 1).sum()),
+                int((pair_df["A after B"] == 1).sum()),  # type: ignore
             ]  # type: ignore
     output = format_graph_and_table(target_df)
     return output
