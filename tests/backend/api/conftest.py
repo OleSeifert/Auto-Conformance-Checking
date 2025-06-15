@@ -2,20 +2,49 @@
 
 import os
 import tempfile
-from typing import Dict, Optional
-from unittest.mock import patch
+from typing import Any, Dict, Optional
+from unittest.mock import MagicMock, patch
 
+import pandas as pd
 import pytest
+from fastapi import Request
 from fastapi.testclient import TestClient
 
+from backend.api.celonis import get_celonis_connection
 from backend.main import app
+
+
+class MockCelonisConnectionManager:
+    """Simple mock for CelonisConnectionManager that avoids HTTP calls."""
+
+    def __init__(self, **kwargs: Any) -> None:
+        """Initialize mock with minimal setup."""
+        self.data_frame = pd.DataFrame()
+        self.add_dataframe = MagicMock()
+        self.create_table = MagicMock()
+        self.get_basic_dataframe_from_celonis = MagicMock()
+        self.get_dataframe_with_resource_group_from_celonis = MagicMock()
+        self.get_dataframe_from_celonis = MagicMock()
+
+
+def mock_get_celonis_connection(request: Request) -> MockCelonisConnectionManager:
+    """Mock dependency injection function for get_celonis_connection."""
+    return MockCelonisConnectionManager()
+
+
+@pytest.fixture
+def mock_celonis_manager():
+    """Create a mock CelonisConnectionManager instance for direct use."""
+    return MockCelonisConnectionManager()
 
 
 @pytest.fixture
 def test_client():
     """Create a test client for the FastAPI app."""
     with TestClient(app) as client:
+        app.dependency_overrides[get_celonis_connection] = mock_get_celonis_connection
         yield client
+        app.dependency_overrides.clear()
 
 
 @pytest.fixture
