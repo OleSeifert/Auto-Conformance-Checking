@@ -28,6 +28,8 @@ dev = [
     "jinja2>=3.1.6",
     "pytest-mock>=3.14.1",
     "pytest-cov>=6.2.1",
+    "sphinx>=8.2.3",
+    "furo>=2024.8.6",
 ]
 
 [tool.pytest.ini_options]
