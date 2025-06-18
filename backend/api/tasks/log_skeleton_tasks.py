@@ -1,5 +1,7 @@
 """Contains the tasks for handling log skeletons and related operations."""
 
+import time
+
 from fastapi import FastAPI
 
 from backend.api.models.schemas.job_models import JobStatus
@@ -22,6 +24,7 @@ def compute_and_store_log_skeleton(
     # Get the job record from the app state
     rec: JobStatus = app.state.jobs[job_id]
     try:
+        start_time = time.perf_counter_ns()
         rec.status = "running"
 
         # Get the log from Celonis
@@ -37,6 +40,9 @@ def compute_and_store_log_skeleton(
 
         rec.result = ls.get_skeleton()
         rec.status = "complete"
+        end_time = time.perf_counter_ns()
+
+        print(f"*** TIME FOR COMPUTATION: {end_time - start_time} ns ***")
     except Exception as e:
         rec.status = "failed"
         rec.error = str(e)

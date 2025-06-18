@@ -1,5 +1,6 @@
 """Contains the tasks for handling resource-based conformance checking."""
 
+import time
 from typing import Any, Dict, List
 
 from fastapi import FastAPI
@@ -42,6 +43,8 @@ def compute_and_store_resource_based_metrics(
     rec: JobStatus = app.state.jobs[job_id]
 
     try:
+        # Time for testing
+        start_time = time.perf_counter_ns()
         rec.status = "running"
         app.state.jobs[job_id] = rec
         df = celonis_connection.get_dataframe_with_resource_group_from_celonis()
@@ -96,6 +99,8 @@ def compute_and_store_resource_based_metrics(
         }
         rec.status = "complete"
         rec.error = None
+        end_time = time.perf_counter_ns()
+        print(f"*** TIME FOR ENDPOINT: {end_time - start_time} ns ***")
 
     except Exception as e:
         rec.status = "failed"

@@ -1,5 +1,7 @@
 """Contains the tasks for temporal profile based conformance checking."""
 
+import time
+
 from fastapi import FastAPI
 
 from backend.api.models.schemas.job_models import JobStatus
@@ -29,6 +31,7 @@ def compute_and_store_temporal_conformance_result(
     rec: JobStatus = app.state.jobs[job_id]
 
     try:
+        start_time = time.perf_counter_ns()
         rec.status = "running"
         app.state.jobs[job_id] = rec
         df = celonis_connection.get_basic_dataframe_from_celonis()
@@ -49,6 +52,8 @@ def compute_and_store_temporal_conformance_result(
         rec.result = {"temporal_conformance_result": tp_conformance_result}
         rec.status = "complete"
         rec.error = None
+        end_time = time.perf_counter_ns()
+        print(f"*** TIME FOR COMPUTATION: {end_time - start_time} ns ***")
 
     except Exception as e:
         rec.status = "failed"
