@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional, TypeAlias, Union
 
 import pandas as pd  # type: ignore
 import pm4py  # type: ignore
-from pm4py.algo.conformance.declare import algorithm as decl_conf  # type: ignore
+from pm4py.algo.conformance.declare import algorithm as dc  # type: ignore
 
 # **************** Type Aliases ****************
 
@@ -184,9 +184,11 @@ class DeclarativeConstraints:
                     A, B = rule_key  # type: ignore
                 else:
                     A, B = rule_key, None  # type: ignore
-                diagnostics = decl_conf.apply(log, {rule_name: {(A, B): rule_info}})  # type: ignore
-                violated = [
-                    d for d in diagnostics if d["dev_fitness"] < self.fitness_score
+                diagnostics = dc.apply(log, {rule_name: {(A, B): rule_info}})  # type: ignore
+                violated = [  # type: ignore
+                    d
+                    for d in diagnostics
+                    if d["dev_fitness"] <= self.fitness_score  # type: ignore
                 ]  # type: ignore
                 violation_count = len(violated)  # type: ignore
 
@@ -204,7 +206,7 @@ class DeclarativeConstraints:
                         )
                         table_rows.append([A, B, str(violation_count)])  # type: ignore
                     else:
-                        table_headers = ["Activity", "# Violations"]
+                        table_headers = ["Activity", "# Conforming Rules"]
                         table_rows.append([A, str(violation_count)])  # type: ignore
             graph_nodes = [{"id": node} for node in list(set(list(graph_nodes)))]  # type: ignore
 

@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir uv
 # Copy pyproject and lock file to install backend dependencies
 COPY pyproject.toml uv.lock ./
 # RUN uv pip install --system .
-RUN uv pip install --system ".[all]" jinja2
+RUN uv pip install --system ".[all]" jinja2 filelock
 
 # Copy FastAPI backend source code
 COPY backend ./backend
