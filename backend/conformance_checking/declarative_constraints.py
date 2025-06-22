@@ -197,7 +197,7 @@ class DeclarativeConstraints:
                         table_headers = [
                             "First Activity",
                             "Second Activity",
-                            "# Violations",
+                            "# Conforming Rules",
                         ]
                         graph_nodes.append(A)  # type: ignore
                         graph_nodes.append(B)  # type: ignore
