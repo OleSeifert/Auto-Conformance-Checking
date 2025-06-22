@@ -182,39 +182,72 @@ const DECLARATIVE_OPTIONS = [
     label: "Responded Existence",
     endpoint: GET_RESPONDED_EXISTENCE_VIOLATIONS,
   },
-  { label: "Co-Existence", endpoint: GET_COEXISTENCE_VIOLATIONS },
-  { label: "Always After", endpoint: GET_RESPONSE_VIOLATIONS },
-  { label: "Always After (PQL)", endpoint: GET_DECL_ALWAYS_AFTER_PQL },
-  { label: "Always Before", endpoint: GET_PRECEDENCE_VIOLATIONS },
-  { label: "Always Before (PQL)", endpoint: GET_DECL_ALWAYS_BEFORE_PQL },
-  { label: "Succession", endpoint: GET_SUCCESSION_VIOLATIONS },
+  {
+    label: "Co-Existence",
+    endpoint: GET_COEXISTENCE_VIOLATIONS,
+  },
+  {
+    label: "Always After",
+    value: "always_after_decl",
+    endpoint: GET_RESPONSE_VIOLATIONS,
+  },
+  {
+    label: "Always After (PQL)",
+    value: "always_after_pql",
+    endpoint: GET_DECL_ALWAYS_AFTER_PQL,
+  },
+  {
+    label: "Always Before",
+    value: "always_before_decl",
+    endpoint: GET_PRECEDENCE_VIOLATIONS,
+  },
+  {
+    label: "Always Before (PQL)",
+    value: "always_before_pql",
+    endpoint: GET_DECL_ALWAYS_BEFORE_PQL,
+  },
+  {
+    label: "Succession",
+    value: "succession",
+    endpoint: GET_SUCCESSION_VIOLATIONS,
+  },
   {
     label: "Alternate Precedence",
+    value: "alternate_precedence_decl",
     endpoint: GET_ALTPRECEDENCE_VIOLATIONS,
   },
   {
     label: "Alternate Succession",
+    value: "alternate_succession_decl",
     endpoint: GET_ALTSUCCESION_VIOLATIONS,
   },
   {
     label: "Immediately After",
+    value: "immediately_after_decl",
     endpoint: GET_CHAINRESPONSE_VIOLATIONS,
   },
   {
     label: "Immediately Before",
+    value: "immediately_before_decl",
     endpoint: GET_CHAINPRECEDENCE_VIOLATIONS,
   },
   {
     label: "Chain Succession",
+    value: "chain_succession_decl",
     endpoint: GET_CHAINSUCCESION_VIOLATIONS,
   },
   {
     label: "Non Co-Existence",
     endpoint: GET_NONCOEXISTENCE_VIOLATIONS,
   },
-  { label: "Non Succession", endpoint: GET_NONSUCCESION_VIOLATIONS },
+  {
+    label: "Non Succession",
+    value: "non_succession",
+    endpoint: GET_NONSUCCESION_VIOLATIONS,
+  },
   {
     label: "Non Chain Succession",
+    value: "non_chain_succession",
     endpoint: GET_NONCHAINSUCCESION_VIOLATIONS,
   },
 ];
@@ -608,7 +641,7 @@ const ResultsPage = () => {
       return;
     }
 
-    setSelectedDeclOption(option.label);
+    setSelectedDeclOption(option.value || "");
     setGraphData([]);
     setTableData([]);
     setDeclLoading(true);
@@ -791,12 +824,25 @@ const ResultsPage = () => {
 
   const renderGraphAndTable = () => (
     <>
+      {/* Graphs with arrows for Log Skeleton, Temporal Profile, Declarative Constraints, and Resource-Based Insights  */}
       {graphData.map((graph, idx) => {
         const useArrowGraph = [
           "get_always_before_pql",
           "get_always_after_pql",
           "get_directly_follows_and_count",
-        ].includes(selectedOption);
+          "always_after_decl",
+          "always_after_pql",
+          "always_before_decl",
+          "always_before_pql",
+          "succession",
+          "alternate_precedence_decl",
+          "alternate_succession_decl",
+          "immediately_after_decl",
+          "immediately_before_decl",
+          "chain_succession_decl",
+          "non_succession",
+          "non_chain_succession",
+        ].includes(selectedOption || selectedDeclOption);
 
         return (
           <Box key={idx} sx={{ mt: 4 }}>
