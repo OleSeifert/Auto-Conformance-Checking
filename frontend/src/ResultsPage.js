@@ -1,90 +1,90 @@
-import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
-  Typography,
+  CircularProgress,
   Divider,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
-  InputLabel,
-  FormControl,
-  CircularProgress,
   TextField,
+  Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
+import InfoIcon from "@mui/icons-material/Info";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import ArrowGraph from "./ArrowGraph";
 import Graph from "./Graph";
 import Table from "./Table";
-import ArrowGraph from "./ArrowGraph";
-import Tooltip from "@mui/material/Tooltip";
-import IconButton from "@mui/material/IconButton";
-import InfoIcon from "@mui/icons-material/Info";
 
 import {
-  GET_GENERAL_INSIGHTS,
-  COMPUTE_SKELETON,
-  GET_EQUIVALENCE,
-  GET_EQUIVALENCE_PQL,
-  GET_ALWAYS_BEFORE,
-  GET_ALWAYS_BEFORE_PQL,
-  GET_ALWAYS_AFTER,
-  GET_ALWAYS_AFTER_PQL,
-  GET_NEVER_TOGETHER,
-  GET_NEVER_TOGETHER_PQL,
-  GET_DIRECTLY_FOLLOWS,
-  GET_ACTIVITY_FREQUENCIES,
-  GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
-  GET_RESULT_TEMPORAL_PROFILE,
-  TEMPORAL_PROFILE,
-  COMPUTE_DECLARATIVE_CONSTRAINTS,
-  GET_EXISTANCE_VIOLATIONS,
-  GET_ABSENCE_VIOLATIONS,
-  GET_EXACTLY_ONE_VIOLATIONS,
-  GET_INIT_VIOLATIONS,
-  GET_RESPONDED_EXISTENCE_VIOLATIONS,
-  GET_COEXISTENCE_VIOLATIONS,
-  GET_RESPONSE_VIOLATIONS,
-  GET_DECL_ALWAYS_AFTER_PQL,
-  GET_PRECEDENCE_VIOLATIONS,
-  GET_DECL_ALWAYS_BEFORE_PQL,
-  GET_SUCCESSION_VIOLATIONS,
-  GET_ALTPRECEDENCE_VIOLATIONS,
-  GET_ALTSUCCESION_VIOLATIONS,
-  GET_CHAINRESPONSE_VIOLATIONS,
-  GET_CHAINPRECEDENCE_VIOLATIONS,
-  GET_CHAINSUCCESION_VIOLATIONS,
-  GET_NONCOEXISTENCE_VIOLATIONS,
-  GET_NONSUCCESION_VIOLATIONS,
-  GET_NONCHAINSUCCESION_VIOLATIONS,
-  RESOURCE_BASED,
-  HANDOVER_OF_WORK,
-  SUBCONTRACTING,
-  WORKING_TOGETHER,
-  SIMILAR_ACTIVITIES,
-  GROUP_RELATIVE_FOCUS,
-  GROUP_RELATIVE_STATE,
-  GROUP_COVERAGE,
-  GROUP_MEMBER_CONTRIBUTION,
-  ROLE_DISCOVERY,
-  DISTINCT_ACTIVITIES,
-  DISTINCT_ACTIVITIES_PQL,
-  ACTIVITY_FREQUENCY,
-  ACTIVITY_FREQUENCY_PQL,
   ACTIVITY_COMPLETIONS,
   ACTIVITY_COMPLETIONS_PQL,
-  CASE_COMPLETIONS,
-  CASE_COMPLETIONS_PQL,
-  FRACTION_CASE_COMPLETIONS,
-  FRACTION_CASE_COMPLETIONS_PQL,
-  AVERAGE_WORKLOAD,
-  AVERAGE_WORKLOAD_PQL,
-  MULTITASKING,
+  ACTIVITY_FREQUENCY,
+  ACTIVITY_FREQUENCY_PQL,
   AVERAGE_ACTIVITY_DURATION,
   AVERAGE_CASE_DURATION,
+  AVERAGE_WORKLOAD,
+  AVERAGE_WORKLOAD_PQL,
+  CASE_COMPLETIONS,
+  CASE_COMPLETIONS_PQL,
+  COMPUTE_DECLARATIVE_CONSTRAINTS,
+  COMPUTE_SKELETON,
+  DISTINCT_ACTIVITIES,
+  DISTINCT_ACTIVITIES_PQL,
+  FRACTION_CASE_COMPLETIONS,
+  FRACTION_CASE_COMPLETIONS_PQL,
+  GET_ABSENCE_VIOLATIONS,
+  GET_ACTIVITY_FREQUENCIES,
+  GET_ALTPRECEDENCE_VIOLATIONS,
+  GET_ALTSUCCESION_VIOLATIONS,
+  GET_ALWAYS_AFTER,
+  GET_ALWAYS_AFTER_PQL,
+  GET_ALWAYS_BEFORE,
+  GET_ALWAYS_BEFORE_PQL,
+  GET_CHAINPRECEDENCE_VIOLATIONS,
+  GET_CHAINRESPONSE_VIOLATIONS,
+  GET_CHAINSUCCESION_VIOLATIONS,
+  GET_COEXISTENCE_VIOLATIONS,
+  GET_DECL_ALWAYS_AFTER_PQL,
+  GET_DECL_ALWAYS_BEFORE_PQL,
+  GET_DIRECTLY_FOLLOWS,
+  GET_DIRECTLY_FOLLOWS_AND_COUNT_PQL,
+  GET_EQUIVALENCE,
+  GET_EQUIVALENCE_PQL,
+  GET_EXACTLY_ONE_VIOLATIONS,
+  GET_EXISTANCE_VIOLATIONS,
+  GET_GENERAL_INSIGHTS,
+  GET_INIT_VIOLATIONS,
+  GET_NEVER_TOGETHER,
+  GET_NEVER_TOGETHER_PQL,
+  GET_NONCHAINSUCCESION_VIOLATIONS,
+  GET_NONCOEXISTENCE_VIOLATIONS,
+  GET_NONSUCCESION_VIOLATIONS,
+  GET_PRECEDENCE_VIOLATIONS,
+  GET_RESPONDED_EXISTENCE_VIOLATIONS,
+  GET_RESPONSE_VIOLATIONS,
+  GET_RESULT_TEMPORAL_PROFILE,
+  GET_SUCCESSION_VIOLATIONS,
+  GROUP_COVERAGE,
+  GROUP_MEMBER_CONTRIBUTION,
+  GROUP_RELATIVE_FOCUS,
+  GROUP_RELATIVE_STATE,
+  HANDOVER_OF_WORK,
   INTERACTION_TWO_RESOURCES,
   INTERACTION_TWO_RESOURCES_PQL,
+  MULTITASKING,
+  RESOURCE_BASED,
+  ROLE_DISCOVERY,
+  SIMILAR_ACTIVITIES,
   SOCIAL_POSITION,
+  SUBCONTRACTING,
+  TEMPORAL_PROFILE,
+  WORKING_TOGETHER,
 } from "./config";
 
 // -------------------- Log Skeleton Options --------------------
@@ -149,16 +149,24 @@ const LOG_SKELETON_OPTIONS = [
 
 // -------------------- Log Skeleton Descriptions --------------------
 const logSkeletonDescriptions = {
-  "Get Equivalence": "Pairs of activities, where both activities occur equally often in every trace.",
+  "Get Equivalence":
+    "Pairs of activities, where both activities occur equally often in every trace.",
   "Get Equivalence (PQL)":
     "Pairs of activities, where both activities occur equally often in every trace using PQL queries.",
-  "Always Before": "Pairs of activities, where the first activity always occurs before the second one.",
-  "Always Before (PQL)": "Pairs of activities, where the first activity always occurs before the second one using PQL queries.",
-  "Always After": "Pairs of activities, where the second activity always occurs after the first one.",
-  "Always After (PQL)": "Pairs of activities, where the second activity always occurs after the first one using PQL queries.",
-  "Never Together": "Pairs of activities that do not occur together in any trace..",
-  "Never Together (PQL)": "Pairs of activities that do not occur together in any trace using PQL queries.",
-  "Directly Follows": "Pairs of activities, where the first activity can be followed by the second one.",
+  "Always Before":
+    "Pairs of activities, where the first activity always occurs before the second one.",
+  "Always Before (PQL)":
+    "Pairs of activities, where the first activity always occurs before the second one using PQL queries.",
+  "Always After":
+    "Pairs of activities, where the second activity always occurs after the first one.",
+  "Always After (PQL)":
+    "Pairs of activities, where the second activity always occurs after the first one using PQL queries.",
+  "Never Together":
+    "Pairs of activities that do not occur together in any trace..",
+  "Never Together (PQL)":
+    "Pairs of activities that do not occur together in any trace using PQL queries.",
+  "Directly Follows":
+    "Pairs of activities, where the first activity can be followed by the second one.",
   "Activity Frequencies": "Counts how frequently each activity occurs.",
   "Directly Follows and Count (PQL)":
     "Pairs of activities, where the first activity can be followed by the second one. The count of occurrences is also provided using PQL queries.",
@@ -174,39 +182,72 @@ const DECLARATIVE_OPTIONS = [
     label: "Responded Existence",
     endpoint: GET_RESPONDED_EXISTENCE_VIOLATIONS,
   },
-  { label: "Co-Existence", endpoint: GET_COEXISTENCE_VIOLATIONS },
-  { label: "Always After", endpoint: GET_RESPONSE_VIOLATIONS },
-  { label: "Always After (PQL)", endpoint: GET_DECL_ALWAYS_AFTER_PQL },
-  { label: "Always Before", endpoint: GET_PRECEDENCE_VIOLATIONS },
-  { label: "Always Before (PQL)", endpoint: GET_DECL_ALWAYS_BEFORE_PQL },
-  { label: "Succession", endpoint: GET_SUCCESSION_VIOLATIONS },
+  {
+    label: "Co-Existence",
+    endpoint: GET_COEXISTENCE_VIOLATIONS,
+  },
+  {
+    label: "Always After",
+    value: "always_after_decl",
+    endpoint: GET_RESPONSE_VIOLATIONS,
+  },
+  {
+    label: "Always After (PQL)",
+    value: "always_after_pql",
+    endpoint: GET_DECL_ALWAYS_AFTER_PQL,
+  },
+  {
+    label: "Always Before",
+    value: "always_before_decl",
+    endpoint: GET_PRECEDENCE_VIOLATIONS,
+  },
+  {
+    label: "Always Before (PQL)",
+    value: "always_before_pql",
+    endpoint: GET_DECL_ALWAYS_BEFORE_PQL,
+  },
+  {
+    label: "Succession",
+    value: "succession",
+    endpoint: GET_SUCCESSION_VIOLATIONS,
+  },
   {
     label: "Alternate Precedence",
+    value: "alternate_precedence_decl",
     endpoint: GET_ALTPRECEDENCE_VIOLATIONS,
   },
   {
     label: "Alternate Succession",
+    value: "alternate_succession_decl",
     endpoint: GET_ALTSUCCESION_VIOLATIONS,
   },
   {
     label: "Immediately After",
+    value: "immediately_after_decl",
     endpoint: GET_CHAINRESPONSE_VIOLATIONS,
   },
   {
     label: "Immediately Before",
+    value: "immediately_before_decl",
     endpoint: GET_CHAINPRECEDENCE_VIOLATIONS,
   },
   {
     label: "Chain Succession",
+    value: "chain_succession_decl",
     endpoint: GET_CHAINSUCCESION_VIOLATIONS,
   },
   {
     label: "Non Co-Existence",
     endpoint: GET_NONCOEXISTENCE_VIOLATIONS,
   },
-  { label: "Non Succession", endpoint: GET_NONSUCCESION_VIOLATIONS },
+  {
+    label: "Non Succession",
+    value: "non_succession",
+    endpoint: GET_NONSUCCESION_VIOLATIONS,
+  },
   {
     label: "Non Chain Succession",
+    value: "non_chain_succession",
     endpoint: GET_NONCHAINSUCCESION_VIOLATIONS,
   },
 ];
@@ -214,28 +255,29 @@ const DECLARATIVE_OPTIONS = [
 // -------------------- Declarative Constraints Descriptions --------------------
 const declarativeDescriptions = {
   Existence:
-    "Ensures that a particular activity occurs at least once in a trace.",
-  Never: "Specifies that a particular activity must not occur in a trace.",
-  "Exactly Once": "Restricts an activity to occur exactly one time per trace.",
-  Initially: "Requires that a specific activity is the first in every trace.",
+    "Ensures that a particular activity occurs at least once in each trace.",
+  Never: "Specifies that a particular activity must not occur in some traces.",
+  "Exactly Once": "Requires that an activity occurs exactly once per trace.",
+  Initially:
+    "Requires that a specific activity is the first event in every trace.",
   "Responded Existence":
     "If Activity A occurs, then Activity B must also occur somewhere in the trace.",
   "Co-Existence":
-    "Activities A and B must either both occur or both be absent in a trace.",
+    "Activities A and B must either both be present or both be absent in a trace.",
   "Always After":
-    "If Activity A occurs, Activity B must follow it at some point.",
+    "If Activity A occurs, Activity B must follow it at some point in the trace.",
   "Always After (PQL)":
-    "If Activity A occurs, Activity B must follow it at some point using PQL queries.",
+    "If Activity A occurs, Activity B must follow it at some point in the trace using PQL queries.",
   "Always Before":
-    "If Activity B occurs, Activity A must have occurred before it.",
+    "If Activity B occurs, Activity A must have occurred earlier in the same trace.",
   "Always Before (PQL)":
-    "If Activity B occurs, Activity A must have occurred before it using PQL queries.",
+    "If Activity B occurs, Activity A must have occurred earlier in the same trace using PQL queries.",
   Succession:
-    "If Activity A occurs, then Activity B must occur afterwards, and vice versa.",
+    "This constraint specifies that if activity A happens, then activity B must happen at some point after A in the same process instance. It allows for other activities to occur between A and B, and it doesn't require B to always follow A.",
   "Alternate Precedence":
-    "Every occurrence of Activity B must be preceded by exactly one occurrence of Activity A.",
+    "Every occurrence of Activity B must be preceded by exactly one occurrence of Activity A, with no A in between.",
   "Alternate Succession":
-    "Every occurrence of Activity A must be followed by exactly one occurrence of Activity B.",
+    "Every occurrence of Activity A must be followed by exactly one occurrence of Activity B, with no B in between.",
   "Immediately After":
     "Activity B must directly follow Activity A whenever A occurs.",
   "Immediately Before":
@@ -599,7 +641,7 @@ const ResultsPage = () => {
       return;
     }
 
-    setSelectedDeclOption(option.label);
+    setSelectedDeclOption(option.value || "");
     setGraphData([]);
     setTableData([]);
     setDeclLoading(true);
@@ -782,12 +824,25 @@ const ResultsPage = () => {
 
   const renderGraphAndTable = () => (
     <>
+      {/* Graphs with arrows for Log Skeleton, Temporal Profile, Declarative Constraints, and Resource-Based Insights  */}
       {graphData.map((graph, idx) => {
         const useArrowGraph = [
           "get_always_before_pql",
           "get_always_after_pql",
           "get_directly_follows_and_count",
-        ].includes(selectedOption);
+          "always_after_decl",
+          "always_after_pql",
+          "always_before_decl",
+          "always_before_pql",
+          "succession",
+          "alternate_precedence_decl",
+          "alternate_succession_decl",
+          "immediately_after_decl",
+          "immediately_before_decl",
+          "chain_succession_decl",
+          "non_succession",
+          "non_chain_succession",
+        ].includes(selectedOption || selectedDeclOption);
 
         return (
           <Box key={idx} sx={{ mt: 4 }}>
@@ -1040,7 +1095,7 @@ const ResultsPage = () => {
         {view === "declarative" && (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
-              label="Minimum Support Ratio (Set to 0.3 for best results)"
+              label="Minimum Support Ratio (Range: 0.0 - 1.0) (Best Value: 0.3)"
               variant="outlined"
               type="number"
               value={minSupport}
@@ -1048,7 +1103,7 @@ const ResultsPage = () => {
               fullWidth
             />
             <TextField
-              label="Minimum Confidence Ratio (Set to 0.7 for best results)"
+              label="Minimum Confidence Ratio (Range: 0.0 - 1.0) (Best Value: 0.7)"
               variant="outlined"
               type="number"
               value={minConfidence}
@@ -1056,7 +1111,7 @@ const ResultsPage = () => {
               fullWidth
             />
             <TextField
-              label="Fitness Score (Set to 1.0 for best results and default is set at 1.0)"
+              label="Fitness Score  (Range: 0.0 - 1.0) (Best Value: 1.0)"
               variant="outlined"
               type="number"
               value={zetaValue}
