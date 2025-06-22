@@ -7,7 +7,7 @@
 
 //Configuration to celonis endpoints
 
-export const API_BASE = "http://backend:8000";
+export const API_BASE = "http://localhost:8000";
 export const CELONIS_CONNECTION = `${API_BASE}/api/setup/celonis-credentials`;
 export const CELONIS_LOG_UPLOAD = `${API_BASE}/api/logs/upload-log`;
 export const GET_COLUMN_NAMES = `${API_BASE}/api/setup/get-column-names`;
