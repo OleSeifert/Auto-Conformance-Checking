@@ -185,8 +185,10 @@ class DeclarativeConstraints:
                 else:
                     A, B = rule_key, None  # type: ignore
                 diagnostics = dc.apply(log, {rule_name: {(A, B): rule_info}})  # type: ignore
-                violated = [ #type: ignore
-                    d for d in diagnostics if d["dev_fitness"] <= self.fitness_score # type: ignore
+                violated = [  # type: ignore
+                    d
+                    for d in diagnostics
+                    if d["dev_fitness"] <= self.fitness_score  # type: ignore
                 ]  # type: ignore
                 violation_count = len(violated)  # type: ignore
 
