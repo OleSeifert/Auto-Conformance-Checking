@@ -6,7 +6,23 @@
 
 This repository contains the code for the software lab "Automatic Conformance Checking Insights in Celonis", offered by the Chair for [Process and Data Science](https://www.pads.rwth-aachen.de/) at RWTH Aachen University.
 
+## Contents
+
+1. [Installation](#installation)
+    1. [Developer Installation](#developer-installation)
+        1. [Code Style](#code-style)
+        2. [Commit Style](#commit-style)
+        3. [Code Review Style](#code-review-style)
+2. [Starting the Backend Server](#starting-the-backend-server)
+3. [Starting the Frontend Server](#starting-the-frontend-server)
+4. [Contribution Workflow](#contribution-workflow)
+5. [Architecture](#architecture)
+6. [Contributors](#contributors)
+
 ## Installation
+
+>[!NOTE]
+> For an updated installation guide have a look at the [hosted documentation](https://oleseifert.github.io/Auto-Conformance-Checking/installation.html).
 
 For installing the project's dependencies, we recommend using [uv](https://docs.astral.sh/uv/) as it operates very quickly.
 To install the project's dependencies using uv, follow these steps:
@@ -46,7 +62,7 @@ It ensures that all commit messages follow the same format and are descriptive a
 We should follow this [code review styleguide](https://github.com/iai-group/guidelines/blob/main/github/Code_review.md).
 It ensures that the code review process runs as smoothly as possible.
 
-## Starting the backend Server
+## Starting the Backend Server
 
 On the main branch you can start the backend server.
 This works if you have installed all dependencies, as well as created a `.env` file at the root of the directory.
@@ -69,7 +85,7 @@ This starts the backend server by default on port `8000` on your localhost.
 If you navigate to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs) you see the FastAPI Swagger documentation for the endpoints.
 Currently there exists only one endpoint to upload an event log, which you can also try via documentation.
 
-## Starting the Frontend
+## Starting the Frontend Server
 
 To start the frontend server, you have to checkout the `frontend-integration` branch.
 The detailed startup is written in [this readme file](./frontend/README.md).
@@ -82,6 +98,19 @@ In addition to that, the main branch is protected, so there cannot be any commit
 
 ## Architecture
 
+>[!NOTE]
+> For an updated architecture diagram, have a look at the [hosted documentation](https://oleseifert.github.io/Auto-Conformance-Checking/architecture.html).
+
 Below is an architecture suggestion, with which we can start out if all team members agree on it.
 
 ![Image of architecture](./docs/source/_static/architecture.svg)
+
+## Contributors
+
+The following people have contributed on this project:
+
+  - [Samadrita Saha](https://github.com/samadrita-saha)
+  - [René Rockstedt](https://github.com/stormjoker2000)
+  - [Ekansh Agrawal](https://github.com/ekansh18)
+  - [Yash Raj](https://github.com/YashRajRobotics)
+  - [Ole Seifert](https://github.com/OleSeifert)
