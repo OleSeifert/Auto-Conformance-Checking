@@ -1,0 +1,121 @@
+backend.api.models.schemas.output_format
+========================================
+
+.. py:module:: backend.api.models.schemas.output_format
+
+.. autoapi-nested-parse::
+
+   Contains the schemas for the output format of the API responses.
+
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   backend.api.models.schemas.output_format.TableModel
+   backend.api.models.schemas.output_format.GraphNode
+   backend.api.models.schemas.output_format.GraphEdge
+   backend.api.models.schemas.output_format.GraphModel
+   backend.api.models.schemas.output_format.ResponseSchema
+
+
+Module Contents
+---------------
+
+.. py:class:: TableModel(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents a table with headers and rows.
+
+
+   .. py:attribute:: headers
+      :type:  List[str]
+
+
+   .. py:attribute:: rows
+      :type:  List[List[str]]
+
+
+.. py:class:: GraphNode(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents a node in a graph.
+
+
+   .. py:attribute:: id
+      :type:  str
+
+
+.. py:class:: GraphEdge(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents an edge with a label in a graph.
+
+   Connects two nodes.
+
+
+   .. py:attribute:: from_
+      :type:  str
+
+
+   .. py:attribute:: to
+      :type:  str
+
+
+   .. py:attribute:: label
+      :type:  str
+
+
+   .. py:class:: Config
+
+      Represents a mapping for reserved keywords in Pydantic models.
+
+
+      .. py:attribute:: fields
+
+
+
+.. py:class:: GraphModel(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents a complete graph with nodes and edges.
+
+
+   .. py:attribute:: nodes
+      :type:  List[GraphNode]
+
+
+   .. py:attribute:: edges
+      :type:  List[GraphEdge]
+
+
+.. py:class:: ResponseSchema(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents the response schema for API endpoints.
+
+
+   .. py:attribute:: tables
+      :type:  Optional[List[TableModel]]
+      :value: []
+
+
+
+   .. py:attribute:: graphs
+      :type:  Optional[List[GraphModel]]
+      :value: []
+
+
+

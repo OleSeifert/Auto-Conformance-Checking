@@ -1,0 +1,1199 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../../../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" /><link rel="next" title="backend.conformance_checking.temporal_profile" href="../temporal_profile/index.html" /><link rel="prev" title="backend.conformance_checking.log_skeleton" href="../log_skeleton/index.html" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>backend.conformance_checking.resource_based - Automatic Conformance Checking Insights in Celonis documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Automatic Conformance Checking Insights in Celonis  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="../../../../_static//img/light-logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="../../../../_static//img/dark-logo.png" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../conformance_checking.html">Automatic Conformance Checking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../architecture.html">System Architecture</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../../index.html">API Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current has-children"><a class="reference internal" href="../../index.html">backend</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of backend</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../api/index.html">backend.api</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of backend.api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../api/celonis/index.html">backend.api.celonis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/jobs/index.html">backend.api.jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/log/index.html">backend.api.log</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/models/index.html">backend.api.models</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of backend.api.models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5 has-children"><a class="reference internal" href="../../api/models/schemas/index.html">backend.api.models.schemas</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of backend.api.models.schemas</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="../../api/models/schemas/job_models/index.html">backend.api.models.schemas.job_models</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../api/models/schemas/output_format/index.html">backend.api.models.schemas.output_format</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../api/models/schemas/resource_based_models/index.html">backend.api.models.schemas.resource_based_models</a></li>
+<li class="toctree-l6"><a class="reference internal" href="../../api/models/schemas/setup_models/index.html">backend.api.models.schemas.setup_models</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/modules/index.html">backend.api.modules</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of backend.api.modules</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../api/modules/declarative_router/index.html">backend.api.modules.declarative_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/modules/general_router/index.html">backend.api.modules.general_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/modules/log_skeleton_router/index.html">backend.api.modules.log_skeleton_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/modules/resource_based_router/index.html">backend.api.modules.resource_based_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/modules/temporal_profile_router/index.html">backend.api.modules.temporal_profile_router</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="../../api/setup/index.html">backend.api.setup</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="../../api/tasks/index.html">backend.api.tasks</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of backend.api.tasks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="../../api/tasks/declarative_constraints_tasks/index.html">backend.api.tasks.declarative_constraints_tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/tasks/log_skeleton_tasks/index.html">backend.api.tasks.log_skeleton_tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/tasks/resource_based_tasks/index.html">backend.api.tasks.resource_based_tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="../../api/tasks/temporal_profile_tasks/index.html">backend.api.tasks.temporal_profile_tasks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../celonis_connection/index.html">backend.celonis_connection</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of backend.celonis_connection</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../celonis_connection/celonis_connection_manager/index.html">backend.celonis_connection.celonis_connection_manager</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current has-children"><a class="reference internal" href="../index.html">backend.conformance_checking</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of backend.conformance_checking</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../declarative_constraints/index.html">backend.conformance_checking.declarative_constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../log_skeleton/index.html">backend.conformance_checking.log_skeleton</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">backend.conformance_checking.resource_based</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../temporal_profile/index.html">backend.conformance_checking.temporal_profile</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../main/index.html">backend.main</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../pql_queries/index.html">backend.pql_queries</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of backend.pql_queries</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../pql_queries/declarative_queries/index.html">backend.pql_queries.declarative_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pql_queries/general_queries/index.html">backend.pql_queries.general_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pql_queries/log_skeleton_queries/index.html">backend.pql_queries.log_skeleton_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pql_queries/resource_based_queries/index.html">backend.pql_queries.resource_based_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../pql_queries/temporal_profile_queries/index.html">backend.pql_queries.temporal_profile_queries</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../usage_example/index.html">backend.usage_example</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="../../utils/index.html">backend.utils</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of backend.utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../utils/file_handlers/index.html">backend.utils.file_handlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../../../../_sources/autoapi/backend/conformance_checking/resource_based/index.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="module-backend.conformance_checking.resource_based">
+<span id="backend-conformance-checking-resource-based"></span><h1>backend.conformance_checking.resource_based<a class="headerlink" href="#module-backend.conformance_checking.resource_based" title="Link to this heading">¶</a></h1>
+<p>Contains functionality for resource-based conformance checking.</p>
+<p>This module defines the ResourceBased class which uses PM4Py to discover
+resource-based conformance checking metrics from event logs.</p>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#backend.conformance_checking.resource_based.SocialNetworkAnalysisType" title="backend.conformance_checking.resource_based.SocialNetworkAnalysisType"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SocialNetworkAnalysisType</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased" title="backend.conformance_checking.resource_based.ResourceBased"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResourceBased</span></code></a></p></td>
+<td><p>Represents the resource-based conformance checking metrics of a log.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py type">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.SocialNetworkAnalysisType">
+<em class="property"><span class="k"><span class="pre">type</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">backend.conformance_checking.resource_based.</span></span><span class="sig-name descname"><span class="pre">SocialNetworkAnalysisType</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#backend.conformance_checking.resource_based.SocialNetworkAnalysisType" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">backend.conformance_checking.resource_based.</span></span><span class="sig-name descname"><span class="pre">ResourceBased</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_id_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased" title="Link to this definition">¶</a></dt>
+<dd><p>Represents the resource-based conformance checking metrics of a log.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.log">
+<span class="sig-name descname"><span class="pre">log</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.log" title="Link to this definition">¶</a></dt>
+<dd><p>The event log.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.case_id_col">
+<span class="sig-name descname"><span class="pre">case_id_col</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.case_id_col" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the Case ID column. Only needed if
+the log is read as a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.activity_col">
+<span class="sig-name descname"><span class="pre">activity_col</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.activity_col" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the Activity column. Only needed if
+the log is read as a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.timestamp_col">
+<span class="sig-name descname"><span class="pre">timestamp_col</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.timestamp_col" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the Timestamp column. Only needed if
+the log is read as a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.resource_col">
+<span class="sig-name descname"><span class="pre">resource_col</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.resource_col" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the Resource column. Only needed if
+the log is read as a csv file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>optional</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased._handover_of_work">
+<span class="sig-name descname"><span class="pre">_handover_of_work</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased._handover_of_work" title="Link to this definition">¶</a></dt>
+<dd><p>The Handover of Work metric. Defaults to None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased._subcontracting">
+<span class="sig-name descname"><span class="pre">_subcontracting</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased._subcontracting" title="Link to this definition">¶</a></dt>
+<dd><p>The Subcontracting metric. Defaults to None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased._working_together">
+<span class="sig-name descname"><span class="pre">_working_together</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased._working_together" title="Link to this definition">¶</a></dt>
+<dd><p>The Working Together metric. Defaults to None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased._similar_activities">
+<span class="sig-name descname"><span class="pre">_similar_activities</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased._similar_activities" title="Link to this definition">¶</a></dt>
+<dd><p>The Similar Activities metric. Defaults to None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased._organizational_roles">
+<span class="sig-name descname"><span class="pre">_organizational_roles</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased._organizational_roles" title="Link to this definition">¶</a></dt>
+<dd><p>The Organizational Roles of the log. Defaults
+to None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased._organizational_diagnostics">
+<span class="sig-name descname"><span class="pre">_organizational_diagnostics</span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased._organizational_diagnostics" title="Link to this definition">¶</a></dt>
+<dd><p>The Organizational Diagnostics of the log.
+Defaults to None.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">log</span></span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">case_id_col</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">activity_col</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">timestamp_col</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">resource_col</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.group_col">
+<span class="sig-name descname"><span class="pre">group_col</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.group_col" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.compute_handover_of_work">
+<span class="sig-name descname"><span class="pre">compute_handover_of_work</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.compute_handover_of_work" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the Handover of Work metric.</p>
+<p>The Handover of Work metric measures how many times an
+individual is followed by another individual in the execution of
+a business process. It is stored in a dictionary where the keys
+are tuples of two individuals and the values are the number of
+times the first individual is followed by the second individual
+in the execution of a business process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_handover_of_work_values">
+<span class="sig-name descname"><span class="pre">get_handover_of_work_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SocialNetworkAnalysisType</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_handover_of_work_values" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Handover of Work metric.</p>
+<p>The Handover of Work metric is a dictionary where the keys are
+tuples of two individuals and the values are the number of times
+the first individual is followed by the second individual
+in the execution of a business process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Handover of Work metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Handover of Work values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.is_handover_of_work_directed">
+<span class="sig-name descname"><span class="pre">is_handover_of_work_directed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.is_handover_of_work_directed" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the Handover of Work metric is directed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the Handover of Work metric is directed, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.compute_subcontracting">
+<span class="sig-name descname"><span class="pre">compute_subcontracting</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.compute_subcontracting" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the Subcontracting metric.</p>
+<p>The Subcontracting metric calculates how many times the work of
+an individual is interleaved by the work of another individual,
+only to eventually “return” to the original individual. It is
+stored in a dictionary where the keys are tuples of two
+individuals and the values are the number of times the first
+individual is  interleaved by the second individual in the
+execution of a business process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_subcontracting_values">
+<span class="sig-name descname"><span class="pre">get_subcontracting_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SocialNetworkAnalysisType</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_subcontracting_values" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Subcontracting metric.</p>
+<p>The Subcontracting metric is a dictionary where the keys are
+tuples of two individuals and the values are the number of times
+the first individual is interleaved by the second individual
+in the execution of a business process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Subcontracting metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Subcontracting values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.is_subcontracting_directed">
+<span class="sig-name descname"><span class="pre">is_subcontracting_directed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.is_subcontracting_directed" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the Subcontracting metric is directed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the Subcontracting metric is directed, False otherwise.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Subcontracting values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.compute_working_together">
+<span class="sig-name descname"><span class="pre">compute_working_together</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.compute_working_together" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the Working Together metric.</p>
+<p>The Working Together metric calculates how many times two
+individuals work together to resolve a process instance. It is
+stored in a dictionary where the keys are tuples of two
+individuals and the values are the number of times the two
+individuals worked together to resolve a process instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_working_together_values">
+<span class="sig-name descname"><span class="pre">get_working_together_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SocialNetworkAnalysisType</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_working_together_values" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Working Together metric.</p>
+<p>The Working Together metric is a dictionary where the keys are
+tuples of two individuals and the values are the number of times
+the two individuals worked together to resolve a process instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Working Together metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Working Together values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.is_working_together_directed">
+<span class="sig-name descname"><span class="pre">is_working_together_directed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.is_working_together_directed" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the Working Together metric is directed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the Working Together metric is directed, False otherwise.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Working Together values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.compute_similar_activities">
+<span class="sig-name descname"><span class="pre">compute_similar_activities</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.compute_similar_activities" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the Similar Activities metric.</p>
+<p>The Similar Activities metric calculates how similar the work
+patterns are between two individuals. It is stored in a
+dictionary where the keys are tuples of two individuals and the
+values are the similarity score between the two individuals.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_similar_activities_values">
+<span class="sig-name descname"><span class="pre">get_similar_activities_values</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SocialNetworkAnalysisType</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_similar_activities_values" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Similar Activities metric.</p>
+<p>The Similar Activities metric is a dictionary where the keys are
+tuples of two individuals and the values are the similarity score
+between the two individuals.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The Similar Activities metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Similar Activities values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.is_similar_activities_directed">
+<span class="sig-name descname"><span class="pre">is_similar_activities_directed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.is_similar_activities_directed" title="Link to this definition">¶</a></dt>
+<dd><p>Checks if the Similar Activities metric is directed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the Similar Activities metric is directed, False otherwise.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the Similar Activities values have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.compute_organizational_roles">
+<span class="sig-name descname"><span class="pre">compute_organizational_roles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.compute_organizational_roles" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the organizational roles.</p>
+<p>A role is a set of activities in the log that are executed by a similar
+(multi)set of resources. Hence, it is a specific function within an
+organization. Grouping the activities into roles can help:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In understanding which activities are executed by which roles,</p></li>
+<li><dl class="simple">
+<dt>By understanding roles themselves (the numerosity of resources for</dt><dd><p>a single activity may not provide enough explanation).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Initially, each activity corresponds to a different role and is
+associated with the multiset of its originators. After that, roles are
+merged according to their similarity until no more merges are possible.</p>
+<p>The information about the roles is stored as a semi-structured list of
+activity groups, where each group associates a list of activities
+with a dictionary of originators and their corresponding
+importance scores.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_organizational_roles">
+<span class="sig-name descname"><span class="pre">get_organizational_roles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_organizational_roles" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the organizational roles.</p>
+<p>The organizational roles are stored as a semi-structured list of
+activity groups, where each group associates a list of activities
+with a dictionary of originators and their corresponding
+importance scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A list of dictionaries, where each dictionary
+contains the activities and their corresponding originators’ importance
+scores.
+Each dictionary has the following structure:
+{</p>
+<blockquote>
+<div><p>”activities”: List[str],    # List of activities in the role
+“originators_importance”: Dict[str, float]</p>
+<blockquote>
+<div><p># Dictionary of originators and their importance scores</p>
+</div></blockquote>
+</div></blockquote>
+<p>}</p>
+</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the organizational roles have not been calculated yet.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_number_of_distinct_activities">
+<span class="sig-name descname"><span class="pre">get_number_of_distinct_activities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_number_of_distinct_activities" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the number of distinct activities.</p>
+<p>Number of distinct activities done by a resource in a given time
+interval [t1, t2).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the number of
+distinct activities.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer indicating the number of distinct activities done by
+the resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_activity_frequency">
+<span class="sig-name descname"><span class="pre">get_activity_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_activity_frequency" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the activity frequency.</p>
+<p>Fraction of completions of a given activity a by a given
+resource r during a given time slot [t1, t2), with respect to
+the total number of activity completions by resource r during
+[t1, t2).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the activity
+frequency.</p></li>
+<li><p><strong>activity</strong> (<em>str</em>) – The activity for which to calculate the frequency.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the activity frequency of the given activity
+by the resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_activity_completions">
+<span class="sig-name descname"><span class="pre">get_activity_completions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_activity_completions" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the activity completions.</p>
+<p>The number of activity instances completed by a given resource
+during a given time slot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the activity
+completions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer indicating the number of activity instances completed
+by the resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_case_completions">
+<span class="sig-name descname"><span class="pre">get_case_completions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_case_completions" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the case completion.</p>
+<p>The number of cases completed during a given time slot in which
+a given resource was involved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the case
+completions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer indicating the number of cases completed by the
+resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_fraction_case_completions">
+<span class="sig-name descname"><span class="pre">get_fraction_case_completions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_fraction_case_completions" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the fraction case completion.</p>
+<p>The fraction of cases completed during a given time slot in
+which a given resource was involved with respect to the total
+number of cases completed during the time slot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the
+fraction case completions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the fraction of cases completed by the
+resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_average_workload">
+<span class="sig-name descname"><span class="pre">get_average_workload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_average_workload" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the average workload.</p>
+<p>The average number of activities started by a given resource but
+not completed at a moment in time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the average
+workload.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the average workload of the given resource
+in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_multitasking">
+<span class="sig-name descname"><span class="pre">get_multitasking</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_multitasking" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the multitasking.</p>
+<p>The fraction of active time during which a given resource is
+involved in more than one activity with respect to the
+resource’s active time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the
+multitasking.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the multitasking of the given resource
+in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_average_activity_duration">
+<span class="sig-name descname"><span class="pre">get_average_activity_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_average_activity_duration" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the average activity duration.</p>
+<p>The average duration of instances of a given activity completed
+during a given time slot by a given resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the average
+activity duration.</p></li>
+<li><p><strong>activity</strong> (<em>str</em>) – The activity for which to calculate the average
+duration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the average duration of the given activity
+by the resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_average_case_duration">
+<span class="sig-name descname"><span class="pre">get_average_case_duration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_average_case_duration" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the average case duration.</p>
+<p>The average duration of cases completed during a given time slot
+in which a given resource was involved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the average
+case duration.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the average duration of cases completed
+by the resource in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_interaction_two_resources">
+<span class="sig-name descname"><span class="pre">get_interaction_two_resources</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_interaction_two_resources" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the interaction between two resources.</p>
+<p>The number of cases completed during a given time slot in which
+two given resources were involved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource1</strong> (<em>str</em>) – The first resource for which to calculate the
+interaction.</p></li>
+<li><p><strong>resource2</strong> (<em>str</em>) – The second resource for which to calculate the
+interaction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the interaction between the two resources
+in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_social_position">
+<span class="sig-name descname"><span class="pre">get_social_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_time</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_social_position" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the social position.</p>
+<p>The fraction of resources involved in the same cases with a
+given resource during a given time slot with respect to the
+total number of resources active during the time slot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start_time</strong> (<em>str</em>) – The start time of the interval.</p></li>
+<li><p><strong>end_time</strong> (<em>str</em>) – The end time of the interval.</p></li>
+<li><p><strong>resource</strong> (<em>str</em>) – The resource for which to calculate the
+social position.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A float indicating the social position of the given resource
+in the given time interval.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.compute_organizational_diagnostics">
+<span class="sig-name descname"><span class="pre">compute_organizational_diagnostics</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.compute_organizational_diagnostics" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the organizational diagnostics.</p>
+<p>Provides the local diagnostics for the organizational model
+starting from a log object and considering the resource group
+specified by the attribute. It is stored in a dictionary where the keys are
+the names of the group-related metrics and the values are the
+corresponding diagnostic values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the resource column name is not provided.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_group_relative_focus">
+<span class="sig-name descname"><span class="pre">get_group_relative_focus</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_relative_focus" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Group Relative Focus metric.</p>
+<blockquote>
+<div><p>The Group Relative Focus metric specifies for a given work how
+much a resource group performed this type of work compared to
+the overall workload of the group. It can be used to measure how
+the workload of a resource group is distributed over different
+types of work, i.e., work diversification of the group.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary where the keys are the names of the resources
+and the values are dictionaries containing activity names
+and the Group Relative Focus metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the organizational diagnostics have not been</p></li>
+<li><p><strong>calculated yet.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_group_relative_stake">
+<span class="sig-name descname"><span class="pre">get_group_relative_stake</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_relative_stake" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Group Relative Stake metric.</p>
+<p>The Group Relative Stake metric specifies for a given work how much
+this type of work was performed by a certain resource group among
+all groups. It can be used to measure how the workload devoted to
+a certain type of work is distributed over resource groups in an
+organizational model, i.e., work participation by different groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary where the keys are the names of the resources and
+the values are dictionaries containing activity names and the
+Group Relative Stake metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the organizational diagnostics have not been</p></li>
+<li><p><strong>calculated yet.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_group_coverage">
+<span class="sig-name descname"><span class="pre">get_group_coverage</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_coverage" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Group Coverage metric.</p>
+<p>The Group Coverage metric with respect to a given type of work,
+specifies the proportion of members of a resource group that
+performed this type of work.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary where the keys are the names of the resources
+and the values are dictionaries containing resources and the
+Group Coverage metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the organizational diagnostics have not been</p></li>
+<li><p><strong>calculated yet.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="backend.conformance_checking.resource_based.ResourceBased.get_group_member_contribution">
+<span class="sig-name descname"><span class="pre">get_group_member_contribution</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_member_contribution" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Group Member Contribution metric.</p>
+<p>The Group Member Contribution metric of a member of a resource group
+with respect to a given type of work specifies how much of this type
+of work by the group was performed by the member. It can be used to
+measure how the workload of the entire group devoted to a certain
+type of work is distributed over the group members.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary where the keys are the names of the resources and
+the values are dictionaries containing resources and the Group
+Member Contribution metric.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the organizational diagnostics have not been</p></li>
+<li><p><strong>calculated yet.</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../temporal_profile/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">backend.conformance_checking.temporal_profile</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../log_skeleton/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">backend.conformance_checking.log_skeleton</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Samadrita Saha, René Rockstedt, Ekansh Agarwal, Yash Raj, Ole Seifert
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">backend.conformance_checking.resource_based</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.SocialNetworkAnalysisType"><code class="docutils literal notranslate"><span class="pre">SocialNetworkAnalysisType</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased"><code class="docutils literal notranslate"><span class="pre">ResourceBased</span></code></a><ul>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.log"><code class="docutils literal notranslate"><span class="pre">ResourceBased.log</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.case_id_col"><code class="docutils literal notranslate"><span class="pre">ResourceBased.case_id_col</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.activity_col"><code class="docutils literal notranslate"><span class="pre">ResourceBased.activity_col</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.timestamp_col"><code class="docutils literal notranslate"><span class="pre">ResourceBased.timestamp_col</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.resource_col"><code class="docutils literal notranslate"><span class="pre">ResourceBased.resource_col</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased._handover_of_work"><code class="docutils literal notranslate"><span class="pre">ResourceBased._handover_of_work</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased._subcontracting"><code class="docutils literal notranslate"><span class="pre">ResourceBased._subcontracting</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased._working_together"><code class="docutils literal notranslate"><span class="pre">ResourceBased._working_together</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased._similar_activities"><code class="docutils literal notranslate"><span class="pre">ResourceBased._similar_activities</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased._organizational_roles"><code class="docutils literal notranslate"><span class="pre">ResourceBased._organizational_roles</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased._organizational_diagnostics"><code class="docutils literal notranslate"><span class="pre">ResourceBased._organizational_diagnostics</span></code></a></li>
+<li><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">ResourceBased.log</span></code></a></li>
+<li><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">ResourceBased.case_id_col</span></code></a></li>
+<li><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">ResourceBased.activity_col</span></code></a></li>
+<li><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">ResourceBased.timestamp_col</span></code></a></li>
+<li><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">ResourceBased.resource_col</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.group_col"><code class="docutils literal notranslate"><span class="pre">ResourceBased.group_col</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.compute_handover_of_work"><code class="docutils literal notranslate"><span class="pre">ResourceBased.compute_handover_of_work()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_handover_of_work_values"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_handover_of_work_values()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.is_handover_of_work_directed"><code class="docutils literal notranslate"><span class="pre">ResourceBased.is_handover_of_work_directed()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.compute_subcontracting"><code class="docutils literal notranslate"><span class="pre">ResourceBased.compute_subcontracting()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_subcontracting_values"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_subcontracting_values()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.is_subcontracting_directed"><code class="docutils literal notranslate"><span class="pre">ResourceBased.is_subcontracting_directed()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.compute_working_together"><code class="docutils literal notranslate"><span class="pre">ResourceBased.compute_working_together()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_working_together_values"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_working_together_values()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.is_working_together_directed"><code class="docutils literal notranslate"><span class="pre">ResourceBased.is_working_together_directed()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.compute_similar_activities"><code class="docutils literal notranslate"><span class="pre">ResourceBased.compute_similar_activities()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_similar_activities_values"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_similar_activities_values()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.is_similar_activities_directed"><code class="docutils literal notranslate"><span class="pre">ResourceBased.is_similar_activities_directed()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.compute_organizational_roles"><code class="docutils literal notranslate"><span class="pre">ResourceBased.compute_organizational_roles()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_organizational_roles"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_organizational_roles()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_number_of_distinct_activities"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_number_of_distinct_activities()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_activity_frequency"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_activity_frequency()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_activity_completions"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_activity_completions()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_case_completions"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_case_completions()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_fraction_case_completions"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_fraction_case_completions()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_average_workload"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_average_workload()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_multitasking"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_multitasking()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_average_activity_duration"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_average_activity_duration()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_average_case_duration"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_average_case_duration()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_interaction_two_resources"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_interaction_two_resources()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_social_position"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_social_position()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.compute_organizational_diagnostics"><code class="docutils literal notranslate"><span class="pre">ResourceBased.compute_organizational_diagnostics()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_relative_focus"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_group_relative_focus()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_relative_stake"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_group_relative_stake()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_coverage"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_group_coverage()</span></code></a></li>
+<li><a class="reference internal" href="#backend.conformance_checking.resource_based.ResourceBased.get_group_member_contribution"><code class="docutils literal notranslate"><span class="pre">ResourceBased.get_group_member_contribution()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>

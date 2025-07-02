@@ -1,0 +1,1720 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 --><title>Index - Automatic Conformance Checking Insights in Celonis documentation</title>
+<link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Automatic Conformance Checking Insights in Celonis  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo only-light" src="_static//img/light-logo.png" alt="Light Logo"/>
+    <img class="sidebar-logo only-dark" src="_static//img/dark-logo.png" alt="Dark Logo"/>
+  </div>
+  
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conformance_checking.html">Automatic Conformance Checking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">System Architecture</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="autoapi/index.html">API Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of API Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="autoapi/backend/index.html">backend</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of backend</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/backend/api/index.html">backend.api</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of backend.api</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/api/celonis/index.html">backend.api.celonis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/api/jobs/index.html">backend.api.jobs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/api/log/index.html">backend.api.log</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/backend/api/models/index.html">backend.api.models</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of backend.api.models</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5 has-children"><a class="reference internal" href="autoapi/backend/api/models/schemas/index.html">backend.api.models.schemas</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of backend.api.models.schemas</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/backend/api/models/schemas/job_models/index.html">backend.api.models.schemas.job_models</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/backend/api/models/schemas/output_format/index.html">backend.api.models.schemas.output_format</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/backend/api/models/schemas/resource_based_models/index.html">backend.api.models.schemas.resource_based_models</a></li>
+<li class="toctree-l6"><a class="reference internal" href="autoapi/backend/api/models/schemas/setup_models/index.html">backend.api.models.schemas.setup_models</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/backend/api/modules/index.html">backend.api.modules</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of backend.api.modules</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/modules/declarative_router/index.html">backend.api.modules.declarative_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/modules/general_router/index.html">backend.api.modules.general_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/modules/log_skeleton_router/index.html">backend.api.modules.log_skeleton_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/modules/resource_based_router/index.html">backend.api.modules.resource_based_router</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/modules/temporal_profile_router/index.html">backend.api.modules.temporal_profile_router</a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/api/setup/index.html">backend.api.setup</a></li>
+<li class="toctree-l4 has-children"><a class="reference internal" href="autoapi/backend/api/tasks/index.html">backend.api.tasks</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of backend.api.tasks</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/tasks/declarative_constraints_tasks/index.html">backend.api.tasks.declarative_constraints_tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/tasks/log_skeleton_tasks/index.html">backend.api.tasks.log_skeleton_tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/tasks/resource_based_tasks/index.html">backend.api.tasks.resource_based_tasks</a></li>
+<li class="toctree-l5"><a class="reference internal" href="autoapi/backend/api/tasks/temporal_profile_tasks/index.html">backend.api.tasks.temporal_profile_tasks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/backend/celonis_connection/index.html">backend.celonis_connection</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of backend.celonis_connection</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html">backend.celonis_connection.celonis_connection_manager</a></li>
+</ul>
+</li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/backend/conformance_checking/index.html">backend.conformance_checking</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of backend.conformance_checking</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/conformance_checking/declarative_constraints/index.html">backend.conformance_checking.declarative_constraints</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/conformance_checking/log_skeleton/index.html">backend.conformance_checking.log_skeleton</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/conformance_checking/resource_based/index.html">backend.conformance_checking.resource_based</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/conformance_checking/temporal_profile/index.html">backend.conformance_checking.temporal_profile</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/backend/main/index.html">backend.main</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/backend/pql_queries/index.html">backend.pql_queries</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of backend.pql_queries</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/pql_queries/declarative_queries/index.html">backend.pql_queries.declarative_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/pql_queries/general_queries/index.html">backend.pql_queries.general_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/pql_queries/log_skeleton_queries/index.html">backend.pql_queries.log_skeleton_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/pql_queries/resource_based_queries/index.html">backend.pql_queries.resource_based_queries</a></li>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/pql_queries/temporal_profile_queries/index.html">backend.pql_queries.temporal_profile_queries</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="autoapi/backend/usage_example/index.html">backend.usage_example</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="autoapi/backend/utils/index.html">backend.utils</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of backend.utils</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="autoapi/backend/utils/file_handlers/index.html">backend.utils.file_handlers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          
+<section class="genindex-section">
+  <h1 id="index">Index</h1>
+  <div class="genindex-jumpbox"><a href="#_"><strong>_</strong></a> | <a href="#A"><strong>A</strong></a> | <a href="#B"><strong>B</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#J"><strong>J</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#O"><strong>O</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#T"><strong>T</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a></div>
+</section>
+<section id="_" class="genindex-section">
+  <h2>_</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased._handover_of_work">_handover_of_work (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased._organizational_diagnostics">_organizational_diagnostics (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased._organizational_roles">_organizational_roles (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased._similar_activities">_similar_activities (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton._skeleton">_skeleton (backend.conformance_checking.log_skeleton.LogSkeleton attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased._subcontracting">_subcontracting (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile._temporal_conformance_result">_temporal_conformance_result (backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile._temporal_profile">_temporal_profile (backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased._working_together">_working_together (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile._zeta">_zeta (backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="A" class="genindex-section">
+  <h2>A</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.OrganizationalRole.activities">activities (backend.api.models.schemas.resource_based_models.OrganizationalRole attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.activity_col">activity_col (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.activity_col">(backend.conformance_checking.log_skeleton.LogSkeleton attribute)</a>, <a href="autoapi/backend/conformance_checking/log_skeleton/index.html#id2">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.activity_col">(backend.conformance_checking.resource_based.ResourceBased attribute)</a>, <a href="autoapi/backend/conformance_checking/resource_based/index.html#id2">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.activity_col">(backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>, <a href="autoapi/backend/conformance_checking/temporal_profile/index.html#id2">[1]</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.ColumnMapping.activity_column">activity_column (backend.api.models.schemas.setup_models.ColumnMapping attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.add_dataframe">add_dataframe() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.CelonisSettings.API_TOKEN">API_TOKEN (backend.api.celonis.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.CelonisCredentials.api_token">api_token (backend.api.models.schemas.setup_models.CelonisCredentials attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.api_token">(backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.CelonisSettings.API_TOKEN">API_TOKEN (backend.usage_example.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/main/index.html#backend.main.app">app (in module backend.main)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="B" class="genindex-section">
+  <h2>B</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    backend
+
+        <ul>
+          <li><a href="autoapi/backend/index.html#module-backend">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api
+
+        <ul>
+          <li><a href="autoapi/backend/api/index.html#module-backend.api">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.celonis
+
+        <ul>
+          <li><a href="autoapi/backend/api/celonis/index.html#module-backend.api.celonis">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.jobs
+
+        <ul>
+          <li><a href="autoapi/backend/api/jobs/index.html#module-backend.api.jobs">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.log
+
+        <ul>
+          <li><a href="autoapi/backend/api/log/index.html#module-backend.api.log">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.models
+
+        <ul>
+          <li><a href="autoapi/backend/api/models/index.html#module-backend.api.models">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.models.schemas
+
+        <ul>
+          <li><a href="autoapi/backend/api/models/schemas/index.html#module-backend.api.models.schemas">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.models.schemas.job_models
+
+        <ul>
+          <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#module-backend.api.models.schemas.job_models">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.models.schemas.output_format
+
+        <ul>
+          <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#module-backend.api.models.schemas.output_format">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.models.schemas.resource_based_models
+
+        <ul>
+          <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#module-backend.api.models.schemas.resource_based_models">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.models.schemas.setup_models
+
+        <ul>
+          <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#module-backend.api.models.schemas.setup_models">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.modules
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/index.html#module-backend.api.modules">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.modules.declarative_router
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/declarative_router/index.html#module-backend.api.modules.declarative_router">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.modules.general_router
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/general_router/index.html#module-backend.api.modules.general_router">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.modules.log_skeleton_router
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#module-backend.api.modules.log_skeleton_router">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.modules.resource_based_router
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#module-backend.api.modules.resource_based_router">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.modules.temporal_profile_router
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#module-backend.api.modules.temporal_profile_router">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.setup
+
+        <ul>
+          <li><a href="autoapi/backend/api/setup/index.html#module-backend.api.setup">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.tasks
+
+        <ul>
+          <li><a href="autoapi/backend/api/tasks/index.html#module-backend.api.tasks">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.tasks.declarative_constraints_tasks
+
+        <ul>
+          <li><a href="autoapi/backend/api/tasks/declarative_constraints_tasks/index.html#module-backend.api.tasks.declarative_constraints_tasks">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.tasks.log_skeleton_tasks
+
+        <ul>
+          <li><a href="autoapi/backend/api/tasks/log_skeleton_tasks/index.html#module-backend.api.tasks.log_skeleton_tasks">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    backend.api.tasks.resource_based_tasks
+
+        <ul>
+          <li><a href="autoapi/backend/api/tasks/resource_based_tasks/index.html#module-backend.api.tasks.resource_based_tasks">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.api.tasks.temporal_profile_tasks
+
+        <ul>
+          <li><a href="autoapi/backend/api/tasks/temporal_profile_tasks/index.html#module-backend.api.tasks.temporal_profile_tasks">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.celonis_connection
+
+        <ul>
+          <li><a href="autoapi/backend/celonis_connection/index.html#module-backend.celonis_connection">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.celonis_connection.celonis_connection_manager
+
+        <ul>
+          <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#module-backend.celonis_connection.celonis_connection_manager">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.conformance_checking
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/index.html#module-backend.conformance_checking">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.conformance_checking.declarative_constraints
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#module-backend.conformance_checking.declarative_constraints">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.conformance_checking.log_skeleton
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#module-backend.conformance_checking.log_skeleton">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.conformance_checking.resource_based
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#module-backend.conformance_checking.resource_based">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.conformance_checking.temporal_profile
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#module-backend.conformance_checking.temporal_profile">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.main
+
+        <ul>
+          <li><a href="autoapi/backend/main/index.html#module-backend.main">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/index.html#module-backend.pql_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries.declarative_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#module-backend.pql_queries.declarative_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries.declerative_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/declerative_queries/index.html#module-backend.pql_queries.declerative_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries.general_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/general_queries/index.html#module-backend.pql_queries.general_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries.log_skeleton_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#module-backend.pql_queries.log_skeleton_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries.resource_based_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#module-backend.pql_queries.resource_based_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.pql_queries.temporal_profile_queries
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/temporal_profile_queries/index.html#module-backend.pql_queries.temporal_profile_queries">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.usage_example
+
+        <ul>
+          <li><a href="autoapi/backend/usage_example/index.html#module-backend.usage_example">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.utils
+
+        <ul>
+          <li><a href="autoapi/backend/utils/index.html#module-backend.utils">module</a>
+</li>
+        </ul></li>
+        <li>
+    backend.utils.file_handlers
+
+        <ul>
+          <li><a href="autoapi/backend/utils/file_handlers/index.html#module-backend.utils.file_handlers">module</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.base_url">base_url (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="C" class="genindex-section">
+  <h2>C</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.case_id_col">case_id_col (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.case_id_col">(backend.conformance_checking.log_skeleton.LogSkeleton attribute)</a>, <a href="autoapi/backend/conformance_checking/log_skeleton/index.html#id1">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.case_id_col">(backend.conformance_checking.resource_based.ResourceBased attribute)</a>, <a href="autoapi/backend/conformance_checking/resource_based/index.html#id1">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.case_id_col">(backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>, <a href="autoapi/backend/conformance_checking/temporal_profile/index.html#id1">[1]</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.ColumnMapping.case_id_column">case_id_column (backend.api.models.schemas.setup_models.ColumnMapping attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.celonis">celonis (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.CelonisSettings.CELONIS_BASE_URL">CELONIS_BASE_URL (backend.api.celonis.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.CelonisCredentials.celonis_base_url">celonis_base_url (backend.api.models.schemas.setup_models.CelonisCredentials attribute)</a>
+</li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.CelonisSettings.CELONIS_BASE_URL">CELONIS_BASE_URL (backend.usage_example.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/setup/index.html#backend.api.setup.celonis_credentials">celonis_credentials() (in module backend.api.setup)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.CelonisSettings.CELONIS_DATA_MODEL_NAME">CELONIS_DATA_MODEL_NAME (backend.api.celonis.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.CelonisCredentials.celonis_data_model_name">celonis_data_model_name (backend.api.models.schemas.setup_models.CelonisCredentials attribute)</a>
+</li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.CelonisSettings.CELONIS_DATA_MODEL_NAME">CELONIS_DATA_MODEL_NAME (backend.usage_example.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.CelonisSettings.CELONIS_DATA_POOL_NAME">CELONIS_DATA_POOL_NAME (backend.api.celonis.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.CelonisCredentials.celonis_data_pool_name">celonis_data_pool_name (backend.api.models.schemas.setup_models.CelonisCredentials attribute)</a>
+</li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.CelonisSettings.CELONIS_DATA_POOL_NAME">CELONIS_DATA_POOL_NAME (backend.usage_example.CelonisSettings attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager">CelonisConnectionManager (class in backend.celonis_connection.celonis_connection_manager)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.CelonisCredentials">CelonisCredentials (class in backend.api.models.schemas.setup_models)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.CelonisSettings">CelonisSettings (class in backend.api.celonis)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.CelonisSettings">(class in backend.usage_example)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.cfg">cfg (in module backend.usage_example)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.check_conformance_traces">check_conformance_traces() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.check_temporal_conformance">check_temporal_conformance() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.ColumnMapping">ColumnMapping (class in backend.api.models.schemas.setup_models)</a>
+</li>
+        <li><a href="autoapi/backend/api/log/index.html#backend.api.log.commit_log_to_celonis">commit_log_to_celonis() (in module backend.api.log)</a>
+</li>
+        <li><a href="autoapi/backend/api/tasks/declarative_constraints_tasks/index.html#backend.api.tasks.declarative_constraints_tasks.compute_and_store_declarative_constraints">compute_and_store_declarative_constraints() (in module backend.api.tasks.declarative_constraints_tasks)</a>
+</li>
+        <li><a href="autoapi/backend/api/tasks/log_skeleton_tasks/index.html#backend.api.tasks.log_skeleton_tasks.compute_and_store_log_skeleton">compute_and_store_log_skeleton() (in module backend.api.tasks.log_skeleton_tasks)</a>
+</li>
+        <li><a href="autoapi/backend/api/tasks/resource_based_tasks/index.html#backend.api.tasks.resource_based_tasks.compute_and_store_resource_based_metrics">compute_and_store_resource_based_metrics() (in module backend.api.tasks.resource_based_tasks)</a>
+</li>
+        <li><a href="autoapi/backend/api/tasks/temporal_profile_tasks/index.html#backend.api.tasks.temporal_profile_tasks.compute_and_store_temporal_conformance_result">compute_and_store_temporal_conformance_result() (in module backend.api.tasks.temporal_profile_tasks)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.compute_declarative_constraints">compute_declarative_constraints() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.compute_handover_of_work">compute_handover_of_work() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.compute_log_skeleton">compute_log_skeleton() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.compute_organizational_diagnostics">compute_organizational_diagnostics() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.compute_organizational_roles">compute_organizational_roles() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.compute_resource_based_metrics">compute_resource_based_metrics() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.compute_similar_activities">compute_similar_activities() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.compute_skeleton">compute_skeleton() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.compute_subcontracting">compute_subcontracting() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.compute_temporal_conformance_result">compute_temporal_conformance_result() (in module backend.api.modules.temporal_profile_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.compute_working_together">compute_working_together() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.conf_results_memory">conf_results_memory (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.ConformanceResultType">ConformanceResultType (in module backend.conformance_checking.temporal_profile)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.create_table">create_table() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="D" class="genindex-section">
+  <h2>D</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.data_frame">data_frame (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.data_model">data_model (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.data_model_name">data_model_name (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.data_pool">data_pool (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.data_pool_name">data_pool_name (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_absence">declarative_conformance_for_absence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_altprecedence">declarative_conformance_for_altprecedence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_altsuccession">declarative_conformance_for_altsuccession() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_chainprecedence">declarative_conformance_for_chainprecedence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_chainresponse">declarative_conformance_for_chainresponse() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_chainsuccession">declarative_conformance_for_chainsuccession() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_coexistence">declarative_conformance_for_coexistence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_exactly_one">declarative_conformance_for_exactly_one() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_existence">declarative_conformance_for_existence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_init">declarative_conformance_for_init() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_nonchainsuccession">declarative_conformance_for_nonchainsuccession() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_noncoexistence">declarative_conformance_for_noncoexistence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_nonsuccession">declarative_conformance_for_nonsuccession() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_precedence">declarative_conformance_for_precedence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_responded_existence">declarative_conformance_for_responded_existence() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_response">declarative_conformance_for_response() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declarative_conformance_for_succession">declarative_conformance_for_succession() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints">DeclarativeConstraints (class in backend.conformance_checking.declarative_constraints)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.declare_model">declare_model (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclareModelType">DeclareModelType (in module backend.conformance_checking.declarative_constraints)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.discover_temporal_profile">discover_temporal_profile() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="E" class="genindex-section">
+  <h2>E</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphModel.edges">edges (backend.api.models.schemas.output_format.GraphModel attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.Graph.edges">(backend.api.modules.log_skeleton_router.Graph attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.EndpointReturnType">EndpointReturnType (class in backend.api.modules.log_skeleton_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.EndpointReturnType">(in module backend.api.modules.general_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.EndpointReturnType">(in module backend.api.modules.temporal_profile_router)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/setup/index.html#backend.api.setup.ENV_PATH">ENV_PATH (in module backend.api.setup)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#backend.api.models.schemas.job_models.JobStatus.error">error (backend.api.models.schemas.job_models.JobStatus attribute)</a>
+</li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.EVENT_LOG_LOC">EVENT_LOG_LOC (in module backend.usage_example)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="F" class="genindex-section">
+  <h2>F</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphEdge.Config.fields">fields (backend.api.models.schemas.output_format.GraphEdge.Config attribute)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.find_data_model">find_data_model() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.find_data_pool">find_data_pool() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.fitness_score">fitness_score (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#backend.pql_queries.declarative_queries.format_graph_and_table">format_graph_and_table() (in module backend.pql_queries.declarative_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphEdge.from_">from_ (backend.api.models.schemas.output_format.GraphEdge attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="G" class="genindex-section">
+  <h2>G</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_absence_violations">get_absence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_act_freq">get_act_freq() (in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_activities">get_activities() (in module backend.pql_queries.general_queries)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_activity_completions">get_activity_completions() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_activity_completions">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.get_activity_frequencies">get_activity_frequencies() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_activity_frequencies">(in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_activity_frequency">get_activity_frequency() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_activity_frequency">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_altprecedence_violations">get_altprecedence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_altsuccession_violations">get_altsuccession_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_always_after">get_always_after() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_always_after_pql">get_always_after_pql() (in module backend.api.modules.declarative_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_always_after_pql">(in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.get_always_after_relation">get_always_after_relation() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#backend.pql_queries.declarative_queries.get_always_after_relation">(in module backend.pql_queries.declarative_queries)</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_always_after_relation">(in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_always_before">get_always_before() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_always_before_pql">get_always_before_pql() (in module backend.api.modules.declarative_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_always_before_pql">(in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.get_always_before_relation">get_always_before_relation() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#backend.pql_queries.declarative_queries.get_always_before_relation">(in module backend.pql_queries.declarative_queries)</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_always_before_relation">(in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_average_activity_duration">get_average_activity_duration() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_average_activity_duration">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_average_case_duration">get_average_case_duration() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_average_case_duration">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_average_workload">get_average_workload() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_average_workload">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_basic_dataframe_from_celonis">get_basic_dataframe_from_celonis() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_case_completions">get_case_completions() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_case_completions">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_cases">get_cases() (in module backend.pql_queries.general_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.get_celonis_connection">get_celonis_connection() (in module backend.api.celonis)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_chainprecedence_violations">get_chainprecedence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_chainresponse_violations">get_chainresponse_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_chainsuccession_violations">get_chainsuccession_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_coexistence_violations">get_coexistence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/setup/index.html#backend.api.setup.get_column_names">get_column_names() (in module backend.api.setup)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.get_conformance_diagnostics">get_conformance_diagnostics() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_data_model">get_data_model() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_data_pool">get_data_pool() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_dataframe_from_celonis">get_dataframe_from_celonis() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_dataframe_with_resource_group_from_celonis">get_dataframe_with_resource_group_from_celonis() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.get_declarative_conformance_diagnostics">get_declarative_conformance_diagnostics() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_dfg_representation">get_dfg_representation() (in module backend.pql_queries.general_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_directly_follows">get_directly_follows() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_directly_follows_pql">get_directly_follows_pql() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_directly_follows_relation_and_count">get_directly_follows_relation_and_count() (in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_distinct_activities">get_distinct_activities() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_distinct_activities_pql">get_distinct_activities_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_equivalance_relation">get_equivalance_relation() (in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_equivalence">get_equivalence() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_equivalence_pql">get_equivalence_pql() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.get_equivalence_relation">get_equivalence_relation() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_exactly_one_violations">get_exactly_one_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_exclusive_choice_relaion">get_exclusive_choice_relaion() (in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_existance_violations">get_existance_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_fraction_case_completions">get_fraction_case_completions() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_fraction_case_completions">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.get_general_information">get_general_information() (in module backend.api.modules.general_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_general_information">(in module backend.pql_queries.general_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_group_coverage">get_group_coverage() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_group_coverage">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_group_coverage_metric">get_group_coverage_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_group_member_contribution">get_group_member_contribution() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_group_member_contribution_metric">get_group_member_contribution_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_group_member_interaction">get_group_member_interaction() (in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_group_relative_focus">get_group_relative_focus() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_group_relative_focus">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_group_relative_focus_metric">get_group_relative_focus_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_group_relative_stake">get_group_relative_stake() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_group_relative_stake">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_group_relative_stake_metric">get_group_relative_stake_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_handover_of_work_metric">get_handover_of_work_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_handover_of_work_values">get_handover_of_work_values() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_handover_of_work_values">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_init_violations">get_init_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_interaction_of_two_resources">get_interaction_of_two_resources() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_interaction_of_two_resources_pql">get_interaction_of_two_resources_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_interaction_two_resources">get_interaction_two_resources() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_interaction_two_resources">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/jobs/index.html#backend.api.jobs.get_jobs">get_jobs() (in module backend.api.jobs)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_multitasking">get_multitasking() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_never_together">get_never_together() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.get_never_together_pql">get_never_together_pql() (in module backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.get_never_together_relation">get_never_together_relation() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#backend.pql_queries.log_skeleton_queries.get_never_together_relation">(in module backend.pql_queries.log_skeleton_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_nonchainsuccession_violations">get_nonchainsuccession_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_noncoexistence_violations">get_noncoexistence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_nonsuccession_violations">get_nonsuccession_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_number_of_activities">get_number_of_activities() (in module backend.pql_queries.general_queries)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_number_of_cases">get_number_of_cases() (in module backend.pql_queries.general_queries)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_number_of_distinct_activities">get_number_of_distinct_activities() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_number_of_distinct_activities">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_number_of_groups">get_number_of_groups() (in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_number_of_resources">get_number_of_resources() (in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_organizational_roles">get_organizational_roles() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_organizational_roles">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_organizational_roles_result">get_organizational_roles_result() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_precedence_violations">get_precedence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_activity_completions">get_resource_activity_completions() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_activity_completions_pql">get_resource_activity_completions_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_activity_frequency">get_resource_activity_frequency() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_activity_frequency_pql">get_resource_activity_frequency_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_average_activity_duration">get_resource_average_activity_duration() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_average_case_duration">get_resource_average_case_duration() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_average_workload">get_resource_average_workload() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_average_workload_pql">get_resource_average_workload_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_case_completions">get_resource_case_completions() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_case_completions_pql">get_resource_case_completions_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_resource_for_activity">get_resource_for_activity() (in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_fraction_case_completions">get_resource_fraction_case_completions() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_fraction_case_completions_pql">get_resource_fraction_case_completions_pql() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_multitasking">get_resource_multitasking() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_resource_social_position">get_resource_social_position() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_responded_existence_violations">get_responded_existence_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_response_violations">get_response_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_similar_activities_metric">get_similar_activities_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_similar_activities_values">get_similar_activities_values() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_similar_activities_values">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.get_skeleton">get_skeleton() (backend.conformance_checking.log_skeleton.LogSkeleton method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_social_position">get_social_position() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_social_position">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.get_sorted_coloured_diagnostics">get_sorted_coloured_diagnostics() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_subcontracting_metric">get_subcontracting_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_subcontracting_values">get_subcontracting_values() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_subcontracting_values">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.get_succession_violations">get_succession_violations() (in module backend.api.modules.declarative_router)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_table">get_table() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager.get_table_columns">get_table_columns() (backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.get_temporal_conformance_result">get_temporal_conformance_result() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.get_temporal_conformance_result">(in module backend.api.modules.temporal_profile_router)</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/temporal_profile_queries/index.html#backend.pql_queries.temporal_profile_queries.get_temporal_conformance_result">(in module backend.pql_queries.temporal_profile_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.get_temporal_profile">get_temporal_profile() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+</li>
+        <li><a href="autoapi/backend/pql_queries/general_queries/index.html#backend.pql_queries.general_queries.get_traces_with_count">get_traces_with_count() (in module backend.pql_queries.general_queries)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.get_unique_activities">get_unique_activities() (in module backend.api.modules.general_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.get_working_together_metric">get_working_together_metric() (in module backend.api.modules.resource_based_router)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.get_working_together_values">get_working_together_values() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#backend.pql_queries.resource_based_queries.get_working_together_values">(in module backend.pql_queries.resource_based_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.get_zeta">get_zeta() (backend.conformance_checking.temporal_profile.TemporalProfile method)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.Graph">Graph (class in backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphEdge">GraphEdge (class in backend.api.models.schemas.output_format)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphEdge.Config">GraphEdge.Config (class in backend.api.models.schemas.output_format)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphModel">GraphModel (class in backend.api.models.schemas.output_format)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphNode">GraphNode (class in backend.api.models.schemas.output_format)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.ResponseSchema.graphs">graphs (backend.api.models.schemas.output_format.ResponseSchema attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.EndpointReturnType.graphs">(backend.api.modules.log_skeleton_router.EndpointReturnType attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.GraphType">GraphType (in module backend.api.modules.declarative_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.GraphType">(in module backend.api.modules.general_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.GraphType">(in module backend.api.modules.resource_based_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.GraphType">(in module backend.api.modules.temporal_profile_router)</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.GraphType">(in module backend.conformance_checking.declarative_constraints)</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#backend.pql_queries.declarative_queries.GraphType">(in module backend.pql_queries.declarative_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.group_col">group_col (backend.conformance_checking.resource_based.ResourceBased attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.ColumnMapping.group_column">group_column (backend.api.models.schemas.setup_models.ColumnMapping attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="H" class="genindex-section">
+  <h2>H</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.TableModel.headers">headers (backend.api.models.schemas.output_format.TableModel attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.Table.headers">(backend.api.modules.log_skeleton_router.Table attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/main/index.html#backend.main.home">home() (in module backend.main)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="I" class="genindex-section">
+  <h2>I</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphNode.id">id (backend.api.models.schemas.output_format.GraphNode attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.is_handover_of_work_directed">is_handover_of_work_directed() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.is_similar_activities_directed">is_similar_activities_directed() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.is_subcontracting_directed">is_subcontracting_directed() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.is_working_together_directed">is_working_together_directed() (backend.conformance_checking.resource_based.ResourceBased method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="J" class="genindex-section">
+  <h2>J</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#backend.api.models.schemas.job_models.JobStatus">JobStatus (class in backend.api.models.schemas.job_models)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="L" class="genindex-section">
+  <h2>L</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphEdge.label">label (backend.api.models.schemas.output_format.GraphEdge attribute)</a>
+</li>
+        <li><a href="autoapi/backend/main/index.html#backend.main.lifespan">lifespan() (in module backend.main)</a>
+</li>
+        <li><a href="autoapi/backend/api/setup/index.html#backend.api.setup.LOCK_PATH">LOCK_PATH (in module backend.api.setup)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.log">log (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.log">(backend.conformance_checking.log_skeleton.LogSkeleton attribute)</a>, <a href="autoapi/backend/conformance_checking/log_skeleton/index.html#id0">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.log">(backend.conformance_checking.resource_based.ResourceBased attribute)</a>, <a href="autoapi/backend/conformance_checking/resource_based/index.html#id0">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.log">(backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>, <a href="autoapi/backend/conformance_checking/temporal_profile/index.html#id0">[1]</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton">LogSkeleton (class in backend.conformance_checking.log_skeleton)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="M" class="genindex-section">
+  <h2>M</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.min_confidence_ratio">min_confidence_ratio (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.min_support_ratio">min_support_ratio (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/celonis/index.html#backend.api.celonis.CelonisSettings.model_config">model_config (backend.api.celonis.CelonisSettings attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.CelonisSettings.model_config">(backend.usage_example.CelonisSettings attribute)</a>
+</li>
+        </ul></li>
+        <li>
+    module
+
+        <ul>
+          <li><a href="autoapi/backend/index.html#module-backend">backend</a>
+</li>
+          <li><a href="autoapi/backend/api/index.html#module-backend.api">backend.api</a>
+</li>
+          <li><a href="autoapi/backend/api/celonis/index.html#module-backend.api.celonis">backend.api.celonis</a>
+</li>
+          <li><a href="autoapi/backend/api/jobs/index.html#module-backend.api.jobs">backend.api.jobs</a>
+</li>
+          <li><a href="autoapi/backend/api/log/index.html#module-backend.api.log">backend.api.log</a>
+</li>
+          <li><a href="autoapi/backend/api/models/index.html#module-backend.api.models">backend.api.models</a>
+</li>
+          <li><a href="autoapi/backend/api/models/schemas/index.html#module-backend.api.models.schemas">backend.api.models.schemas</a>
+</li>
+          <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#module-backend.api.models.schemas.job_models">backend.api.models.schemas.job_models</a>
+</li>
+          <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#module-backend.api.models.schemas.output_format">backend.api.models.schemas.output_format</a>
+</li>
+          <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#module-backend.api.models.schemas.resource_based_models">backend.api.models.schemas.resource_based_models</a>
+</li>
+          <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#module-backend.api.models.schemas.setup_models">backend.api.models.schemas.setup_models</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/index.html#module-backend.api.modules">backend.api.modules</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/declarative_router/index.html#module-backend.api.modules.declarative_router">backend.api.modules.declarative_router</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/general_router/index.html#module-backend.api.modules.general_router">backend.api.modules.general_router</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#module-backend.api.modules.log_skeleton_router">backend.api.modules.log_skeleton_router</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#module-backend.api.modules.resource_based_router">backend.api.modules.resource_based_router</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#module-backend.api.modules.temporal_profile_router">backend.api.modules.temporal_profile_router</a>
+</li>
+          <li><a href="autoapi/backend/api/setup/index.html#module-backend.api.setup">backend.api.setup</a>
+</li>
+          <li><a href="autoapi/backend/api/tasks/index.html#module-backend.api.tasks">backend.api.tasks</a>
+</li>
+          <li><a href="autoapi/backend/api/tasks/declarative_constraints_tasks/index.html#module-backend.api.tasks.declarative_constraints_tasks">backend.api.tasks.declarative_constraints_tasks</a>
+</li>
+          <li><a href="autoapi/backend/api/tasks/log_skeleton_tasks/index.html#module-backend.api.tasks.log_skeleton_tasks">backend.api.tasks.log_skeleton_tasks</a>
+</li>
+          <li><a href="autoapi/backend/api/tasks/resource_based_tasks/index.html#module-backend.api.tasks.resource_based_tasks">backend.api.tasks.resource_based_tasks</a>
+</li>
+          <li><a href="autoapi/backend/api/tasks/temporal_profile_tasks/index.html#module-backend.api.tasks.temporal_profile_tasks">backend.api.tasks.temporal_profile_tasks</a>
+</li>
+          <li><a href="autoapi/backend/celonis_connection/index.html#module-backend.celonis_connection">backend.celonis_connection</a>
+</li>
+          <li><a href="autoapi/backend/celonis_connection/celonis_connection_manager/index.html#module-backend.celonis_connection.celonis_connection_manager">backend.celonis_connection.celonis_connection_manager</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/index.html#module-backend.conformance_checking">backend.conformance_checking</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#module-backend.conformance_checking.declarative_constraints">backend.conformance_checking.declarative_constraints</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#module-backend.conformance_checking.log_skeleton">backend.conformance_checking.log_skeleton</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#module-backend.conformance_checking.resource_based">backend.conformance_checking.resource_based</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#module-backend.conformance_checking.temporal_profile">backend.conformance_checking.temporal_profile</a>
+</li>
+          <li><a href="autoapi/backend/main/index.html#module-backend.main">backend.main</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/index.html#module-backend.pql_queries">backend.pql_queries</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#module-backend.pql_queries.declarative_queries">backend.pql_queries.declarative_queries</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/declerative_queries/index.html#module-backend.pql_queries.declerative_queries">backend.pql_queries.declerative_queries</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/general_queries/index.html#module-backend.pql_queries.general_queries">backend.pql_queries.general_queries</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/log_skeleton_queries/index.html#module-backend.pql_queries.log_skeleton_queries">backend.pql_queries.log_skeleton_queries</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/resource_based_queries/index.html#module-backend.pql_queries.resource_based_queries">backend.pql_queries.resource_based_queries</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/temporal_profile_queries/index.html#module-backend.pql_queries.temporal_profile_queries">backend.pql_queries.temporal_profile_queries</a>
+</li>
+          <li><a href="autoapi/backend/usage_example/index.html#module-backend.usage_example">backend.usage_example</a>
+</li>
+          <li><a href="autoapi/backend/utils/index.html#module-backend.utils">backend.utils</a>
+</li>
+          <li><a href="autoapi/backend/utils/file_handlers/index.html#module-backend.utils.file_handlers">backend.utils.file_handlers</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#backend.api.models.schemas.job_models.JobStatus.module">module (backend.api.models.schemas.job_models.JobStatus attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.MODULE_NAME">MODULE_NAME (in module backend.api.modules.declarative_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.MODULE_NAME">(in module backend.api.modules.log_skeleton_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.MODULE_NAME">(in module backend.api.modules.resource_based_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.MODULE_NAME">(in module backend.api.modules.temporal_profile_router)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.my_celonis">my_celonis (in module backend.usage_example)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphModel.nodes">nodes (backend.api.models.schemas.output_format.GraphModel attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.Graph.nodes">(backend.api.modules.log_skeleton_router.Graph attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="O" class="genindex-section">
+  <h2>O</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.OrganizationalRole">OrganizationalRole (class in backend.api.models.schemas.resource_based_models)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.OrganizationalRole.originators_importance">originators_importance (backend.api.models.schemas.resource_based_models.OrganizationalRole attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="P" class="genindex-section">
+  <h2>P</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/utils/file_handlers/index.html#backend.utils.file_handlers.process_csv_file">process_csv_file() (in module backend.utils.file_handlers)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/utils/file_handlers/index.html#backend.utils.file_handlers.process_file">process_file() (in module backend.utils.file_handlers)</a>
+</li>
+        <li><a href="autoapi/backend/utils/file_handlers/index.html#backend.utils.file_handlers.process_xes_file">process_xes_file() (in module backend.utils.file_handlers)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="R" class="genindex-section">
+  <h2>R</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.ColumnMapping.resource_1_column">resource_1_column (backend.api.models.schemas.setup_models.ColumnMapping attribute)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.resource_col">resource_col (backend.conformance_checking.resource_based.ResourceBased attribute)</a>, <a href="autoapi/backend/conformance_checking/resource_based/index.html#id4">[1]</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased">ResourceBased (class in backend.conformance_checking.resource_based)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.ResponseSchema">ResponseSchema (class in backend.api.models.schemas.output_format)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#backend.api.models.schemas.job_models.JobStatus.result">result (backend.api.models.schemas.job_models.JobStatus attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.result">(in module backend.usage_example)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.ReturnGraphType">ReturnGraphType (in module backend.api.modules.declarative_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.ReturnGraphType">(in module backend.conformance_checking.declarative_constraints)</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#backend.pql_queries.declarative_queries.ReturnGraphType">(in module backend.pql_queries.declarative_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/jobs/index.html#backend.api.jobs.router">router (in module backend.api.jobs)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/log/index.html#backend.api.log.router">(in module backend.api.log)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.router">(in module backend.api.modules.declarative_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.router">(in module backend.api.modules.general_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.router">(in module backend.api.modules.log_skeleton_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.router">(in module backend.api.modules.resource_based_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.router">(in module backend.api.modules.temporal_profile_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/setup/index.html#backend.api.setup.router">(in module backend.api.setup)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.TableModel.rows">rows (backend.api.models.schemas.output_format.TableModel attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.Table.rows">(backend.api.modules.log_skeleton_router.Table attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.rule_specific_violation_summary">rule_specific_violation_summary() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.run_all_rules">run_all_rules() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.run_model">run_model() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="S" class="genindex-section">
+  <h2>S</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.SNAMetric">SNAMetric (class in backend.api.models.schemas.resource_based_models)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.SocialNetworkAnalysisType">SocialNetworkAnalysisType (in module backend.conformance_checking.resource_based)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.SNAMetric.source">source (backend.api.models.schemas.resource_based_models.SNAMetric attribute)</a>
+</li>
+        <li><a href="autoapi/backend/usage_example/index.html#backend.usage_example.starttime">starttime (in module backend.usage_example)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/job_models/index.html#backend.api.models.schemas.job_models.JobStatus.status">status (backend.api.models.schemas.job_models.JobStatus attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="T" class="genindex-section">
+  <h2>T</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.Table">Table (class in backend.api.modules.log_skeleton_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.TableModel">TableModel (class in backend.api.models.schemas.output_format)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.ResponseSchema.tables">tables (backend.api.models.schemas.output_format.ResponseSchema attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/log_skeleton_router/index.html#backend.api.modules.log_skeleton_router.EndpointReturnType.tables">(backend.api.modules.log_skeleton_router.EndpointReturnType attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/modules/declarative_router/index.html#backend.api.modules.declarative_router.TableType">TableType (in module backend.api.modules.declarative_router)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.TableType">(in module backend.api.modules.general_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/resource_based_router/index.html#backend.api.modules.resource_based_router.TableType">(in module backend.api.modules.resource_based_router)</a>
+</li>
+          <li><a href="autoapi/backend/api/modules/temporal_profile_router/index.html#backend.api.modules.temporal_profile_router.TableType">(in module backend.api.modules.temporal_profile_router)</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.TableType">(in module backend.conformance_checking.declarative_constraints)</a>
+</li>
+          <li><a href="autoapi/backend/pql_queries/declarative_queries/index.html#backend.pql_queries.declarative_queries.TableType">(in module backend.pql_queries.declarative_queries)</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.SNAMetric.target">target (backend.api.models.schemas.resource_based_models.SNAMetric attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile">TemporalProfile (class in backend.conformance_checking.temporal_profile)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfileType">TemporalProfileType (in module backend.conformance_checking.temporal_profile)</a>
+</li>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.timestamp_col">timestamp_col (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+
+        <ul>
+          <li><a href="autoapi/backend/conformance_checking/log_skeleton/index.html#backend.conformance_checking.log_skeleton.LogSkeleton.timestamp_col">(backend.conformance_checking.log_skeleton.LogSkeleton attribute)</a>, <a href="autoapi/backend/conformance_checking/log_skeleton/index.html#id3">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/resource_based/index.html#backend.conformance_checking.resource_based.ResourceBased.timestamp_col">(backend.conformance_checking.resource_based.ResourceBased attribute)</a>, <a href="autoapi/backend/conformance_checking/resource_based/index.html#id3">[1]</a>
+</li>
+          <li><a href="autoapi/backend/conformance_checking/temporal_profile/index.html#backend.conformance_checking.temporal_profile.TemporalProfile.timestamp_col">(backend.conformance_checking.temporal_profile.TemporalProfile attribute)</a>, <a href="autoapi/backend/conformance_checking/temporal_profile/index.html#id3">[1]</a>
+</li>
+        </ul></li>
+        <li><a href="autoapi/backend/api/models/schemas/setup_models/index.html#backend.api.models.schemas.setup_models.ColumnMapping.timestamp_column">timestamp_column (backend.api.models.schemas.setup_models.ColumnMapping attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/models/schemas/output_format/index.html#backend.api.models.schemas.output_format.GraphEdge.to">to (backend.api.models.schemas.output_format.GraphEdge attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.transform_counts_df_to_endpoint_format">transform_counts_df_to_endpoint_format() (in module backend.api.modules.general_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.transform_dfg_df_to_endpoint_format">transform_dfg_df_to_endpoint_format() (in module backend.api.modules.general_router)</a>
+</li>
+        <li><a href="autoapi/backend/api/modules/general_router/index.html#backend.api.modules.general_router.transform_traces_df_to_endpoint_format">transform_traces_df_to_endpoint_format() (in module backend.api.modules.general_router)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="U" class="genindex-section">
+  <h2>U</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.update_model_and_run_all_rules">update_model_and_run_all_rules() (backend.conformance_checking.declarative_constraints.DeclarativeConstraints method)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/log/index.html#backend.api.log.upload_log">upload_log() (in module backend.api.log)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+<section id="V" class="genindex-section">
+  <h2>V</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/conformance_checking/declarative_constraints/index.html#backend.conformance_checking.declarative_constraints.DeclarativeConstraints.valid_rules">valid_rules (backend.conformance_checking.declarative_constraints.DeclarativeConstraints attribute)</a>
+</li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="autoapi/backend/api/models/schemas/resource_based_models/index.html#backend.api.models.schemas.resource_based_models.SNAMetric.value">value (backend.api.models.schemas.resource_based_models.SNAMetric attribute)</a>
+</li>
+        <li><a href="autoapi/backend/api/jobs/index.html#backend.api.jobs.verify_correct_job_module">verify_correct_job_module() (in module backend.api.jobs)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Samadrita Saha, René Rockstedt, Ekansh Agarwal, Yash Raj, Ole Seifert
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>

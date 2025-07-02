@@ -1,0 +1,79 @@
+backend.pql_queries.declarative_queries
+=======================================
+
+.. py:module:: backend.pql_queries.declarative_queries
+
+.. autoapi-nested-parse::
+
+   Queries that can be used to get log-skeleton related data from celonis.
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   backend.pql_queries.declarative_queries.TableType
+   backend.pql_queries.declarative_queries.GraphType
+   backend.pql_queries.declarative_queries.ReturnGraphType
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   backend.pql_queries.declarative_queries.format_graph_and_table
+   backend.pql_queries.declarative_queries.get_always_before_relation
+   backend.pql_queries.declarative_queries.get_always_after_relation
+
+
+Module Contents
+---------------
+
+.. py:type:: TableType
+   :canonical: Dict[str, Any]
+
+
+.. py:type:: GraphType
+   :canonical: Dict[str, Any]
+
+
+.. py:type:: ReturnGraphType
+   :canonical: Dict[str, Union[List[TableType], List[GraphType]]]
+
+
+.. py:function:: format_graph_and_table(curr_df: pandas.DataFrame) -> ReturnGraphType
+
+   Formats the DataFrame into a graph and table structure.
+
+   :param curr_df: The DataFrame to format.
+   :type curr_df: pd.DataFrame
+
+   :returns: A dictionary containing the formatted graph and table.
+   :rtype: ReturnGraphType
+
+
+.. py:function:: get_always_before_relation(celonis: backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager) -> ReturnGraphType
+
+   Compute Always-Before summary using PQL.
+
+   :param celonis: the celonis connection
+   :type celonis: CelonisConnectionManager
+
+   :returns: A dictionary containing the formatted graph and table.
+   :rtype: ReturnGraphType
+
+
+.. py:function:: get_always_after_relation(celonis: backend.celonis_connection.celonis_connection_manager.CelonisConnectionManager) -> ReturnGraphType
+
+   Compute Always-After summary using PQL.
+
+   :param celonis: the celonis connection
+   :type celonis: CelonisConnectionManager
+
+   :returns: A dictionary containing the formatted graph and table.
+   :rtype: ReturnGraphType
+
+
